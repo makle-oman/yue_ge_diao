@@ -1,7 +1,6 @@
 <template>
   <text
-    class="app-icon"
-    :class="['ic-' + name]"
+    class="mxy-icon"
     :style="{ fontSize: size + 'rpx', color: color, width: size + 'rpx', height: size + 'rpx', lineHeight: size + 'rpx' }"
   >{{ glyph }}</text>
 </template>
@@ -69,7 +68,7 @@ const glyph = computed(() => glyphMap[props.name] ?? props.name);
 </script>
 
 <style lang="scss" scoped>
-.app-icon {
+.mxy-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;

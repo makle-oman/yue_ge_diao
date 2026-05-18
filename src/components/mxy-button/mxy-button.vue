@@ -1,7 +1,7 @@
 <template>
-  <view class="app-button" :class="[`type-${type}`, `size-${size}`, { block, disabled }]" @click="onClick">
+  <view class="mxy-button" :class="[`type-${type}`, `size-${size}`, { block, disabled }]" @click="onClick">
     <slot name="prefix" />
-    <text class="app-button__label"><slot>{{ text }}</slot></text>
+    <text class="mxy-button__label"><slot>{{ text }}</slot></text>
     <slot name="suffix" />
   </view>
 </template>
@@ -31,7 +31,7 @@ const onClick = (evt: Event) => {
 <style lang="scss" scoped>
 @import '@/uni.scss';
 
-.app-button {
+.mxy-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -41,17 +41,13 @@ const onClick = (evt: Event) => {
   transition: opacity .15s, transform .1s;
 
   &:active:not(.disabled) { transform: scale(.97); opacity: .92; }
-
   &.block { display: flex; width: 100%; }
-
   &.disabled { opacity: .45; }
 
-  // sizes
   &.size-sm { height: 56rpx; padding: 0 24rpx; font-size: 24rpx; }
   &.size-md { height: 76rpx; padding: 0 32rpx; font-size: 28rpx; }
   &.size-lg { height: 92rpx; padding: 0 40rpx; font-size: 32rpx; }
 
-  // types
   &.type-primary  { background: $primary; color: #fff; }
   &.type-secondary{ background: $secondary; color: #fff; }
   &.type-ghost    {
@@ -63,7 +59,5 @@ const onClick = (evt: Event) => {
   &.type-danger   { background: $warning-strong; color: #fff; }
 }
 
-.app-button__label {
-  line-height: 1;
-}
+.mxy-button__label { line-height: 1; }
 </style>
