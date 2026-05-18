@@ -1,0 +1,116 @@
+/**
+ * 约个钓 - 全局样式变量
+ *
+ * 主色调：自然清新 + 工具感
+ * 详细设计规范见：../../约个钓-页面设计-v1.md 第 0 章
+ */
+
+/* ============ 品牌色 ============ */
+$primary: #2D8F87;        // 主色：湖水墨绿（沉稳、不刺眼）
+$secondary: #5BA9C4;      // 辅色：天空蓝（活力）
+$accent: #F5A623;         // 强调：夕阳橙（CTA、关键数据）
+
+/* ============ 状态浅色（用于 Tag/徽章背景） ============ */
+$soft-primary: #EAF5F4;   // 浅绿（主色软色）
+$soft-blue: #EAF6FA;      // 浅蓝
+$soft-orange: #FFF4E1;    // 浅橙
+$soft-red: #FFF0F0;       // 浅红
+
+/* ============ 地图与功能色 ============ */
+$map-land: #EFF5EE;
+$map-water: #D7EEF4;
+$success: #4CAF50;
+$warning-strong: #FF6B6B; // 危险/警告（已弃用 error）
+
+/* 兼容 uni-app 标准变量名 */
+$uni-color-primary: $primary;
+$uni-color-success: #4CAF50;
+$uni-color-warning: $accent;
+$uni-color-error: #FF6B6B;
+
+/* ============ 文字 ============ */
+$text-primary: #1A2B33;       // 主文本（标题）
+$text-regular: #3F4F58;       // 常规文本
+$text-secondary: #6B7B85;     // 次要文本
+$text-placeholder: #99A5AD;   // 占位
+$text-disabled: #C5CDD2;      // 禁用
+$text-inverse: #FFFFFF;       // 反色（深色背景上）
+
+$uni-text-color: $text-primary;
+$uni-text-color-inverse: $text-inverse;
+$uni-text-color-grey: $text-secondary;
+$uni-text-color-placeholder: $text-placeholder;
+$uni-text-color-disable: $text-disabled;
+
+/* ============ 背景 ============ */
+$bg-page: #F7F9FA;        // 页面背景
+$bg-card: #FFFFFF;        // 卡片背景
+$bg-hover: #F1F3F5;       // 点击态
+$bg-mask: rgba(0, 0, 0, 0.5);
+
+$uni-bg-color: $bg-card;
+$uni-bg-color-grey: $bg-page;
+$uni-bg-color-hover: $bg-hover;
+$uni-bg-color-mask: $bg-mask;
+
+/* ============ 边框 ============ */
+$border-light: #EAEEF1;
+$border-base: #DCE2E6;
+$border-dark: #BFC8CE;
+
+$uni-border-color: $border-base;
+
+/* ============ 字号 ============ */
+$font-xs: 20rpx;     // 10px
+$font-sm: 24rpx;     // 12px - 辅助文字
+$font-base: 28rpx;   // 14px - 正文
+$font-md: 30rpx;     // 15px
+$font-lg: 32rpx;     // 16px - 标题
+$font-xl: 36rpx;     // 18px - 大标题
+$font-xxl: 48rpx;    // 24px - 数据展示
+
+$uni-font-size-sm: $font-sm;
+$uni-font-size-base: $font-base;
+$uni-font-size-lg: $font-lg;
+
+/* ============ 圆角 ============ */
+$radius-sm: 4rpx;
+$radius-base: 8rpx;
+$radius-md: 12rpx;
+$radius-lg: 16rpx;
+$radius-xl: 24rpx;
+$radius-circle: 50%;
+
+$uni-border-radius-sm: $radius-sm;
+$uni-border-radius-base: $radius-base;
+$uni-border-radius-lg: $radius-lg;
+$uni-border-radius-circle: $radius-circle;
+
+/* ============ 间距 ============ */
+$space-xs: 8rpx;
+$space-sm: 16rpx;
+$space-base: 24rpx;
+$space-md: 32rpx;
+$space-lg: 48rpx;
+$space-xl: 64rpx;
+
+$uni-spacing-row-sm: $space-xs;
+$uni-spacing-row-base: $space-sm;
+$uni-spacing-row-lg: $space-base;
+$uni-spacing-col-sm: $space-xs;
+$uni-spacing-col-base: $space-sm;
+$uni-spacing-col-lg: $space-base;
+
+/* ============ 阴影 ============ */
+$shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+$shadow-base: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+$shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+
+/* ============ TabBar 自定义参数 ============ */
+$tabbar-height: 100rpx;
+$tabbar-fab-size: 100rpx;   // 中间凸起按钮直径
+$tabbar-fab-offset: 20rpx;  // 凸起按钮上浮距离
+
+/* ============ 透明度 ============ */
+$uni-opacity-disabled: 0.4;
