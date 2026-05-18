@@ -1,35 +1,38 @@
 <template>
   <view class="custom-tabbar">
-    <!-- 普通 Tab 项 -->
     <view
       v-for="item in tabs"
       :key="item.key"
       class="tab-item"
-      :class="{ active: current === item.key }"
+      :class="{ active: current === item.key, ghost: item.key === 'placeholder' }"
       @click="onTabClick(item)"
     >
-      <view class="tab-icon">
-        <!-- TODO: 替换为实际 icon。当前用 emoji 占位 -->
-        <text>{{ current === item.key ? item.iconActive : item.icon }}</text>
-      </view>
-      <text class="tab-label">{{ item.label }}</text>
+      <template v-if="item.key !== 'placeholder'">
+        <mxy-icon
+          class="tab-icon"
+          :name="item.icon"
+          :size="48"
+          :filled="current === item.key"
+          :color="current === item.key ? primaryColor : mutedColor"
+        />
+        <text class="tab-label">{{ item.label }}</text>
+      </template>
     </view>
 
-    <!-- 中间凸起 "+" 按钮 -->
     <view class="tab-fab" @click="onPublishClick">
-      <text class="tab-fab-plus">+</text>
+      <mxy-icon name="add" :size="56" color="#fff" :weight="500" />
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 
 interface TabItem {
   key: 'home' | 'community' | 'placeholder' | 'message' | 'profile';
   label: string;
   icon: string;
-  iconActive: string;
   path: string;
 }
 
@@ -37,16 +40,15 @@ defineProps<{
   current: 'home' | 'community' | 'message' | 'profile';
 }>();
 
-/**
- * 注意：占位符 emoji 仅用于开发期。
- * 设计稿出图后替换为 PNG 图标（建议 84x84 PNG，static/tabbar/ 下）。
- */
+const primaryColor = '#2D8F87';
+const mutedColor = '#6B7B85';
+
 const tabs = ref<TabItem[]>([
-  { key: 'home',      label: '钓点', icon: '🗺',  iconActive: '🗺', path: '/pages/index/index' },
-  { key: 'community', label: '社区', icon: '🐟',  iconActive: '🐟', path: '/pages/community/index' },
-  { key: 'placeholder', label: '', icon: '', iconActive: '', path: '' }, // 中间凸起按钮占位
-  { key: 'message',   label: '消息', icon: '💬',  iconActive: '💬', path: '/pages/message/index' },
-  { key: 'profile',   label: '我的', icon: '👤',  iconActive: '👤', path: '/pages/profile/index' },
+  { key: 'home',        label: '钓点', icon: 'map',           path: '/pages/index/index' },
+  { key: 'community',   label: '社区', icon: 'photo_library', path: '/pages/community/index' },
+  { key: 'placeholder', label: '',     icon: '',              path: '' },
+  { key: 'message',     label: '消息', icon: 'chat',          path: '/pages/message/index' },
+  { key: 'profile',     label: '我的', icon: 'person',        path: '/pages/profile/index' },
 ]);
 
 const onTabClick = (item: TabItem) => {
@@ -57,9 +59,8 @@ const onTabClick = (item: TabItem) => {
 };
 
 const onPublishClick = () => {
-  // 弹出 ActionSheet：发鱼获 / 上报钓点 / 发起组队
   uni.showActionSheet({
-    itemList: ['🐟 发布鱼获', '📍 上报新钓点', '👥 发起组队约钓'],
+    itemList: ['发布鱼获', '上报新钓点', '发起组队约钓'],
     success: (res) => {
       const routes = [
         '/pages/catch/create',
@@ -90,6 +91,7 @@ const onPublishClick = () => {
   align-items: center;
   background: $bg-card;
   box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-top: 1rpx solid $border-light;
 }
 
 .tab-item {
@@ -99,26 +101,26 @@ const onPublishClick = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6rpx;
+  gap: 4rpx;
 
-  .tab-icon {
-    font-size: 40rpx;
-    line-height: 1;
-  }
+  &.ghost { visibility: hidden; pointer-events: none; }
+
+  .tab-icon { line-height: 1; }
+
   .tab-label {
     font-size: $font-xs;
     color: $text-secondary;
+    line-height: 1;
   }
 
   &.active {
     .tab-label {
       color: $primary;
-      font-weight: 600;
+      font-weight: 700;
     }
   }
 }
 
-/* 中间凸起 "+" 按钮 */
 .tab-fab {
   position: absolute;
   left: 50%;
@@ -127,22 +129,12 @@ const onPublishClick = () => {
   width: $tabbar-fab-size;
   height: $tabbar-fab-size;
   border-radius: 50%;
-  background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
-  box-shadow: 0 6rpx 20rpx rgba(45, 143, 135, 0.4);
+  background: $accent;
+  box-shadow: 0 6rpx 20rpx rgba(245, 166, 35, 0.42);
   display: flex;
   align-items: center;
   justify-content: center;
 
-  .tab-fab-plus {
-    color: #fff;
-    font-size: 64rpx;
-    font-weight: 300;
-    line-height: 1;
-    margin-top: -6rpx;
-  }
-
-  &:active {
-    transform: translateX(-50%) scale(0.95);
-  }
+  &:active { transform: translateX(-50%) scale(0.95); }
 }
 </style>

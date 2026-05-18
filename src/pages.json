@@ -14,12 +14,14 @@
     {
       "path": "pages/community/index",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "社区"
       }
     },
     {
       "path": "pages/message/index",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "消息"
       }
     },
@@ -46,6 +48,7 @@
     {
       "path": "pages/spot/create",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "上报新钓点"
       }
     },
@@ -59,48 +62,56 @@
     {
       "path": "pages/catch/create",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "发布鱼获"
       }
     },
     {
       "path": "pages/team/list",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "附近组队"
       }
     },
     {
       "path": "pages/team/detail",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "组队详情"
       }
     },
     {
       "path": "pages/team/create",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "发起组队"
       }
     },
     {
       "path": "pages/nearby/users",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "附近钓友"
       }
     },
     {
       "path": "pages/user/detail",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "钓友主页"
       }
     },
     {
       "path": "pages/profile/edit",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "编辑资料"
       }
     },
     {
       "path": "pages/profile/setting",
       "style": {
+        "navigationStyle": "custom",
         "navigationBarTitleText": "设置"
       }
     }
