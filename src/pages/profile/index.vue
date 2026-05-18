@@ -31,26 +31,26 @@
       </view>
     </view>
 
+    <!-- 数据统计卡(脱离 scroll-view, 悬浮在 hero 底部) -->
+    <view class="stats-card">
+      <view class="stats-item">
+        <text class="stats-num">{{ stats.spots }}</text>
+        <text class="stats-label">钓点</text>
+      </view>
+      <view class="stats-div" />
+      <view class="stats-item">
+        <text class="stats-num">{{ stats.catches }}</text>
+        <text class="stats-label">鱼获</text>
+      </view>
+      <view class="stats-div" />
+      <view class="stats-item">
+        <text class="stats-num accent">{{ stats.max }}</text>
+        <text class="stats-label">最大记录</text>
+      </view>
+    </view>
+
     <!-- 滚动区 -->
     <scroll-view class="profile-scroll" scroll-y>
-      <!-- 数据统计卡 -->
-      <view class="stats-card">
-        <view class="stats-item">
-          <text class="stats-num">{{ stats.spots }}</text>
-          <text class="stats-label">钓点</text>
-        </view>
-        <view class="stats-div" />
-        <view class="stats-item">
-          <text class="stats-num">{{ stats.catches }}</text>
-          <text class="stats-label">鱼获</text>
-        </view>
-        <view class="stats-div" />
-        <view class="stats-item">
-          <text class="stats-num accent">{{ stats.max }}</text>
-          <text class="stats-label">最大记录</text>
-        </view>
-      </view>
-
       <!-- 鱼库成就卡 -->
       <view class="fish-card">
         <view class="fish-head">
@@ -269,12 +269,18 @@ const onMenuTap = (m: MenuItem) => {
 .profile-scroll {
   flex: 1;
   min-height: 0;
+  /* 88rpx = stats-card 露出 hero 下方的部分 (168 - 80), 让下方卡片接其下方 */
+  padding-top: 88rpx;
   padding-bottom: calc(#{$tabbar-height} + env(safe-area-inset-bottom));
 }
 
-/* ---------- 统计卡 (上浮覆盖 Hero) ---------- */
+/* ---------- 统计卡 (脱离 scroll-view, absolute 悬浮在 hero 底部) ---------- */
 .stats-card {
-  margin: -80rpx 32rpx 0;
+  position: absolute;
+  /* 472rpx (hero 高度) - 80rpx (上浮量) */
+  top: 392rpx;
+  left: 32rpx;
+  right: 32rpx;
   height: 168rpx;
   background: $bg-card;
   border-radius: 28rpx;
@@ -282,7 +288,6 @@ const onMenuTap = (m: MenuItem) => {
   display: flex;
   align-items: center;
   padding: 0 16rpx;
-  position: relative;
   z-index: 4;
 }
 .stats-item {

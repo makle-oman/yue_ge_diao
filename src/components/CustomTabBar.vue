@@ -59,20 +59,7 @@ const onTabClick = (item: TabItem) => {
 };
 
 const onPublishClick = () => {
-  uni.showActionSheet({
-    itemList: ['发布鱼获', '上报新钓点', '发起组队约钓'],
-    success: (res) => {
-      const routes = [
-        '/pages/catch/create',
-        '/pages/spot/create',
-        '/pages/team/create',
-      ];
-      const target = routes[res.tapIndex];
-      if (target) {
-        uni.navigateTo({ url: target });
-      }
-    },
-  });
+  uni.navigateTo({ url: '/pages/publish/index' });
 };
 </script>
 

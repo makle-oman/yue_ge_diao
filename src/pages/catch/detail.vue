@@ -1,26 +1,26 @@
 <template>
   <view class="catch-detail">
-    <!-- 顶部图 -->
-    <view class="hero">
-      <image class="hero-img" :src="catchData.cover" mode="aspectFill" />
-      <view class="hero-shade" />
-
-      <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
-        <view class="hero-icon-btn" @click="onBack">
-          <mxy-icon name="arrow_back" :size="40" color="#fff" />
-        </view>
-        <view class="hero-icon-btn" @click="onShare">
-          <mxy-icon name="ios_share" :size="40" color="#fff" />
-        </view>
+    <!-- 固定在顶部的返回/分享按钮（不随内容滚动） -->
+    <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <view class="hero-icon-btn" @click="onBack">
+        <mxy-icon name="arrow_back" :size="40" color="#fff" />
       </view>
-
-      <view class="hero-card-badge">
-        <text class="hero-card-badge-text">朋友圈卡片</text>
+      <view class="hero-icon-btn" @click="onShare">
+        <mxy-icon name="ios_share" :size="40" color="#fff" />
       </view>
     </view>
 
-    <!-- 滚动主体 -->
+    <!-- 滚动主体（包含 hero 图 + 内容面板，一起滚动） -->
     <scroll-view class="content" scroll-y>
+      <!-- 顶部图 -->
+      <view class="hero">
+        <image class="hero-img" :src="catchData.cover" mode="aspectFill" />
+        <view class="hero-shade" />
+        <view class="hero-card-badge">
+          <text class="hero-card-badge-text">朋友圈卡片</text>
+        </view>
+      </view>
+
       <view class="panel">
         <!-- 作者 -->
         <view class="user-row">
@@ -88,25 +88,33 @@
 
     <!-- 底部交互栏 -->
     <view class="bottom-bar" :style="{ paddingBottom: 20 + safeBottom + 'px' }">
-      <view
-        class="bottom-btn bottom-btn--like"
-        :class="{ liked: catchData.liked }"
-        @click="onLike"
-      >
+      <!-- 赞:仅图标 + 数字（数字为角标,不影响图标垂直居中） -->
+      <view class="bottom-icon" :class="{ liked: catchData.liked }" @click="onLike">
         <mxy-icon
           name="favorite"
-          :size="28"
+          :size="56"
           :filled="catchData.liked"
-          :color="catchData.liked ? '#FF6B6B' : '#99A5AD'"
+          :color="catchData.liked ? '#FF6B6B' : '#6B7B85'"
         />
-        <text class="bottom-btn-text like">赞 {{ catchData.likes }}</text>
+        <text class="bottom-icon-count" :class="{ liked: catchData.liked }">{{ catchData.likes }}</text>
       </view>
+
+      <!-- 收藏:星星图标 -->
+      <view class="bottom-icon" :class="{ collected: catchData.collected }" @click="onCollect">
+        <mxy-icon
+          name="star"
+          :size="56"
+          :filled="catchData.collected"
+          :color="catchData.collected ? '#F5A623' : '#6B7B85'"
+        />
+      </view>
+
+      <!-- 评论 -->
       <view class="bottom-btn bottom-btn--ghost" @click="onMoreComments">
         <text class="bottom-btn-text">评论</text>
       </view>
-      <view class="bottom-btn bottom-btn--ghost" @click="onCollect">
-        <text class="bottom-btn-text">收藏</text>
-      </view>
+
+      <!-- 生成分享卡片 -->
       <view class="bottom-btn bottom-btn--primary" @click="onShareCard">
         <text class="bottom-btn-text primary">生成分享卡片</text>
       </view>
@@ -147,6 +155,7 @@ const catchData = ref({
   commentPreview: '阿峰：这点早上几点开口？  ·  老周：板鲫漂亮。',
   liked: false,
   likes: 32,
+  collected: false,
 });
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
@@ -161,7 +170,13 @@ const onLike = () => {
   catchData.value.liked = !catchData.value.liked;
   catchData.value.likes += catchData.value.liked ? 1 : -1;
 };
-const onCollect = () => uni.showToast({ title: '已收藏', icon: 'success' });
+const onCollect = () => {
+  catchData.value.collected = !catchData.value.collected;
+  uni.showToast({
+    title: catchData.value.collected ? '已收藏' : '已取消收藏',
+    icon: 'success',
+  });
+};
 const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', icon: 'none' });
 </script>
 
@@ -182,7 +197,6 @@ const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', ico
   position: relative;
   width: 100%;
   height: 720rpx; /* 360px */
-  flex: none;
 }
 .hero-img {
   position: absolute;
@@ -203,7 +217,10 @@ const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', ico
   display: flex;
   justify-content: space-between;
   padding: 16rpx 32rpx 0;
-  z-index: 3;
+  z-index: 10; /* 高于 panel,始终浮在顶部 */
+  pointer-events: none; /* 让中间空白处不拦截滚动 */
+
+  > * { pointer-events: auto; }
 }
 .hero-icon-btn {
   width: 80rpx;
@@ -217,14 +234,14 @@ const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', ico
 .hero-card-badge {
   position: absolute;
   right: 32rpx;
-  bottom: 24rpx;
+  bottom: 80rpx; /* 24rpx 视觉间距 + 56rpx panel 覆盖区,避免被圆角面板盖住 */
   height: 56rpx;
   padding: 0 20rpx;
   border-radius: 28rpx;
   background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
-  z-index: 3;
+  z-index: 5; /* 高于 panel 的 z-index:4,保险起见 */
 
   .hero-card-badge-text {
     font-size: 24rpx;
@@ -409,11 +426,41 @@ const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', ico
 .bottom-bar {
   flex: none;
   display: flex;
+  align-items: center;
   gap: 16rpx;
   background: $bg-card;
   border-top: 1rpx solid $border-light;
   padding: 20rpx 32rpx;
 }
+
+/* 裸图标按钮:赞、收藏。图标永远垂直居中,数字作为角标绝对定位 */
+.bottom-icon {
+  position: relative;
+  flex: none;
+  width: 80rpx;
+  height: 92rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { transform: scale(.9); }
+
+  .bottom-icon-count {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    font-size: 20rpx;
+    color: $text-secondary;
+    line-height: 1;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &.liked { color: $warning-strong; }
+  }
+}
+
+/* 胶囊按钮:评论、生成分享卡片 */
 .bottom-btn {
   height: 92rpx;
   border-radius: 46rpx;
@@ -430,16 +477,10 @@ const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', ico
     font-weight: 800;
     color: $text-primary;
 
-    &.like   { color: $text-secondary; }
     &.primary { color: #fff; }
   }
 
-  &--like {
-    background: $soft-red;
-    .bottom-btn-text.like { color: $warning-strong; }
-    &.liked .bottom-btn-text.like { color: $warning-strong; }
-  }
-  &--ghost   { background: $bg-page; min-width: 140rpx; }
-  &--primary { flex: 1; background: $primary; }
+  &--ghost   { flex: 1; background: $bg-page; }
+  &--primary { flex: 2; background: $primary; }
 }
 </style>

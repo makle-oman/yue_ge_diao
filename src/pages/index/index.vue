@@ -350,13 +350,15 @@ const onMarkerTap = (e: any) => {
 /* ---------- 筛选 chips ---------- */
 .chip-scroll {
   width: 100%;
-  padding: 24rpx 32rpx 0;
+  padding: 24rpx 0 0;
   white-space: nowrap;
 }
 .chip-row {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
   gap: 14rpx;
-  padding-right: 32rpx;
+  padding: 0 32rpx;
 }
 
 /* ---------- 宜钓指数 ---------- */
@@ -403,7 +405,7 @@ const onMarkerTap = (e: any) => {
 .float-actions {
   position: absolute;
   right: 32rpx;
-  bottom: calc(#{$tabbar-height} + 380rpx + env(safe-area-inset-bottom));
+  bottom: calc(#{$tabbar-height} + 460rpx + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 16rpx;

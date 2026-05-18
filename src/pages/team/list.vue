@@ -3,6 +3,9 @@
     <!-- 顶栏 -->
     <view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view class="nav">
+        <view class="nav-back" @click="onBack">
+          <mxy-icon name="arrow_back" :size="44" color="#1A2B33" />
+        </view>
         <text class="nav-title">组队约钓</text>
         <view class="create-btn" @click="onCreate">
           <mxy-icon name="add" :size="32" color="#fff" />
@@ -139,6 +142,7 @@ const teams = ref<Team[]>([
 
 const onCreate = () => uni.navigateTo({ url: '/pages/team/create' });
 const onOpen = (t: Team) => uni.navigateTo({ url: `/pages/team/detail?id=${t.id}` });
+const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onJoin = (t: Team) => {
   if (t.btnTone === 'ghost') {
     onOpen(t);
@@ -172,8 +176,21 @@ const onJoin = (t: Team) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16rpx;
+}
+.nav-back {
+  width: 60rpx;
+  height: 60rpx;
+  margin-left: -12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:active { opacity: .6; }
 }
 .nav-title {
+  flex: 1;
   font-size: 44rpx;
   font-weight: 900;
   color: $text-primary;
