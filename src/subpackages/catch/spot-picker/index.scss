@@ -1,0 +1,260 @@
+@import '@/uni.scss';
+
+* { box-sizing: border-box; }
+
+.spot-picker-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- 导航(与 fish-picker 一致) ---------- */
+.picker-header {
+  flex: none;
+  background: $bg-card;
+  border-bottom: 1rpx solid $border-light;
+}
+.picker-nav {
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+
+  .nav-cancel {
+    width: 120rpx;
+    &:active { opacity: .6; }
+    text {
+      font-size: 30rpx;
+      color: $text-secondary;
+      font-weight: 700;
+    }
+  }
+  .nav-title {
+    flex: 1;
+    text-align: center;
+    font-size: 34rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .nav-done {
+    width: 120rpx;
+    text-align: right;
+    &:active { opacity: .6; }
+    text {
+      font-size: 30rpx;
+      color: $primary;
+      font-weight: 900;
+    }
+  }
+}
+
+.picker-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 24rpx 32rpx;
+}
+
+/* 搜索 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  height: 88rpx;
+  padding: 0 28rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  border-radius: 44rpx;
+
+  .search-input {
+    flex: 1;
+    height: 88rpx;
+    font-size: 28rpx;
+    color: $text-primary;
+  }
+  .search-placeholder {
+    color: $text-secondary;
+    font-size: 28rpx;
+  }
+}
+
+/* ---------- 迷你地图 ---------- */
+.mini-map {
+  position: relative;
+  margin-top: 24rpx;
+  height: 256rpx;
+  border-radius: 40rpx;
+  background: $map-land;
+  overflow: hidden;
+
+  .map-water {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 60%;
+    height: 50%;
+    background: $map-water;
+    border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+    transform: translateY(-12%);
+  }
+  .map-loc {
+    position: absolute;
+    left: 28rpx;
+    top: 28rpx;
+    height: 60rpx;
+    padding: 0 20rpx;
+    background: $bg-card;
+    border-radius: 30rpx;
+    box-shadow: $shadow-sm;
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+
+    text {
+      font-size: 22rpx;
+      color: $text-primary;
+      font-weight: 800;
+    }
+  }
+  .map-pin {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 68rpx;
+    height: 68rpx;
+    border-radius: 34rpx;
+    background: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10rpx 24rpx rgba(45, 143, 135, 0.4);
+  }
+}
+
+/* ---------- 筛选 chips ---------- */
+.filters {
+  margin-top: 24rpx;
+  display: flex;
+  gap: 16rpx;
+}
+.filter-chip {
+  height: 60rpx;
+  padding: 0 28rpx;
+  border-radius: 30rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 26rpx;
+    color: $text-primary;
+    font-weight: 800;
+  }
+  &.active {
+    background: $primary;
+    border-color: $primary;
+    text { color: #fff; }
+  }
+}
+
+/* ---------- 钓点列表 ---------- */
+.spot-list {
+  margin-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.spot-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 24rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  border-radius: 36rpx;
+  box-shadow: $shadow-base;
+
+  &:active { opacity: .85; }
+  &.selected {
+    border: 2rpx solid $primary;
+    box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.16);
+  }
+
+  .spot-thumb {
+    width: 144rpx;
+    height: 144rpx;
+    border-radius: 28rpx;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .spot-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10rpx;
+
+    .spot-name {
+      font-size: 30rpx;
+      color: $text-primary;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+    .spot-meta {
+      font-size: 24rpx;
+      color: $text-secondary;
+      line-height: 1.3;
+    }
+  }
+  .spot-tag {
+    height: 48rpx;
+    padding: 0 20rpx;
+    border-radius: 24rpx;
+    background: $soft-primary;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: 4rpx;
+
+    text {
+      font-size: 22rpx;
+      color: $primary;
+      font-weight: 900;
+      line-height: 1;
+    }
+  }
+  .spot-check {
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+}
+
+/* ---------- 上传新钓点 ---------- */
+.create-entry {
+  margin-top: 24rpx;
+  height: 100rpx;
+  padding: 0 32rpx;
+  background: $soft-primary;
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:active { opacity: .85; }
+
+  text {
+    font-size: 28rpx;
+    color: $primary;
+    font-weight: 900;
+  }
+}
+
+.scroll-pad { height: 32rpx; }

@@ -1,0 +1,249 @@
+@import '@/uni.scss';
+
+* { box-sizing: border-box; }
+
+.picker-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- 自定义导航 ---------- */
+.picker-header {
+  flex: none;
+  background: $bg-card;
+  border-bottom: 1rpx solid $border-light;
+}
+.picker-nav {
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+
+  .nav-cancel {
+    width: 120rpx;
+    &:active { opacity: .6; }
+    text {
+      font-size: 30rpx;
+      color: $text-secondary;
+      font-weight: 700;
+    }
+  }
+  .nav-title {
+    flex: 1;
+    text-align: center;
+    font-size: 34rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .nav-done {
+    width: 120rpx;
+    text-align: right;
+    &:active { opacity: .6; }
+    text {
+      font-size: 30rpx;
+      color: $primary;
+      font-weight: 900;
+    }
+  }
+}
+
+/* ---------- 滚动区 ---------- */
+.picker-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 24rpx 32rpx;
+}
+
+/* 搜索框 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  height: 88rpx;
+  padding: 0 28rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  border-radius: 44rpx;
+
+  .search-input {
+    flex: 1;
+    height: 88rpx;
+    font-size: 28rpx;
+    color: $text-primary;
+  }
+  .search-placeholder {
+    color: $text-secondary;
+    font-size: 28rpx;
+  }
+}
+
+/* 最近选择卡 */
+.recent-card {
+  margin-top: 20rpx;
+  padding: 24rpx;
+  background: $bg-card;
+  border-radius: 36rpx;
+  box-shadow: $shadow-base;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+
+  .recent-title {
+    font-size: 28rpx;
+    color: $text-primary;
+    font-weight: 900;
+  }
+}
+.recent-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.recent-chip {
+  height: 56rpx;
+  padding: 0 24rpx;
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: .7; }
+
+  text {
+    font-size: 26rpx;
+    font-weight: 800;
+    line-height: 1;
+  }
+  &.tone-primary {
+    background: $soft-primary;
+    text { color: $primary; }
+  }
+  &.tone-blue {
+    background: $soft-blue;
+    text { color: $secondary; }
+  }
+  &.tone-outline {
+    background: $bg-card;
+    border: 1rpx solid $border-light;
+    text { color: $text-primary; }
+  }
+}
+
+/* 分段切换 */
+.segment {
+  margin-top: 20rpx;
+  height: 80rpx;
+  padding: 8rpx;
+  border-radius: 40rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: flex;
+  gap: 12rpx;
+}
+.segment-item {
+  flex: 1;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 26rpx;
+    color: $text-secondary;
+    font-weight: 900;
+  }
+  &.active {
+    background: $primary;
+    text { color: #fff; }
+  }
+}
+
+/* 鱼种网格(2 列) */
+.fish-grid {
+  margin-top: 20rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.fish-card {
+  width: calc((100% - 20rpx) / 2);
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  border-radius: 36rpx;
+  box-shadow: $shadow-base;
+  box-sizing: border-box;
+
+  &:active { opacity: .85; }
+  &.selected {
+    border: 2rpx solid $primary;
+    box-shadow: 0 6rpx 20rpx rgba(45, 143, 135, 0.18);
+  }
+
+  .fish-icon {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 40rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .fish-emoji {
+    font-size: 32rpx;
+    font-weight: 900;
+  }
+  .fish-name {
+    font-size: 30rpx;
+    color: $text-primary;
+    font-weight: 900;
+  }
+}
+
+/* 自定义鱼种入口 */
+.custom-entry {
+  margin-top: 24rpx;
+  height: 96rpx;
+  padding: 0 32rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:active { background: $bg-hover; }
+
+  text {
+    font-size: 28rpx;
+    color: $text-primary;
+    font-weight: 800;
+  }
+}
+
+.scroll-pad { height: 32rpx; }
+
+/* 底部已选条 */
+.picker-foot {
+  flex: none;
+  height: 104rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-card;
+  border-top: 1rpx solid $border-light;
+
+  .foot-text {
+    font-size: 26rpx;
+    color: $primary;
+    font-weight: 800;
+  }
+}

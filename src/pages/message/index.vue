@@ -39,6 +39,7 @@
           v-for="(row, idx) in rows"
           :key="row.id"
           class="msg-row"
+          @click="onRowTap(row)"
         >
           <!-- 头像: 有 avatar 用图，没有用色块占位 -->
           <view v-if="!row.avatar" class="msg-row-av" :style="{ background: row.avBg }" />
@@ -140,7 +141,12 @@ const rows = ref<MsgRow[]>([
 
 const onReadAll = () => uni.showToast({ title: '已全部标记为已读', icon: 'success' });
 const onTypeTap = (t: EntryType) => uni.showToast({ title: `${t.label}(待开发)`, icon: 'none' });
-const onAction = (r: MsgRow) => uni.showToast({ title: `查看 ${r.main}`, icon: 'none' });
+const onRowTap = (r: MsgRow) => {
+  uni.navigateTo({
+    url: `/subpackages/message/conversation/index?peer=${encodeURIComponent(r.main)}`,
+  });
+};
+const onAction = (r: MsgRow) => onRowTap(r);
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

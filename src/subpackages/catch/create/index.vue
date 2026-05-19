@@ -154,8 +154,8 @@ const weather = ref({
   text: '多云 24℃ · 东风 3 级 · 气压稳定',
 });
 
-const onPickFish = () => uni.showToast({ title: '选择鱼种 (待开发)', icon: 'none' });
-const onPickSpot = () => uni.showToast({ title: '选择关联钓点 (待开发)', icon: 'none' });
+const onPickFish = () => uni.navigateTo({ url: '/subpackages/catch/fish-picker/index' });
+const onPickSpot = () => uni.navigateTo({ url: '/subpackages/catch/spot-picker/index' });
 const onAddPhoto = () => {
   uni.chooseImage({
     count: 9 - form.value.photos.length,

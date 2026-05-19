@@ -1,0 +1,276 @@
+@import '@/uni.scss';
+
+* { box-sizing: border-box; }
+
+.conv-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- 顶部聊天导航 ---------- */
+.conv-header {
+  flex: none;
+  background: $bg-card;
+  border-bottom: 1rpx solid $border-light;
+}
+.chat-nav {
+  height: 112rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx 0 12rpx;
+  gap: 18rpx;
+}
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:active { opacity: .6; }
+}
+.nav-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .nav-avatar-text {
+    font-size: 30rpx;
+    color: $primary;
+    font-weight: 900;
+  }
+}
+.nav-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+
+  .nav-title {
+    font-size: 32rpx;
+    color: $text-primary;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+  .nav-sub {
+    font-size: 22rpx;
+    color: $text-secondary;
+    line-height: 1.2;
+  }
+}
+.nav-more {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:active { opacity: .6; }
+}
+
+/* ---------- 滚动区 ---------- */
+.conv-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 24rpx 32rpx 16rpx;
+}
+
+/* 安全提示横幅 */
+.safety-tip {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  background: $soft-orange;
+  border-radius: 32rpx;
+
+  .safety-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: $text-primary;
+    line-height: 1.4;
+  }
+}
+
+/* 日期分隔片 */
+.date-chip {
+  display: flex;
+  justify-content: center;
+  margin: 32rpx 0;
+
+  text {
+    height: 48rpx;
+    line-height: 48rpx;
+    padding: 0 20rpx;
+    border-radius: 24rpx;
+    background: $bg-card;
+    box-shadow: $shadow-sm;
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+}
+
+/* ---------- 消息行 ---------- */
+.msg-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+
+  &.is-mine { align-items: flex-end; }
+  &.is-other { align-items: flex-start; }
+}
+
+/* 气泡 */
+.bubble {
+  max-width: 75%;
+  padding: 22rpx 28rpx;
+  border-radius: 36rpx;
+
+  .bubble-text {
+    font-size: 28rpx;
+    line-height: 1.4;
+    word-break: break-all;
+  }
+}
+.bubble-other {
+  background: $bg-card;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.06);
+
+  .bubble-text { color: $text-primary; }
+}
+.bubble-mine {
+  background: $primary;
+  box-shadow: 0 8rpx 28rpx rgba(45, 143, 135, 0.18);
+
+  .bubble-text { color: #fff; }
+}
+
+/* 引用卡片(组队信息) */
+.team-quote {
+  max-width: 80%;
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  border-radius: 36rpx;
+
+  .quote-bar {
+    width: 8rpx;
+    border-radius: 4rpx;
+    background: $primary;
+    flex-shrink: 0;
+  }
+  .quote-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10rpx;
+
+    .quote-title {
+      font-size: 28rpx;
+      color: $text-primary;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+    .quote-meta {
+      font-size: 24rpx;
+      color: $text-secondary;
+      line-height: 1.3;
+    }
+  }
+}
+
+.scroll-pad { height: 32rpx; }
+
+/* ---------- 底部输入区 ---------- */
+.conv-foot {
+  flex: none;
+  background: $bg-card;
+  border-top: 1rpx solid $border-light;
+}
+
+/* 快速回复横排 */
+.quick-replies {
+  white-space: nowrap;
+  padding: 20rpx 32rpx 8rpx;
+}
+.quick-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 68rpx;
+  padding: 0 28rpx;
+  border-radius: 34rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  margin-right: 16rpx;
+
+  &:active { opacity: .7; }
+
+  text {
+    font-size: 26rpx;
+    color: $text-primary;
+    font-weight: 700;
+  }
+}
+
+/* 输入栏 */
+.input-bar {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 32rpx 24rpx;
+}
+.input-plus {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:active { opacity: .6; }
+}
+.input-field {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: $bg-page;
+  display: flex;
+  align-items: center;
+  padding: 0 32rpx;
+
+  .input-el {
+    flex: 1;
+    height: 88rpx;
+    font-size: 28rpx;
+    color: $text-primary;
+  }
+  .input-placeholder {
+    color: $text-secondary;
+    font-size: 28rpx;
+  }
+}
+.input-send {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(45, 143, 135, 0.32);
+
+  &:active { opacity: .88; }
+  &.disabled {
+    background: $border-base;
+    box-shadow: none;
+  }
+}

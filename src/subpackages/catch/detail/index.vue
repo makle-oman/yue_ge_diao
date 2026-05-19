@@ -158,7 +158,7 @@ const onFollow = () => {
   uni.showToast({ title: author.value.following ? '已关注' : '已取消关注', icon: 'success' });
 };
 const onSpotTap = () => uni.navigateTo({ url: '/subpackages/spot/detail/index?id=demo' });
-const onMoreComments = () => uni.showToast({ title: '评论列表 (待开发)', icon: 'none' });
+const onMoreComments = () => uni.navigateTo({ url: '/subpackages/catch/comments/index' });
 const onLike = () => {
   catchData.value.liked = !catchData.value.liked;
   catchData.value.likes += catchData.value.liked ? 1 : -1;

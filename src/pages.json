@@ -102,6 +102,27 @@
             "navigationStyle": "custom",
             "navigationBarTitleText": "发布鱼获"
           }
+        },
+        {
+          "path": "comments/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "评论"
+          }
+        },
+        {
+          "path": "fish-picker/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "选择鱼种"
+          }
+        },
+        {
+          "path": "spot-picker/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "关联钓点"
+          }
         }
       ]
     },
@@ -128,6 +149,13 @@
             "navigationStyle": "custom",
             "navigationBarTitleText": "发起组队"
           }
+        },
+        {
+          "path": "contact/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "联系队长"
+          }
         }
       ]
     },
@@ -153,6 +181,18 @@
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "搜索附近钓友"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/message",
+      "pages": [
+        {
+          "path": "conversation/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "消息会话"
           }
         }
       ]

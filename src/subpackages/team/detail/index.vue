@@ -141,7 +141,7 @@ const countdown = computed(() => {
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onOwner = () => uni.navigateTo({ url: '/subpackages/social/user-detail/index?id=owner' });
-const onContact = () => uni.showToast({ title: '联系发起人 (待开发)', icon: 'none' });
+const onContact = () => uni.navigateTo({ url: '/subpackages/team/contact/index' });
 const onJoin = () => {
   if (team.value.joined >= team.value.max) {
     uni.showToast({ title: '已满员', icon: 'none' });
