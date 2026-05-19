@@ -140,7 +140,7 @@ const countdown = computed(() => {
 });
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
-const onOwner = () => uni.navigateTo({ url: '/subpackages/social/user-detail?id=owner' });
+const onOwner = () => uni.navigateTo({ url: '/subpackages/social/user-detail/index?id=owner' });
 const onContact = () => uni.showToast({ title: '联系发起人 (待开发)', icon: 'none' });
 const onJoin = () => {
   if (team.value.joined >= team.value.max) {
@@ -151,4 +151,4 @@ const onJoin = () => {
 };
 </script>
 
-<style lang="scss" scoped src="./detail.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

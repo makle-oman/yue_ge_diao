@@ -2,7 +2,7 @@
   @include page-shell;
 }
 
-/* ---------- Header（无返回按钮，最大标题 + 圆形地图按钮） ---------- */
+/* ---------- Header（返回 + 标题 + 圆形地图按钮） ---------- */
 .header {
   flex: none;
   padding-bottom: 24rpx;
@@ -13,10 +13,21 @@
   padding: 0 32rpx;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16rpx;
+}
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  margin-left: -12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: .6; }
 }
 .nav-title {
-  font-size: 48rpx;
+  flex: 1;
+  font-size: 40rpx;
   font-weight: 900;
   color: $text-primary;
   letter-spacing: 1rpx;

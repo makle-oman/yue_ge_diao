@@ -150,7 +150,7 @@ const users = ref<Angler[]>([
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onMap = () => uni.showToast({ title: '地图视图 (待开发)', icon: 'none' });
-const onOpen = (u: Angler) => uni.navigateTo({ url: `/subpackages/social/user-detail?id=${u.id}` });
+const onOpen = (u: Angler) => uni.navigateTo({ url: `/subpackages/social/user-detail/index?id=${u.id}` });
 </script>
 
-<style lang="scss" scoped src="./nearby-users.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

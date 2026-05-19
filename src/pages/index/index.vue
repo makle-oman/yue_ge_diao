@@ -373,7 +373,7 @@ const selectCity = (item: CityOption) => {
   closeCitySheet();
 };
 const onSearchTap = () => {
-  uni.navigateTo({ url: '/subpackages/spot/list' });
+  uni.navigateTo({ url: '/subpackages/spot/list/index' });
 };
 const onNotifyTap = () => {
   showNotifyPopover.value = !showNotifyPopover.value;
@@ -390,15 +390,15 @@ const onNotificationTap = (item: NotificationItem) => {
   uni.navigateTo({ url: item.target });
 };
 const onLocate = () => uni.showToast({ title: '已重新定位', icon: 'success' });
-const onReportSpot = () => uni.navigateTo({ url: '/subpackages/spot/create' });
-const onViewAllSpots = () => uni.navigateTo({ url: '/subpackages/spot/list' });
-const onNearbyAnglers = () => uni.navigateTo({ url: '/subpackages/social/nearby-users' });
+const onReportSpot = () => uni.navigateTo({ url: '/subpackages/spot/create/index' });
+const onViewAllSpots = () => uni.navigateTo({ url: '/subpackages/spot/list/index' });
+const onNearbyAnglers = () => uni.navigateTo({ url: '/subpackages/social/nearby-users/index' });
 const onViewAllNotifications = () => {
   uni.navigateTo({ url: '/pages/message/index' });
 };
 
 const onSpotTap = (spot: SpotItem) => {
-  uni.navigateTo({ url: `/subpackages/spot/detail?id=${spot.id}` });
+  uni.navigateTo({ url: `/subpackages/spot/detail/index?id=${spot.id}` });
 };
 
 const onMarkerTap = (e: any) => {

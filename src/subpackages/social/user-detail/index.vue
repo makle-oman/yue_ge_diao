@@ -148,7 +148,7 @@ const onFollow = () => {
   uni.showToast({ title: user.value.following ? '已关注' : '已取消关注', icon: 'success' });
 };
 const onInvite = () => uni.showToast({ title: '已发送出钓邀请', icon: 'success' });
-const onFeed = () => uni.navigateTo({ url: '/subpackages/catch/detail?id=demo' });
+const onFeed = () => uni.navigateTo({ url: '/subpackages/catch/detail/index?id=demo' });
 </script>
 
-<style lang="scss" scoped src="./user-detail.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

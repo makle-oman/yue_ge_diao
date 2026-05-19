@@ -3,6 +3,9 @@
     <!-- 顶部：大标题 + 圆形地图按钮 -->
     <view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view class="nav">
+        <view class="nav-back" @click="onBack">
+          <mxy-icon name="arrow_back" :size="40" color="#1A2B33" />
+        </view>
         <text class="nav-title">钓点列表</text>
         <view class="map-btn" @click="onOpenMap">
           <mxy-icon name="map" :size="36" color="#2D8F87" />
@@ -158,8 +161,9 @@ const filteredSpots = computed<readonly SpotItem[]>(() => {
 });
 
 const onOpenMap = () => uni.switchTab({ url: '/pages/index/index' }).catch(() => uni.navigateBack({ delta: 1 }));
+const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => uni.switchTab({ url: '/pages/index/index' }));
 const onSearch = () => uni.showToast({ title: '搜索功能开发中', icon: 'none' });
-const onOpen = (s: SpotItem) => uni.navigateTo({ url: `/subpackages/spot/detail?id=${s.id}` });
+const onOpen = (s: SpotItem) => uni.navigateTo({ url: `/subpackages/spot/detail/index?id=${s.id}` });
 </script>
 
-<style lang="scss" scoped src="./list.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

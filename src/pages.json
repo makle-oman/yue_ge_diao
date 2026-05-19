@@ -64,21 +64,21 @@
       "root": "subpackages/spot",
       "pages": [
         {
-          "path": "list",
+          "path": "list/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "钓点列表"
           }
         },
         {
-          "path": "detail",
+          "path": "detail/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "钓点详情"
           }
         },
         {
-          "path": "create",
+          "path": "create/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "上报新钓点"
@@ -90,14 +90,14 @@
       "root": "subpackages/catch",
       "pages": [
         {
-          "path": "detail",
+          "path": "detail/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "鱼获详情"
           }
         },
         {
-          "path": "create",
+          "path": "create/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "发布鱼获"
@@ -109,21 +109,21 @@
       "root": "subpackages/team",
       "pages": [
         {
-          "path": "list",
+          "path": "list/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "附近组队"
           }
         },
         {
-          "path": "detail",
+          "path": "detail/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "组队详情"
           }
         },
         {
-          "path": "create",
+          "path": "create/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "发起组队"
@@ -135,17 +135,24 @@
       "root": "subpackages/social",
       "pages": [
         {
-          "path": "nearby-users",
+          "path": "nearby-users/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "附近钓友"
           }
         },
         {
-          "path": "user-detail",
+          "path": "user-detail/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "钓友主页"
+          }
+        },
+        {
+          "path": "nearby-search/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "搜索附近钓友"
           }
         }
       ]
@@ -154,17 +161,45 @@
       "root": "subpackages/profile",
       "pages": [
         {
-          "path": "edit",
+          "path": "edit/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "编辑资料"
           }
         },
         {
-          "path": "setting",
+          "path": "setting/index",
           "style": {
             "navigationStyle": "custom",
             "navigationBarTitleText": "设置"
+          }
+        },
+        {
+          "path": "catches/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的鱼获"
+          }
+        },
+        {
+          "path": "spots/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的钓点"
+          }
+        },
+        {
+          "path": "favorites/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的收藏"
+          }
+        },
+        {
+          "path": "fish-library/index",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "鱼库成就"
           }
         }
       ]

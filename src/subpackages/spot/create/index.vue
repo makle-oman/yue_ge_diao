@@ -203,4 +203,4 @@ const onSubmit = () => {
 };
 </script>
 
-<style lang="scss" scoped src="./create.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

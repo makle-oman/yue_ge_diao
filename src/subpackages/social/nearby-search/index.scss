@@ -1,0 +1,244 @@
+.nearby-search {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+.content { flex: 1; min-height: 0; }
+.form {
+  display: flex;
+  flex-direction: column;
+  padding: 24rpx 32rpx 32rpx;
+  gap: 24rpx;
+}
+
+/* Search */
+.search-bar {
+  height: 84rpx;
+  background: $bg-card;
+  border-radius: 42rpx;
+  border: 1rpx solid $border-light;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.06);
+}
+.search-input {
+  flex: 1;
+  height: 100%;
+  font-size: 26rpx;
+  color: $text-primary;
+}
+.search-ph {
+  color: $text-secondary;
+  font-size: 26rpx;
+}
+
+/* Chip Row */
+.chip-row {
+  margin: 0 -32rpx;
+  padding: 0 32rpx;
+  white-space: nowrap;
+}
+.chip-wrap {
+  display: inline-flex;
+  gap: 16rpx;
+  padding-right: 32rpx;
+}
+.chip {
+  height: 56rpx;
+  padding: 0 26rpx;
+  background: $bg-card;
+  border-radius: 28rpx;
+  border: 1rpx solid $border-light;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  text {
+    font-size: 24rpx;
+    color: $text-secondary;
+    font-weight: 700;
+  }
+  &.active {
+    background: $primary;
+    border-color: transparent;
+    text { color: #fff; }
+  }
+}
+
+/* Privacy */
+.privacy {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: $soft-primary;
+  border-radius: 24rpx;
+  padding: 20rpx 24rpx;
+
+  &:active { opacity: .85; }
+}
+.privacy-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.privacy-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  min-width: 0;
+}
+.privacy-main {
+  font-size: 26rpx;
+  color: $primary;
+  font-weight: 900;
+}
+.privacy-sub {
+  font-size: 22rpx;
+  color: $text-secondary;
+}
+
+/* 章节标题 */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4rpx;
+}
+.section-title {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.section-count {
+  font-size: 22rpx;
+  color: $primary;
+  font-weight: 800;
+}
+
+/* Angler 列表 */
+.angler-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+.angler-row {
+  background: $bg-card;
+  border-radius: 28rpx;
+  padding: 22rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  border: 1rpx solid $border-light;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.08);
+
+  &:active { transform: scale(.99); }
+}
+.avatar {
+  position: relative;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .avatar-text {
+    font-size: 30rpx;
+    font-weight: 900;
+  }
+  &.tone-primary { background: $soft-primary; .avatar-text { color: $primary; } }
+  &.tone-blue    { background: $soft-blue;    .avatar-text { color: $secondary; } }
+  &.tone-orange  { background: $soft-orange;  .avatar-text { color: $accent; } }
+}
+.online-dot {
+  position: absolute;
+  right: 4rpx;
+  bottom: 4rpx;
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 10rpx;
+  background: #3DCC85;
+  border: 3rpx solid #fff;
+}
+.row-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  min-width: 0;
+}
+.row-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.row-name {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $text-primary;
+  max-width: 240rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row-tag {
+  height: 32rpx;
+  padding: 0 12rpx;
+  border-radius: 16rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 20rpx;
+    font-weight: 800;
+    line-height: 1;
+  }
+  &.tag--primary { background: $soft-primary; text { color: $primary; } }
+  &.tag--muted   { background: $border-light; text { color: $text-secondary; } }
+}
+.row-meta {
+  font-size: 22rpx;
+  color: $text-secondary;
+}
+.row-tags {
+  font-size: 22rpx;
+  color: $primary;
+  font-weight: 700;
+}
+
+/* 钓约 CTA */
+.row-cta {
+  flex-shrink: 0;
+  height: 60rpx;
+  padding: 0 24rpx;
+  border-radius: 30rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: .85; }
+
+  .row-cta-text {
+    font-size: 24rpx;
+    color: #fff;
+    font-weight: 900;
+  }
+}
+
+.end-pad { height: 48rpx; }

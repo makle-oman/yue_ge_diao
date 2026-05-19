@@ -157,7 +157,7 @@ const onFollow = () => {
   author.value.following = !author.value.following;
   uni.showToast({ title: author.value.following ? '已关注' : '已取消关注', icon: 'success' });
 };
-const onSpotTap = () => uni.navigateTo({ url: '/subpackages/spot/detail?id=demo' });
+const onSpotTap = () => uni.navigateTo({ url: '/subpackages/spot/detail/index?id=demo' });
 const onMoreComments = () => uni.showToast({ title: '评论列表 (待开发)', icon: 'none' });
 const onLike = () => {
   catchData.value.liked = !catchData.value.liked;
@@ -173,4 +173,4 @@ const onCollect = () => {
 const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', icon: 'none' });
 </script>
 
-<style lang="scss" scoped src="./detail.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

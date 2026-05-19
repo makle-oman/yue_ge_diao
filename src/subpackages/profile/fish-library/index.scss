@@ -1,0 +1,310 @@
+.fish-lib {
+  position: relative;
+  min-height: 100vh;
+  background: $bg-page;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  flex: none;
+  background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+  padding: 0 32rpx 96rpx;
+  color: #fff;
+}
+.hero-top {
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-back, .hero-share {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: .6; }
+}
+.hero-body {
+  margin-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+.hero-title {
+  font-size: 44rpx;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+}
+.hero-sub {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+.hero-badge {
+  position: absolute;
+  right: 32rpx;
+  bottom: 32rpx;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 56rpx;
+  background: rgba(255, 255, 255, 0.18);
+  border: 2rpx solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(20rpx);
+}
+.hero-badge-num {
+  font-size: 32rpx;
+  font-weight: 900;
+  color: #fff;
+}
+
+/* 内容容器：上提覆盖在 hero 上 */
+.content {
+  flex: 1;
+  min-height: 0;
+  margin-top: -48rpx;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 32rpx 32rpx;
+  gap: 24rpx;
+}
+
+/* 进度卡 */
+.progress-card {
+  background: $bg-card;
+  border-radius: 32rpx;
+  padding: 28rpx 28rpx 24rpx;
+  border: 1rpx solid $border-light;
+  box-shadow: 0 10rpx 30rpx rgba(26, 43, 51, 0.10);
+
+  .progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18rpx;
+  }
+  .progress-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .progress-side {
+    font-size: 22rpx;
+    color: $accent;
+    font-weight: 800;
+  }
+  .progress-bar {
+    height: 18rpx;
+    background: $border-light;
+    border-radius: 9rpx;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, $primary, $secondary);
+    border-radius: 9rpx;
+    transition: width .3s ease;
+  }
+  .progress-foot {
+    margin-top: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-foot-text {
+    font-size: 22rpx;
+    color: $text-secondary;
+    font-weight: 700;
+  }
+}
+
+/* 分段 (淡水/海鱼) */
+.segment {
+  height: 76rpx;
+  background: $bg-card;
+  border-radius: 38rpx;
+  padding: 8rpx;
+  display: flex;
+  border: 1rpx solid $border-light;
+
+  .seg {
+    flex: 1;
+    height: 100%;
+    border-radius: 34rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text {
+      font-size: 26rpx;
+      color: $text-secondary;
+      font-weight: 800;
+    }
+    &.active {
+      background: $primary;
+      text { color: #fff; }
+    }
+  }
+}
+
+/* Chip 行 */
+.chips {
+  display: flex;
+  gap: 16rpx;
+
+  .chip {
+    height: 56rpx;
+    padding: 0 26rpx;
+    background: $bg-card;
+    border-radius: 28rpx;
+    border: 1rpx solid $border-light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text {
+      font-size: 24rpx;
+      color: $text-secondary;
+      font-weight: 700;
+    }
+    &.active {
+      background: $soft-primary;
+      border-color: transparent;
+      text { color: $primary; }
+    }
+  }
+}
+
+/* 章节标题 */
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 8rpx;
+}
+.section-title {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.section-meta {
+  font-size: 22rpx;
+  color: $text-secondary;
+}
+
+/* 鱼库网格 */
+.fish-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.fish-tile {
+  width: calc((100% - 40rpx) / 3);
+  background: $bg-card;
+  border-radius: 24rpx;
+  border: 1rpx solid $border-light;
+  padding: 20rpx 12rpx 18rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  box-shadow: 0 6rpx 18rpx rgba(26, 43, 51, 0.06);
+
+  &:active { transform: scale(.97); }
+
+  &.locked {
+    background: #F2F4F6;
+    box-shadow: none;
+  }
+}
+.fish-circle {
+  position: relative;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.tone-primary { background: $soft-primary; }
+  &.tone-blue    { background: $soft-blue; }
+  &.tone-orange  { background: $soft-orange; }
+  &.tone-ghost   { background: $border-light; }
+}
+.fish-check {
+  position: absolute;
+  right: -4rpx;
+  bottom: -4rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 16rpx;
+  background: $primary;
+  border: 3rpx solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fish-name {
+  font-size: 24rpx;
+  font-weight: 900;
+  color: $text-primary;
+  margin-top: 6rpx;
+}
+.fish-meta {
+  font-size: 20rpx;
+  color: $text-secondary;
+  font-weight: 600;
+}
+.fish-tile.locked .fish-name {
+  color: $text-secondary;
+}
+
+/* 周目标 */
+.goal-card {
+  background: $bg-card;
+  border-radius: 28rpx;
+  border: 1rpx solid $border-light;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.06);
+}
+.goal-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  background: $soft-orange;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.goal-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  min-width: 0;
+}
+.goal-main {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.goal-sub {
+  font-size: 22rpx;
+  color: $text-secondary;
+}
+
+.end-pad { height: 48rpx; }

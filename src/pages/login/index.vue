@@ -87,7 +87,7 @@ const onWxLogin = () => {
   setTimeout(() => {
     uni.hideLoading();
     uni.showToast({ title: '登录成功', icon: 'success' });
-    setTimeout(() => uni.redirectTo({ url: '/subpackages/profile/edit' }), 600);
+    setTimeout(() => uni.redirectTo({ url: '/subpackages/profile/edit/index' }), 600);
   }, 800);
 };
 

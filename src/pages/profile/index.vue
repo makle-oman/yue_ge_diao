@@ -129,14 +129,14 @@ const fishLib = ref<FishItem[]>([
 ]);
 
 const menus = ref<MenuItem[]>([
-  { key: 'catch', label: '我的鱼获', icon: 'phishing',     color: '#2D8F87', path: '/subpackages/profile/catches' },
-  { key: 'spot',  label: '我的钓点', icon: 'add_location', color: '#5BA9C4', path: '/subpackages/profile/spots' },
-  { key: 'team',  label: '我的组队', icon: 'groups',       color: '#F5A623', path: '/subpackages/team/list' },
-  { key: 'favor', label: '我的收藏', icon: 'star',         color: '#F5A623', path: '/subpackages/profile/favorites' },
+  { key: 'catch', label: '我的鱼获', icon: 'phishing',     color: '#2D8F87', path: '/subpackages/profile/catches/index' },
+  { key: 'spot',  label: '我的钓点', icon: 'add_location', color: '#5BA9C4', path: '/subpackages/profile/spots/index' },
+  { key: 'team',  label: '我的组队', icon: 'groups',       color: '#F5A623', path: '/subpackages/team/list/index' },
+  { key: 'favor', label: '我的收藏', icon: 'star',         color: '#F5A623', path: '/subpackages/profile/favorites/index' },
 ]);
 
-const onSetting = () => uni.navigateTo({ url: '/subpackages/profile/setting' });
-const onMoreFish = () => uni.navigateTo({ url: '/subpackages/profile/fish-library' });
+const onSetting = () => uni.navigateTo({ url: '/subpackages/profile/setting/index' });
+const onMoreFish = () => uni.navigateTo({ url: '/subpackages/profile/fish-library/index' });
 const onFishTap = (f: FishItem) => uni.showToast({ title: f.locked ? '尚未解锁' : f.name, icon: 'none' });
 const onMenuTap = (m: MenuItem) => {
   if (m.path) { uni.navigateTo({ url: m.path }); return; }

@@ -1,0 +1,279 @@
+.my-catches {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+.content { flex: 1; min-height: 0; }
+.form {
+  display: flex;
+  flex-direction: column;
+  padding: 24rpx 32rpx 32rpx;
+  gap: 24rpx;
+}
+
+/* 鱼获档案 */
+.stats-card {
+  background: $bg-card;
+  border-radius: 32rpx;
+  padding: 28rpx 24rpx;
+  border: 1rpx solid $border-light;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.08);
+
+  .stats-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18rpx;
+  }
+  .stats-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .delta-badge {
+    height: 40rpx;
+    padding: 0 18rpx;
+    border-radius: 20rpx;
+    background: $soft-orange;
+    display: flex;
+    align-items: center;
+  }
+  .delta-text {
+    font-size: 22rpx;
+    font-weight: 800;
+    color: $accent;
+  }
+  .stats-row {
+    display: flex;
+    align-items: center;
+  }
+  .stats-cell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6rpx;
+  }
+  .stats-num {
+    font-size: 44rpx;
+    font-weight: 900;
+    line-height: 1;
+    &.primary   { color: $primary; }
+    &.secondary { color: $secondary; }
+    &.accent    { color: $accent; }
+  }
+  .stats-label {
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+  .stats-div {
+    width: 1rpx;
+    height: 56rpx;
+    background: $border-light;
+  }
+}
+
+/* Tabs */
+.tabs {
+  height: 72rpx;
+  background: $bg-card;
+  border-radius: 36rpx;
+  padding: 8rpx;
+  display: flex;
+  border: 1rpx solid $border-light;
+
+  .tab {
+    flex: 1;
+    height: 100%;
+    border-radius: 32rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color .18s;
+
+    text {
+      font-size: 24rpx;
+      color: $text-secondary;
+      font-weight: 800;
+    }
+    &.active {
+      background: $primary;
+      text { color: #fff; }
+    }
+  }
+}
+
+/* Search */
+.search-bar {
+  height: 84rpx;
+  background: $bg-card;
+  border-radius: 42rpx;
+  border: 1rpx solid $border-light;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.search-input {
+  flex: 1;
+  height: 100%;
+  font-size: 26rpx;
+  color: $text-primary;
+}
+.search-ph {
+  color: $text-secondary;
+  font-size: 26rpx;
+}
+
+/* 章节标题 */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4rpx;
+}
+.section-title {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.sort {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+
+  &:active { opacity: .6; }
+}
+.sort-text {
+  font-size: 24rpx;
+  color: $primary;
+  font-weight: 800;
+}
+
+/* 鱼获列表 */
+.catch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+.catch-row {
+  background: $bg-card;
+  border-radius: 28rpx;
+  padding: 22rpx;
+  display: flex;
+  align-items: stretch;
+  gap: 20rpx;
+  border: 1rpx solid $border-light;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.08);
+
+  &:active { transform: scale(.99); }
+}
+.catch-thumb {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 22rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .catch-thumb-text {
+    font-size: 32rpx;
+    font-weight: 900;
+  }
+  &.tone-primary { background: $soft-primary; .catch-thumb-text { color: $primary; } }
+  &.tone-blue    { background: $soft-blue;    .catch-thumb-text { color: $secondary; } }
+  &.tone-orange  { background: $soft-orange;  .catch-thumb-text { color: $accent; } }
+}
+.row-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+.row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+.row-name {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $text-primary;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.weight-badge {
+  height: 40rpx;
+  padding: 0 16rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+
+  &.badge--primary { background: $soft-primary;
+    .weight-badge-text { color: $primary; } }
+  &.badge--blue    { background: $soft-blue;
+    .weight-badge-text { color: $secondary; } }
+  &.badge--orange  { background: $soft-orange;
+    .weight-badge-text { color: $accent; } }
+}
+.weight-badge-text {
+  font-size: 22rpx;
+  font-weight: 900;
+}
+.row-meta {
+  font-size: 22rpx;
+  color: $text-secondary;
+}
+.row-foot {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin-top: 4rpx;
+}
+.foot-tag {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+.foot-tag-text {
+  font-size: 22rpx;
+  color: $text-secondary;
+  font-weight: 700;
+}
+
+/* 底部 CTA */
+.bottom-bar {
+  flex: none;
+  padding: 20rpx 32rpx;
+  background: $bg-card;
+  border-top: 1rpx solid $border-light;
+}
+.cta-btn {
+  height: 92rpx;
+  border-radius: 46rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+
+  &:active { opacity: .9; }
+
+  .cta-btn-text {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: #fff;
+  }
+}
+
+.end-pad { height: 24rpx; }

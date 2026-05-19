@@ -168,7 +168,7 @@ const colLeft = computed(() => feedList.value.filter((_, i) => i % 2 === 0));
 const colRight = computed(() => feedList.value.filter((_, i) => i % 2 === 1));
 
 const onCardTap = (item: FeedItem) => {
-  uni.navigateTo({ url: `/subpackages/catch/detail?id=${item.id}` });
+  uni.navigateTo({ url: `/subpackages/catch/detail/index?id=${item.id}` });
 };
 
 const onLike = (item: FeedItem) => {

@@ -139,4 +139,4 @@ const onSave = () => {
 };
 </script>
 
-<style lang="scss" scoped src="./edit.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

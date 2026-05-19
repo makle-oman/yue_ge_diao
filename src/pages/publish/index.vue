@@ -50,9 +50,9 @@ interface PickItem {
 }
 
 const items: PickItem[] = [
-  { key: 'catch', main: '发布鱼获',     sub: '晒出今日战绩',     icon: 'phishing',     tone: 'primary',   path: '/subpackages/catch/create' },
-  { key: 'spot',  main: '上报新钓点',   sub: '分享你发现的好地方', icon: 'add_location', tone: 'secondary', path: '/subpackages/spot/create' },
-  { key: 'team',  main: '发起组队约钓', sub: '找搭子一起出钓',   icon: 'groups',       tone: 'accent',    path: '/subpackages/team/create' },
+  { key: 'catch', main: '发布鱼获',     sub: '晒出今日战绩',     icon: 'phishing',     tone: 'primary',   path: '/subpackages/catch/create/index' },
+  { key: 'spot',  main: '上报新钓点',   sub: '分享你发现的好地方', icon: 'add_location', tone: 'secondary', path: '/subpackages/spot/create/index' },
+  { key: 'team',  main: '发起组队约钓', sub: '找搭子一起出钓',   icon: 'groups',       tone: 'accent',    path: '/subpackages/team/create/index' },
 ];
 
 const onPick = (it: PickItem) => {

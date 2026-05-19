@@ -163,9 +163,9 @@ const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });
 const onNavigate = () => uni.showToast({ title: '调起地图导航 (待开发)', icon: 'none' });
 const onWantGo = () => uni.showToast({ title: '已加入想去', icon: 'success' });
-const onPostCatch = () => uni.navigateTo({ url: `/subpackages/catch/create?spotId=${spot.value.id}` });
+const onPostCatch = () => uni.navigateTo({ url: `/subpackages/catch/create/index?spotId=${spot.value.id}` });
 const onMoreCatches = () => uni.showToast({ title: '历史鱼获 (待开发)', icon: 'none' });
-const onCatchTap = (c: CatchItem) => uni.navigateTo({ url: `/subpackages/catch/detail?id=${c.id}` });
+const onCatchTap = (c: CatchItem) => uni.navigateTo({ url: `/subpackages/catch/detail/index?id=${c.id}` });
 </script>
 
-<style lang="scss" scoped src="./detail.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

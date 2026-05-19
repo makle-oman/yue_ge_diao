@@ -133,7 +133,7 @@ const privacy = ref({
   publicSpot: false,
 });
 
-const onEditProfile = () => uni.navigateTo({ url: '/subpackages/profile/edit' });
+const onEditProfile = () => uni.navigateTo({ url: '/subpackages/profile/edit/index' });
 const onPickField = (k: string) => uni.showToast({ title: `编辑 ${k} (待开发)`, icon: 'none' });
 const onSubscription = () => uni.showToast({ title: '消息订阅设置 (待开发)', icon: 'none' });
 const onHelp = () => uni.showToast({ title: '帮助与反馈 (待开发)', icon: 'none' });
@@ -160,4 +160,4 @@ const onSave = () => {
 };
 </script>
 
-<style lang="scss" scoped src="./setting.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>

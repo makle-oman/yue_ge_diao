@@ -136,8 +136,8 @@ const teams = ref<Team[]>([
   },
 ]);
 
-const onCreate = () => uni.navigateTo({ url: '/subpackages/team/create' });
-const onOpen = (t: Team) => uni.navigateTo({ url: `/subpackages/team/detail?id=${t.id}` });
+const onCreate = () => uni.navigateTo({ url: '/subpackages/team/create/index' });
+const onOpen = (t: Team) => uni.navigateTo({ url: `/subpackages/team/detail/index?id=${t.id}` });
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onJoin = (t: Team) => {
   if (t.btnTone === 'ghost') {
@@ -148,4 +148,4 @@ const onJoin = (t: Team) => {
 };
 </script>
 
-<style lang="scss" scoped src="./list.scss"></style>
+<style lang="scss" scoped src="./index.scss"></style>
