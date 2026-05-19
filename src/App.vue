@@ -15,8 +15,8 @@ onHide(() => {
 </script>
 
 <style lang="scss">
-/* 全局样式 */
-@import "./uni.scss";
+/* 全局原子工具类（直接在所有页面使用 class="flex items-center gap-sm ..."） */
+@import "./styles/utilities.scss";
 
 page {
   background-color: $bg-page;
@@ -26,56 +26,10 @@ page {
   line-height: 1.5;
 }
 
-/* 通用工具类 */
-.flex {
-  display: flex;
-}
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.flex-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.text-primary { color: $text-primary; }
-.text-regular { color: $text-regular; }
-.text-secondary { color: $text-secondary; }
-.text-accent { color: $accent; }
-.text-brand { color: $primary; }
-
-.bg-card { background-color: $bg-card; }
-.bg-page { background-color: $bg-page; }
-
+/* 卡片基类（直接用 class="card"，不走 mixin） */
 .card {
   background-color: $bg-card;
   border-radius: $radius-md;
   box-shadow: $shadow-base;
-}
-
-.divider {
-  height: 1rpx;
-  background-color: $border-light;
-}
-
-/* 单行省略 */
-.ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-/* 多行省略 */
-.ellipsis-2 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
 }
 </style>

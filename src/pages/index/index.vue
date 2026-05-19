@@ -75,6 +75,103 @@
       </view>
     </view>
 
+    <!-- 附近钓友入口 -->
+    <view class="angler-entry" @click="onNearbyAnglers">
+      <view class="angler-entry-icon">
+        <mxy-icon name="groups" :size="30" color="#2D8F87" />
+      </view>
+      <view class="angler-entry-text">
+        <text class="angler-entry-title">找钓友</text>
+        <text class="angler-entry-sub">{{ nearbyAnglersOnline }}人在线</text>
+      </view>
+    </view>
+
+    <!-- 城市切换抽屉 -->
+    <view v-if="showCitySheet" class="city-switch-layer">
+      <view class="layer-mask" @click="closeCitySheet" />
+      <view class="city-sheet">
+        <view class="sheet-handle" />
+        <view class="city-sheet-head">
+          <text class="city-sheet-title">切换城市</text>
+          <mxy-icon name="close" :size="36" color="#6B7B85" @click="closeCitySheet" />
+        </view>
+        <view class="city-search">
+          <mxy-icon name="search" :size="32" color="#6B7B85" />
+          <text class="city-search-text">搜索城市 / 区县</text>
+        </view>
+        <view class="current-city-card">
+          <mxy-icon name="my_location" :size="40" color="#2D8F87" />
+          <view class="current-city-main">
+            <text class="current-city-title">当前定位：{{ city }}</text>
+            <text class="current-city-sub">江宁区 · 已为你筛选附近钓点</text>
+          </view>
+          <text class="relocate-text" @click="onLocate">重定位</text>
+        </view>
+        <text class="city-block-title">热门城市</text>
+        <view class="city-pill-row">
+          <view
+            v-for="item in hotCities"
+            :key="item.name"
+            class="city-option-pill"
+            :class="{ active: item.name === city }"
+            @click="selectCity(item)"
+          >
+            <text>{{ item.name }}</text>
+          </view>
+        </view>
+        <text class="city-block-title">最近访问</text>
+        <view class="recent-city-list">
+          <view
+            v-for="item in recentCities"
+            :key="item.name"
+            class="recent-city-row"
+            :class="{ active: item.name === city }"
+            @click="selectCity(item)"
+          >
+            <view>
+              <text class="recent-city-name">{{ item.name }}</text>
+              <text class="recent-city-meta">{{ item.spots }} 个钓点 · {{ item.anglers }} 位钓友在线</text>
+            </view>
+            <mxy-icon v-if="item.name === city" name="check_circle" :size="32" color="#2D8F87" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 首页消息预览 -->
+    <view v-if="showNotifyPopover" class="notify-layer" @click="closeNotifyPopover">
+      <view class="notify-popover" @click.stop>
+        <view class="notify-head">
+          <text class="notify-title">消息通知</text>
+          <text class="notify-read" @click="markAllRead">全部已读</text>
+        </view>
+        <view class="notify-summary">
+          <text class="notify-summary-main">{{ unreadCount }} 条未读</text>
+          <text class="notify-summary-sub">与你的钓点、鱼获、组队有关</text>
+        </view>
+        <view class="notify-list">
+          <view
+            v-for="item in notificationPreview"
+            :key="item.id"
+            class="notify-row"
+            @click="onNotificationTap(item)"
+          >
+            <view class="notify-icon">
+              <mxy-icon :name="item.icon" :size="30" color="#2D8F87" />
+            </view>
+            <view class="notify-content">
+              <text class="notify-row-title">{{ item.title }}</text>
+              <text class="notify-row-meta">{{ item.meta }}</text>
+            </view>
+            <view v-if="item.unread" class="notify-unread-dot" />
+          </view>
+        </view>
+        <view class="notify-more" @click="onViewAllNotifications">
+          <text>查看全部消息</text>
+        </view>
+      </view>
+    </view>
+
     <!-- 底部抽屉: 附近钓点 -->
     <view class="spot-sheet">
       <view class="sheet-handle" />
@@ -113,7 +210,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 
 interface FilterChip { key: string; label: string }
@@ -127,17 +225,28 @@ interface SpotItem {
   latitude: number;
   longitude: number;
 }
-
-const statusBarHeight = ref(0);
-try {
-  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight || 20;
-} catch (_e) {
-  statusBarHeight.value = 20;
+interface CityOption {
+  readonly name: string;
+  readonly spots: number;
+  readonly anglers: number;
 }
+interface NotificationItem {
+  readonly id: string;
+  readonly icon: string;
+  readonly title: string;
+  readonly meta: string;
+  readonly unread: boolean;
+  readonly target: string;
+}
+
+const { statusBarHeight } = useSystemInfo();
 
 const city = ref('南京');
 const hasUnread = ref(true);
 const activeChip = ref('all');
+const showCitySheet = ref(false);
+const showNotifyPopover = ref(false);
+const nearbyAnglersOnline = ref(12);
 
 const filterChips = ref<FilterChip[]>([
   { key: 'all',     label: '全部' },
@@ -154,6 +263,45 @@ const fishingIndex = ref({
   weather: '多云',
   temp: 22,
 });
+
+const hotCities = ref<CityOption[]>([
+  { name: '南京', spots: 23, anglers: 12 },
+  { name: '杭州', spots: 18, anglers: 9 },
+  { name: '苏州', spots: 16, anglers: 7 },
+  { name: '上海', spots: 21, anglers: 11 },
+]);
+
+const recentCities = ref<CityOption[]>([
+  { name: '南京', spots: 23, anglers: 12 },
+  { name: '扬州', spots: 8, anglers: 3 },
+]);
+
+const notificationPreview = ref<NotificationItem[]>([
+  {
+    id: 'n1',
+    icon: 'chat_bubble',
+    title: '老周评论了你的鱼获',
+    meta: '“这位置明早还能去吗？” · 5分钟前',
+    unread: true,
+    target: '/pages/message/index',
+  },
+  {
+    id: 'n2',
+    icon: 'favorite',
+    title: '老王收藏了你的钓点',
+    meta: '燕子矶江边 · 12分钟前',
+    unread: true,
+    target: '/pages/message/index',
+  },
+  {
+    id: 'n3',
+    icon: 'groups',
+    title: '组队约钓有新报名',
+    meta: '江心洲夜钓队 · 1小时前',
+    unread: true,
+    target: '/pages/message/index',
+  },
+]);
 
 const center = ref({ latitude: 32.0603, longitude: 118.7969 });
 
@@ -210,17 +358,47 @@ const markers = spots.value.map((s, idx) => ({
   height: 44,
 }));
 
-const onCityTap = () => uni.showToast({ title: '城市选择(待开发)', icon: 'none' });
-const onSearchTap = () => uni.showToast({ title: '搜索(待开发)', icon: 'none' });
+const unreadCount = computed(() => notificationPreview.value.filter((item) => item.unread).length);
+
+const onCityTap = () => {
+  showCitySheet.value = true;
+  showNotifyPopover.value = false;
+};
+const closeCitySheet = () => {
+  showCitySheet.value = false;
+};
+const selectCity = (item: CityOption) => {
+  city.value = item.name;
+  nearbyAnglersOnline.value = item.anglers;
+  closeCitySheet();
+};
+const onSearchTap = () => {
+  uni.navigateTo({ url: '/subpackages/spot/list' });
+};
 const onNotifyTap = () => {
-  uni.switchTab({ url: '/pages/message/index' });
+  showNotifyPopover.value = !showNotifyPopover.value;
+  showCitySheet.value = false;
+};
+const closeNotifyPopover = () => {
+  showNotifyPopover.value = false;
+};
+const markAllRead = () => {
+  notificationPreview.value = notificationPreview.value.map((item) => ({ ...item, unread: false }));
+  hasUnread.value = false;
+};
+const onNotificationTap = (item: NotificationItem) => {
+  uni.navigateTo({ url: item.target });
 };
 const onLocate = () => uni.showToast({ title: '已重新定位', icon: 'success' });
-const onReportSpot = () => uni.navigateTo({ url: '/pages/spot/create' });
-const onViewAllSpots = () => uni.showToast({ title: '钓点列表(待开发)', icon: 'none' });
+const onReportSpot = () => uni.navigateTo({ url: '/subpackages/spot/create' });
+const onViewAllSpots = () => uni.navigateTo({ url: '/subpackages/spot/list' });
+const onNearbyAnglers = () => uni.navigateTo({ url: '/subpackages/social/nearby-users' });
+const onViewAllNotifications = () => {
+  uni.navigateTo({ url: '/pages/message/index' });
+};
 
 const onSpotTap = (spot: SpotItem) => {
-  uni.navigateTo({ url: `/pages/spot/detail?id=${spot.id}` });
+  uni.navigateTo({ url: `/subpackages/spot/detail?id=${spot.id}` });
 };
 
 const onMarkerTap = (e: any) => {
@@ -230,289 +408,4 @@ const onMarkerTap = (e: any) => {
 };
 </script>
 
-<style lang="scss" scoped>
-@import '@/uni.scss';
-
-.home-page {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: $bg-page;
-}
-
-/* ---------- 地图 ---------- */
-.map-view {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-.map-mock {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: $map-land;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-
-  .map-mock-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(45,143,135,.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(45,143,135,.08) 1px, transparent 1px);
-    background-size: 40rpx 40rpx;
-  }
-  .map-mock-tip {
-    font-size: $font-sm;
-    color: $text-secondary;
-    z-index: 2;
-  }
-}
-
-/* ---------- 顶部胶囊 ---------- */
-.top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-}
-.top-row {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  padding: 16rpx 32rpx 0;
-}
-
-.city-pill {
-  display: flex;
-  align-items: center;
-  gap: 4rpx;
-  height: 72rpx;
-  padding: 0 20rpx;
-  background: $bg-card;
-  border-radius: 36rpx;
-  box-shadow: 0 4rpx 14rpx rgba(0,0,0,.08);
-
-  .city-name {
-    font-size: $font-base;
-    font-weight: 700;
-    color: $text-primary;
-  }
-}
-
-.search-pill {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  height: 72rpx;
-  padding: 0 24rpx;
-  background: $bg-card;
-  border-radius: 36rpx;
-  box-shadow: 0 4rpx 14rpx rgba(0,0,0,.08);
-
-  .search-placeholder {
-    font-size: $font-sm;
-    color: $text-placeholder;
-  }
-}
-
-.notify-pill {
-  position: relative;
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  background: $bg-card;
-  box-shadow: 0 4rpx 14rpx rgba(0,0,0,.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .notify-dot {
-    position: absolute;
-    top: 16rpx;
-    right: 16rpx;
-    width: 16rpx;
-    height: 16rpx;
-    border-radius: 50%;
-    background: $warning-strong;
-    border: 2rpx solid #fff;
-  }
-}
-
-/* ---------- 筛选 chips ---------- */
-.chip-scroll {
-  width: 100%;
-  padding: 24rpx 0 0;
-  white-space: nowrap;
-}
-.chip-row {
-  display: flex;
-  flex-wrap: nowrap;
-  width: max-content;
-  gap: 14rpx;
-  padding: 0 32rpx;
-}
-
-/* ---------- 宜钓指数 ---------- */
-.fishing-index {
-  position: absolute;
-  right: 32rpx;
-  top: calc(280rpx + env(safe-area-inset-top));
-  width: 200rpx;
-  padding: 18rpx 12rpx;
-  background: $bg-card;
-  border-radius: 28rpx;
-  box-shadow: 0 10rpx 30rpx rgba(26,43,51,.12);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4rpx;
-  z-index: 5;
-
-  .index-score {
-    font-size: 56rpx;
-    font-weight: 900;
-    color: $primary;
-    line-height: 1;
-  }
-  .index-label {
-    font-size: $font-xs;
-    color: $text-secondary;
-    font-weight: 600;
-  }
-  .index-meta {
-    margin-top: 8rpx;
-    display: flex;
-    align-items: center;
-    gap: 4rpx;
-
-    .index-meta-text {
-      font-size: $font-xs;
-      color: $text-regular;
-    }
-  }
-}
-
-/* ---------- 浮动按钮 ---------- */
-.float-actions {
-  position: absolute;
-  right: 32rpx;
-  bottom: calc(#{$tabbar-height} + 460rpx + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  z-index: 5;
-}
-.float-btn {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(26,43,51,.18);
-
-  &--white   { background: $bg-card; }
-  &--primary { background: $primary; box-shadow: 0 8rpx 24rpx rgba(45,143,135,.42); }
-
-  &:active { transform: scale(.95); }
-}
-
-/* ---------- 底部钓点抽屉 ---------- */
-.spot-sheet {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(#{$tabbar-height} + env(safe-area-inset-bottom));
-  background: $bg-card;
-  border-radius: 32rpx 32rpx 0 0;
-  box-shadow: 0 -12rpx 36rpx rgba(26,43,51,.12);
-  padding: 12rpx 0 16rpx;
-  z-index: 8;
-}
-.sheet-handle {
-  width: 64rpx;
-  height: 8rpx;
-  border-radius: 4rpx;
-  background: $border-base;
-  margin: 0 auto 12rpx;
-}
-.sheet-header {
-  padding: 0 32rpx 16rpx;
-}
-.sheet-list {
-  width: 100%;
-  white-space: nowrap;
-}
-.spot-card-row {
-  display: inline-flex;
-  gap: 20rpx;
-  padding: 0 32rpx;
-}
-
-.spot-card {
-  display: flex;
-  flex-direction: column;
-  width: 260rpx;
-  background: $bg-card;
-  border-radius: 24rpx;
-  overflow: hidden;
-  border: 1rpx solid $border-light;
-
-  &:active { transform: scale(.98); }
-
-  .spot-cover {
-    width: 100%;
-    height: 140rpx;
-    background: $bg-hover;
-  }
-
-  .spot-info {
-    padding: 16rpx;
-    display: flex;
-    flex-direction: column;
-    gap: 8rpx;
-  }
-
-  .spot-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8rpx;
-
-    .spot-name {
-      font-size: $font-base;
-      font-weight: 800;
-      color: $text-primary;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 140rpx;
-    }
-  }
-
-  .spot-meta {
-    display: flex;
-    align-items: center;
-    gap: 4rpx;
-
-    .spot-distance, .spot-score {
-      font-size: $font-xs;
-      color: $text-secondary;
-    }
-    .spot-sep {
-      color: $text-secondary;
-      margin: 0 2rpx;
-    }
-    .spot-score { color: $primary; font-weight: 700; }
-  }
-}
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

@@ -1,0 +1,300 @@
+.catch-detail {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 720rpx; /* 360px */
+}
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.12);
+}
+.hero-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 16rpx 32rpx 0;
+  z-index: 10; /* 高于 panel,始终浮在顶部 */
+  pointer-events: none; /* 让中间空白处不拦截滚动 */
+
+  > * { pointer-events: auto; }
+}
+.hero-icon-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.34);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-card-badge {
+  position: absolute;
+  right: 32rpx;
+  bottom: 80rpx; /* 24rpx 视觉间距 + 56rpx panel 覆盖区,避免被圆角面板盖住 */
+  height: 56rpx;
+  padding: 0 20rpx;
+  border-radius: 28rpx;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  z-index: 5; /* 高于 panel 的 z-index:4,保险起见 */
+
+  .hero-card-badge-text {
+    font-size: 24rpx;
+    color: #fff;
+    font-weight: 800;
+  }
+}
+
+/* ---------- 主体面板 ---------- */
+.content {
+  flex: 1;
+  min-height: 0;
+}
+.panel {
+  margin-top: -56rpx;
+  padding: 40rpx 32rpx 24rpx;
+  background: $bg-page;
+  border-radius: 56rpx 56rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+  position: relative;
+  z-index: 4;
+}
+
+/* ---------- 作者 ---------- */
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.user-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+
+  .user-name {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .user-meta {
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+}
+.follow-btn {
+  height: 64rpx;
+  padding: 0 28rpx;
+  border-radius: 32rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:active { transform: scale(.96); }
+  &.following { background: $bg-hover; .follow-btn-text { color: $text-secondary; } }
+
+  .follow-btn-text {
+    font-size: 24rpx;
+    color: #fff;
+    font-weight: 800;
+  }
+}
+
+/* ---------- 数据卡 ---------- */
+.data-card {
+  background: $bg-card;
+  border-radius: 24rpx;
+  padding: 24rpx 16rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+}
+.data-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+
+  .data-num {
+    font-size: 40rpx;
+    font-weight: 900;
+    color: $text-primary;
+    line-height: 1;
+
+    &.accent  { color: $accent; }
+    &.primary { color: $primary; }
+  }
+  .data-label {
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+}
+.data-div {
+  width: 2rpx;
+  height: 80rpx;
+  background: $border-light;
+}
+
+/* ---------- 信息卡 ---------- */
+.info-card {
+  background: $bg-card;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+}
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  height: 96rpx;
+  padding: 0 24rpx;
+
+  .info-text {
+    flex: 1;
+    font-size: 26rpx;
+    color: $text-secondary;
+
+    &.strong { color: $text-primary; font-weight: 800; }
+  }
+}
+.info-divider {
+  height: 1rpx;
+  background: $border-light;
+  margin: 0 24rpx;
+}
+
+/* ---------- 描述 ---------- */
+.desc-card {
+  background: $bg-card;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+
+  .desc-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .desc-text {
+    font-size: 26rpx;
+    color: $text-secondary;
+    line-height: 1.5;
+  }
+}
+
+/* ---------- 评论 ---------- */
+.comments-card {
+  background: $bg-card;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+
+  &:active { background: $bg-hover; }
+
+  .comments-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .comments-text {
+    font-size: 24rpx;
+    color: $text-secondary;
+    line-height: 1.5;
+  }
+}
+
+.end-pad { height: 200rpx; }
+
+/* ---------- 底部交互栏 ---------- */
+.bottom-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: $bg-card;
+  border-top: 1rpx solid $border-light;
+  padding: 20rpx 32rpx;
+}
+
+/* 裸图标按钮:赞、收藏。图标永远垂直居中,数字作为角标绝对定位 */
+.bottom-icon {
+  position: relative;
+  flex: none;
+  width: 80rpx;
+  height: 92rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { transform: scale(.9); }
+
+  .bottom-icon-count {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    font-size: 20rpx;
+    color: $text-secondary;
+    line-height: 1;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &.liked { color: $warning-strong; }
+  }
+}
+
+/* 胶囊按钮:评论、生成分享卡片 */
+.bottom-btn {
+  height: 92rpx;
+  border-radius: 46rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 0 24rpx;
+
+  &:active { transform: scale(.97); }
+
+  .bottom-btn-text {
+    font-size: 26rpx;
+    font-weight: 800;
+    color: $text-primary;
+
+    &.primary { color: #fff; }
+  }
+
+  &--ghost   { flex: 1; background: $bg-page; }
+  &--primary { flex: 2; background: $primary; }
+}

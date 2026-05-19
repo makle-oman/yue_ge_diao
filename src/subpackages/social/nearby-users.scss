@@ -1,0 +1,224 @@
+.nearby-users {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+.header {
+  flex: none;
+  background: $bg-card;
+  border-bottom: 1rpx solid $border-light;
+}
+.nav {
+  height: 96rpx;
+  padding: 0 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.nav-left {
+  width: 80rpx;
+  display: flex;
+  align-items: center;
+
+  &:active { opacity: .6; }
+}
+.nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.map-btn {
+  width: 120rpx;
+  height: 60rpx;
+  border-radius: 32rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+
+  &:active { opacity: .8; }
+
+  .map-btn-text {
+    font-size: 24rpx;
+    color: $primary;
+    font-weight: 800;
+  }
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+}
+.form {
+  padding: 24rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.privacy-card {
+  background: $soft-primary;
+  border-radius: 32rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.privacy-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+
+  .privacy-main {
+    font-size: 26rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .privacy-sub {
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+}
+
+.search-card {
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 44rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  box-shadow: 0 4rpx 16rpx rgba(26, 43, 51, 0.05);
+
+  .search-text {
+    flex: 1;
+    min-width: 0;
+    font-size: $font-base;
+    color: $text-placeholder;
+  }
+}
+
+.sort-chips {
+  display: flex;
+  gap: 16rpx;
+  overflow: hidden;
+}
+.chip {
+  height: 56rpx;
+  padding: 0 26rpx;
+  border-radius: 28rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: inline-flex;
+  align-items: center;
+
+  text {
+    font-size: 24rpx;
+    color: $text-secondary;
+    font-weight: 700;
+  }
+  &.active {
+    background: $primary;
+    border-color: $primary;
+    text { color: #fff; font-weight: 800; }
+  }
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+.user-card {
+  background: $bg-card;
+  border-radius: 32rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+
+  &:active { transform: scale(.99); }
+}
+.avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &.tone-primary { background: $soft-primary; }
+  &.tone-blue    { background: $soft-blue; }
+  &.tone-orange  { background: $soft-orange; }
+}
+.user-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+
+  .user-name {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .user-meta {
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+}
+.tag-row {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 4rpx;
+}
+.tag {
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 22rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 20rpx;
+    font-weight: 800;
+    line-height: 1;
+  }
+  &.tag--primary { background: $soft-primary; text { color: $primary; } }
+  &.tag--blue    { background: $soft-blue;    text { color: $secondary; } }
+  &.tag--orange  { background: $soft-orange;  text { color: $accent; } }
+  &.tag--ghost   { background: $bg-page; text { color: $text-secondary; } }
+}
+.view-btn {
+  height: 64rpx;
+  padding: 0 26rpx;
+  border-radius: 32rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:active { transform: scale(.95); }
+
+  .view-btn-text {
+    font-size: 22rpx;
+    color: #fff;
+    font-weight: 900;
+  }
+}
+
+.end-pad { height: 48rpx; }

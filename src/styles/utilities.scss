@@ -1,0 +1,211 @@
+/**
+ * 约个钓 - 原子工具类
+ *
+ * 设计原则：
+ * - 只覆盖项目里高频复用的尺度，不做 Tailwind 那样的全枚举
+ * - token 全部来自 uni.scss，保证视觉一致性
+ * - 与 mixins.scss 互补：mixin 用于「复合视觉模式」（page-shell/card-row），
+ *   工具类用于「原子调整」（gap、间距、flex 方向）
+ *
+ * 用法：直接写 class，例如
+ *   <view class="flex items-center justify-between gap-sm px-md">
+ */
+
+@import '@/uni.scss';
+
+/* ============ Display ============ */
+.hidden        { display: none; }
+.block         { display: block; }
+.inline        { display: inline; }
+.inline-block  { display: inline-block; }
+
+/* ============ Flex ============ */
+.flex          { display: flex; }
+.inline-flex   { display: inline-flex; }
+.flex-col      { display: flex; flex-direction: column; }
+.flex-row      { display: flex; flex-direction: row; }
+.flex-wrap     { flex-wrap: wrap; }
+.flex-nowrap   { flex-wrap: nowrap; }
+.flex-1        { flex: 1; min-width: 0; }
+.flex-none     { flex: none; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+.items-center   { align-items: center; }
+.items-start    { align-items: flex-start; }
+.items-end      { align-items: flex-end; }
+.items-stretch  { align-items: stretch; }
+
+.justify-center  { justify-content: center; }
+.justify-start   { justify-content: flex-start; }
+.justify-end     { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-around  { justify-content: space-around; }
+
+/* 复合：最常用 3 件套 */
+.flex-center  { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-start   { display: flex; align-items: center; justify-content: flex-start; }
+.flex-end     { display: flex; align-items: center; justify-content: flex-end; }
+
+/* ============ Gap ============ */
+.gap-xs   { gap: $space-xs; }
+.gap-sm   { gap: $space-sm; }
+.gap-base { gap: $space-base; }
+.gap-md   { gap: $space-md; }
+.gap-lg   { gap: $space-lg; }
+
+/* ============ Padding ============ */
+.p-xs   { padding: $space-xs; }
+.p-sm   { padding: $space-sm; }
+.p-base { padding: $space-base; }
+.p-md   { padding: $space-md; }
+.p-lg   { padding: $space-lg; }
+
+.px-xs   { padding-left: $space-xs;   padding-right: $space-xs; }
+.px-sm   { padding-left: $space-sm;   padding-right: $space-sm; }
+.px-base { padding-left: $space-base; padding-right: $space-base; }
+.px-md   { padding-left: $space-md;   padding-right: $space-md; }
+.px-lg   { padding-left: $space-lg;   padding-right: $space-lg; }
+
+.py-xs   { padding-top: $space-xs;   padding-bottom: $space-xs; }
+.py-sm   { padding-top: $space-sm;   padding-bottom: $space-sm; }
+.py-base { padding-top: $space-base; padding-bottom: $space-base; }
+.py-md   { padding-top: $space-md;   padding-bottom: $space-md; }
+.py-lg   { padding-top: $space-lg;   padding-bottom: $space-lg; }
+
+.pt-xs { padding-top: $space-xs; }  .pt-sm { padding-top: $space-sm; }
+.pt-base { padding-top: $space-base; } .pt-md { padding-top: $space-md; } .pt-lg { padding-top: $space-lg; }
+
+.pr-xs { padding-right: $space-xs; } .pr-sm { padding-right: $space-sm; }
+.pr-base { padding-right: $space-base; } .pr-md { padding-right: $space-md; } .pr-lg { padding-right: $space-lg; }
+
+.pb-xs { padding-bottom: $space-xs; } .pb-sm { padding-bottom: $space-sm; }
+.pb-base { padding-bottom: $space-base; } .pb-md { padding-bottom: $space-md; } .pb-lg { padding-bottom: $space-lg; }
+
+.pl-xs { padding-left: $space-xs; } .pl-sm { padding-left: $space-sm; }
+.pl-base { padding-left: $space-base; } .pl-md { padding-left: $space-md; } .pl-lg { padding-left: $space-lg; }
+
+/* ============ Margin ============ */
+.m-xs   { margin: $space-xs; }
+.m-sm   { margin: $space-sm; }
+.m-base { margin: $space-base; }
+.m-md   { margin: $space-md; }
+.m-lg   { margin: $space-lg; }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.mx-xs   { margin-left: $space-xs;   margin-right: $space-xs; }
+.mx-sm   { margin-left: $space-sm;   margin-right: $space-sm; }
+.mx-base { margin-left: $space-base; margin-right: $space-base; }
+.mx-md   { margin-left: $space-md;   margin-right: $space-md; }
+
+.my-xs   { margin-top: $space-xs;   margin-bottom: $space-xs; }
+.my-sm   { margin-top: $space-sm;   margin-bottom: $space-sm; }
+.my-base { margin-top: $space-base; margin-bottom: $space-base; }
+.my-md   { margin-top: $space-md;   margin-bottom: $space-md; }
+
+.mt-xs { margin-top: $space-xs; } .mt-sm { margin-top: $space-sm; }
+.mt-base { margin-top: $space-base; } .mt-md { margin-top: $space-md; } .mt-lg { margin-top: $space-lg; }
+
+.mr-xs { margin-right: $space-xs; } .mr-sm { margin-right: $space-sm; }
+.mr-base { margin-right: $space-base; } .mr-md { margin-right: $space-md; }
+
+.mb-xs { margin-bottom: $space-xs; } .mb-sm { margin-bottom: $space-sm; }
+.mb-base { margin-bottom: $space-base; } .mb-md { margin-bottom: $space-md; } .mb-lg { margin-bottom: $space-lg; }
+
+.ml-xs { margin-left: $space-xs; } .ml-sm { margin-left: $space-sm; }
+.ml-base { margin-left: $space-base; } .ml-md { margin-left: $space-md; }
+
+/* ============ Font size ============ */
+.text-xs   { font-size: $font-xs; }
+.text-sm   { font-size: $font-sm; }
+.text-base { font-size: $font-base; }
+.text-md   { font-size: $font-md; }
+.text-lg   { font-size: $font-lg; }
+.text-xl   { font-size: $font-xl; }
+.text-xxl  { font-size: $font-xxl; }
+
+/* ============ Font weight ============ */
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 600; }
+.font-bold   { font-weight: 800; }
+.font-black  { font-weight: 900; }
+
+/* ============ Text color ============ */
+.text-primary     { color: $text-primary; }
+.text-regular     { color: $text-regular; }
+.text-secondary   { color: $text-secondary; }
+.text-placeholder { color: $text-placeholder; }
+.text-disabled    { color: $text-disabled; }
+.text-inverse     { color: $text-inverse; }
+.text-brand       { color: $primary; }
+.text-accent      { color: $accent; }
+.text-danger      { color: $warning-strong; }
+
+/* ============ Background ============ */
+.bg-page          { background: $bg-page; }
+.bg-card          { background: $bg-card; }
+.bg-hover         { background: $bg-hover; }
+.bg-brand         { background: $primary; }
+.bg-accent        { background: $accent; }
+.bg-soft-primary  { background: $soft-primary; }
+.bg-soft-blue     { background: $soft-blue; }
+.bg-soft-orange   { background: $soft-orange; }
+.bg-soft-red      { background: $soft-red; }
+
+/* ============ Radius ============ */
+.radius-sm     { border-radius: $radius-sm; }
+.radius-base   { border-radius: $radius-base; }
+.radius-md     { border-radius: $radius-md; }
+.radius-lg     { border-radius: $radius-lg; }
+.radius-xl     { border-radius: $radius-xl; }
+.radius-circle { border-radius: 50%; }
+
+/* ============ Shadow ============ */
+.shadow-sm   { box-shadow: $shadow-sm; }
+.shadow-base { box-shadow: $shadow-base; }
+.shadow-md   { box-shadow: $shadow-md; }
+.shadow-lg   { box-shadow: $shadow-lg; }
+
+/* ============ Position ============ */
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed    { position: fixed; }
+
+/* ============ Overflow / Text ============ */
+.overflow-hidden { overflow: hidden; }
+.overflow-auto   { overflow: auto; }
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.ellipsis-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* ============ Width / Height ============ */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.w-screen { width: 100vw; }
+.h-screen { height: 100vh; }
+
+/* ============ Divider ============ */
+.divider {
+  height: 1rpx;
+  background: $border-light;
+}
+.divider-v {
+  width: 1rpx;
+  background: $border-light;
+}

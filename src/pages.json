@@ -52,88 +52,122 @@
       }
     },
     {
-      "path": "pages/spot/detail",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "钓点详情"
-      }
-    },
-    {
-      "path": "pages/spot/create",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "上报新钓点"
-      }
-    },
-    {
-      "path": "pages/catch/detail",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "鱼获详情"
-      }
-    },
-    {
-      "path": "pages/catch/create",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "发布鱼获"
-      }
-    },
-    {
-      "path": "pages/team/list",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "附近组队"
-      }
-    },
-    {
-      "path": "pages/team/detail",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "组队详情"
-      }
-    },
-    {
-      "path": "pages/team/create",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "发起组队"
-      }
-    },
-    {
-      "path": "pages/nearby/users",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "附近钓友"
-      }
-    },
-    {
-      "path": "pages/user/detail",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "钓友主页"
-      }
-    },
-    {
-      "path": "pages/profile/edit",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "编辑资料"
-      }
-    },
-    {
-      "path": "pages/profile/setting",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "设置"
-      }
-    },
-    {
       "path": "pages/login/index",
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "登录"
       }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "subpackages/spot",
+      "pages": [
+        {
+          "path": "list",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "钓点列表"
+          }
+        },
+        {
+          "path": "detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "钓点详情"
+          }
+        },
+        {
+          "path": "create",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "上报新钓点"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/catch",
+      "pages": [
+        {
+          "path": "detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "鱼获详情"
+          }
+        },
+        {
+          "path": "create",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "发布鱼获"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/team",
+      "pages": [
+        {
+          "path": "list",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "附近组队"
+          }
+        },
+        {
+          "path": "detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "组队详情"
+          }
+        },
+        {
+          "path": "create",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "发起组队"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/social",
+      "pages": [
+        {
+          "path": "nearby-users",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "附近钓友"
+          }
+        },
+        {
+          "path": "user-detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "钓友主页"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/profile",
+      "pages": [
+        {
+          "path": "edit",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "编辑资料"
+          }
+        },
+        {
+          "path": "setting",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "设置"
+          }
+        }
+      ]
     }
   ],
   "globalStyle": {

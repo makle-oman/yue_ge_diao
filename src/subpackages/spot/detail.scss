@@ -1,0 +1,343 @@
+.spot-detail {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 504rpx; /* 252px */
+  flex: none;
+}
+.hero-swiper, .hero-img {
+  width: 100%;
+  height: 100%;
+}
+.hero-img {
+  display: block;
+}
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.16);
+  pointer-events: none;
+}
+.hero-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 32rpx 0;
+  z-index: 3;
+}
+.hero-icon-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.34);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { transform: scale(.94); }
+}
+.hero-count {
+  position: absolute;
+  right: 32rpx;
+  bottom: 24rpx;
+  height: 44rpx;
+  padding: 0 16rpx;
+  border-radius: 22rpx;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .hero-count-text {
+    font-size: 22rpx;
+    color: #fff;
+    font-weight: 800;
+    line-height: 1;
+  }
+}
+
+/* ---------- 滚动区 ---------- */
+.content {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---------- 信息卡 ---------- */
+.spot-info {
+  margin: -80rpx 32rpx 0;
+  padding: 28rpx;
+  background: $bg-card;
+  border-radius: 28rpx;
+  box-shadow: 0 12rpx 36rpx rgba(26, 43, 51, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  position: relative;
+  z-index: 4;
+}
+.spot-info-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.spot-info-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+
+  .spot-name {
+    font-size: 44rpx;
+    font-weight: 900;
+    color: $text-primary;
+    line-height: 1.1;
+  }
+  .spot-meta {
+    font-size: 26rpx;
+    color: $text-secondary;
+  }
+}
+.nav-btn {
+  height: 72rpx;
+  padding: 0 24rpx;
+  border-radius: 36rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+
+  &:active { transform: scale(.96); }
+
+  .nav-btn-text {
+    font-size: 26rpx;
+    color: #fff;
+    font-weight: 800;
+  }
+}
+
+.tag-row {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+.tag {
+  height: 48rpx;
+  padding: 0 20rpx;
+  border-radius: 24rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  .tag-text {
+    font-size: 22rpx;
+    font-weight: 800;
+    line-height: 1;
+  }
+  &--green  { background: $soft-primary; .tag-text { color: $primary; } }
+  &--blue   { background: $soft-blue;    .tag-text { color: $secondary; } }
+  &--orange { background: $soft-orange;  .tag-text { color: $accent; } }
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  flex-wrap: wrap;
+
+  .stat-rate {
+    font-size: 26rpx;
+    color: $accent;
+    font-weight: 900;
+  }
+  .stat-text {
+    font-size: 24rpx;
+    color: $text-secondary;
+  }
+}
+
+/* ---------- 宜钓指数 ---------- */
+.weather-card {
+  margin: 28rpx 32rpx 0;
+  padding: 28rpx;
+  background: $soft-primary;
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+.weather-score {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: #fff;
+  border: 6rpx solid $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .weather-score-num {
+    font-size: 44rpx;
+    font-weight: 900;
+    color: $primary;
+    line-height: 1;
+  }
+}
+.weather-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+
+  .weather-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .weather-sub {
+    font-size: 24rpx;
+    color: $text-secondary;
+    line-height: 1.4;
+  }
+}
+
+/* ---------- 实用信息 ---------- */
+.facility-card {
+  margin: 28rpx 32rpx 0;
+  padding: 24rpx;
+  background: $bg-card;
+  border-radius: 28rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+  display: flex;
+  gap: 16rpx;
+}
+.facility-cell {
+  flex: 1;
+  height: 96rpx;
+  border-radius: 20rpx;
+  background: $bg-page;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+
+  .facility-label {
+    font-size: 24rpx;
+    color: $text-primary;
+    font-weight: 800;
+  }
+  .facility-sub {
+    font-size: 20rpx;
+    color: $text-secondary;
+  }
+}
+
+/* ---------- 历史鱼获 ---------- */
+.section-title {
+  margin: 36rpx 32rpx 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  text {
+    font-size: 32rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .section-more {
+    font-size: 24rpx;
+    color: $primary;
+    font-weight: 700;
+  }
+}
+
+.catch-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+.catch-card {
+  position: relative;
+  flex: 1;
+  height: 180rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: $bg-hover;
+
+  &:active { transform: scale(.97); }
+
+  .catch-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+.catch-tag {
+  position: absolute;
+  left: 12rpx;
+  bottom: 12rpx;
+  height: 36rpx;
+  padding: 0 12rpx;
+  border-radius: 18rpx;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+
+  .catch-tag-text {
+    font-size: 20rpx;
+    color: #fff;
+    font-weight: 800;
+  }
+}
+
+.end-pad { height: 200rpx; }
+
+/* ---------- 底部 CTA ---------- */
+.bottom-bar {
+  flex: none;
+  display: flex;
+  gap: 20rpx;
+  background: $bg-card;
+  border-top: 1rpx solid $border-light;
+  padding: 20rpx 32rpx 20rpx;
+}
+.bottom-btn {
+  height: 92rpx;
+  border-radius: 46rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { transform: scale(.97); }
+
+  .bottom-btn-text {
+    font-size: 28rpx;
+    font-weight: 800;
+    color: $text-primary;
+
+    &.blue   { color: $secondary; }
+    &.primary { color: #fff; }
+  }
+
+  &--ghost   { width: 156rpx; background: $bg-page; }
+  &--blue    { width: 156rpx; background: $soft-blue; }
+  &--primary { flex: 1; background: $primary; }
+}

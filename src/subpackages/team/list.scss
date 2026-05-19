@@ -1,0 +1,192 @@
+.team-list {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- 顶栏 ---------- */
+.header {
+  flex: none;
+  background: $bg-card;
+  border-bottom: 1rpx solid $border-light;
+}
+.nav {
+  height: 96rpx;
+  padding: 0 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.nav-back {
+  width: 60rpx;
+  height: 60rpx;
+  margin-left: -12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:active { opacity: .6; }
+}
+.nav-title {
+  flex: 1;
+  font-size: 44rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.create-btn {
+  height: 64rpx;
+  padding: 0 22rpx;
+  border-radius: 32rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+
+  &:active { opacity: .88; }
+
+  .create-btn-text {
+    font-size: 24rpx;
+    color: #fff;
+    font-weight: 900;
+  }
+}
+.chips {
+  display: flex;
+  gap: 16rpx;
+  padding: 0 32rpx 24rpx;
+}
+.chip {
+  height: 56rpx;
+  padding: 0 26rpx;
+  border-radius: 28rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: inline-flex;
+  align-items: center;
+
+  text {
+    font-size: 24rpx;
+    color: $text-secondary;
+    font-weight: 700;
+  }
+  &.active {
+    background: $primary;
+    border-color: $primary;
+    text { color: #fff; font-weight: 800; }
+  }
+}
+
+/* ---------- 列表 ---------- */
+.content {
+  flex: 1;
+  min-height: 0;
+}
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+}
+
+.card {
+  background: $bg-card;
+  border-radius: 32rpx;
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.08);
+
+  &:active { transform: scale(.99); }
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.card-title {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.status-tag {
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 22rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  text {
+    font-size: 20rpx;
+    font-weight: 900;
+    line-height: 1;
+  }
+  &.tag--primary { background: $soft-primary; text { color: $primary; } }
+  &.tag--accent  { background: $soft-orange;  text { color: $accent;  } }
+  &.tag--muted   { background: $border-light; text { color: $text-secondary; } }
+}
+.card-meta {
+  font-size: 24rpx;
+  color: $text-secondary;
+}
+.card-people {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.avatar-dot {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &.tone-primary { background: $soft-primary; }
+  &.tone-blue    { background: $soft-blue; }
+  &.tone-orange  { background: $soft-orange; }
+}
+.card-people-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: $text-primary;
+  font-weight: 700;
+  margin-left: 8rpx;
+}
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4rpx;
+}
+.owner-text {
+  font-size: 24rpx;
+  color: $text-secondary;
+}
+.join-btn {
+  height: 60rpx;
+  padding: 0 28rpx;
+  border-radius: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:active { transform: scale(.96); }
+
+  text {
+    font-size: 24rpx;
+    font-weight: 900;
+  }
+  &.primary { background: $primary; text { color: #fff; } }
+  &.ghost   { background: $bg-page; text { color: $text-primary; } }
+}
+
+.end-pad { height: 48rpx; }

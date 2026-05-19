@@ -1,0 +1,134 @@
+.spot-list-page {
+  @include page-shell;
+}
+
+/* ---------- Header（无返回按钮，最大标题 + 圆形地图按钮） ---------- */
+.header {
+  flex: none;
+  padding-bottom: 24rpx;
+  background: $bg-page;
+}
+.nav {
+  height: 96rpx;
+  padding: 0 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-title {
+  font-size: 48rpx;
+  font-weight: 900;
+  color: $text-primary;
+  letter-spacing: 1rpx;
+}
+.map-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: $bg-card;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: $shadow-sm;
+
+  &:active { transform: scale(.94); }
+}
+
+/* 搜索框 */
+.search-box {
+  margin: 8rpx 32rpx 0;
+  height: 84rpx;
+  padding: 0 28rpx;
+  border-radius: 42rpx;
+  background: $bg-card;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  box-shadow: $shadow-sm;
+}
+.search-placeholder {
+  font-size: $font-base;
+  color: $text-placeholder;
+}
+
+/* 横向 chip 行 */
+.chip-scroll {
+  margin-top: 24rpx;
+  white-space: nowrap;
+}
+.chip-row {
+  display: inline-flex;
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+
+/* ---------- Content ---------- */
+.content {
+  @include scroll-content(0);
+}
+
+.summary {
+  padding: 8rpx 32rpx 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.summary-title {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.sort-pill {
+  @include pill;
+  height: 52rpx;
+  gap: 2rpx;
+  padding-right: 14rpx;
+}
+
+/* ---------- 钓点卡片列表 ---------- */
+.spot-list {
+  padding: 0 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.spot-card {
+  @include card-row(152rpx, 152rpx);
+
+  &:active { transform: scale(.99); }
+
+  /* 占位 cover：浅色背景 + 中央图标，依据钓点类型变色 */
+  .cover {
+    background: $soft-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.tone-blue   { background: $soft-blue; }
+    &.tone-orange { background: $soft-orange; }
+  }
+}
+.spot-name {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.spot-distance {
+  font-size: $font-sm;
+  color: $primary;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.spot-meta,
+.spot-foot {
+  font-size: $font-sm;
+  color: $text-secondary;
+}
+.tag-row {
+  display: flex;
+  gap: 10rpx;
+  margin-top: 4rpx;
+}
+
+.end-pad { height: 48rpx; }

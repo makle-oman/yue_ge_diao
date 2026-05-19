@@ -1,0 +1,197 @@
+.message-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- 顶部 ---------- */
+.msg-header {
+  flex: none;
+  background: $bg-page;
+  z-index: 9;
+}
+.msg-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 88rpx;
+  padding: 0 32rpx;
+
+  .msg-title {
+    font-size: 48rpx;
+    font-weight: 900;
+    color: $text-primary;
+    line-height: 1;
+  }
+  .msg-read-all {
+    font-size: $font-sm;
+    font-weight: 700;
+    color: $primary;
+  }
+}
+
+/* ---------- 滚动区 ---------- */
+.msg-scroll {
+  flex: 1;
+  min-height: 0;
+  padding-bottom: calc(#{$tabbar-height} + env(safe-area-inset-bottom));
+}
+
+/* ---------- 4 个互动入口 ---------- */
+.msg-types-card {
+  margin: 16rpx 32rpx 0;
+  padding: 20rpx;
+  background: $bg-card;
+  border-radius: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+  display: flex;
+  align-items: center;
+}
+.msg-type {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+
+  &:active { transform: scale(.96); }
+}
+.msg-type-icon {
+  position: relative;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.msg-type-dot {
+  position: absolute;
+  top: -6rpx;
+  right: -6rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  border-radius: 16rpx;
+  background: $warning-strong;
+  border: 2rpx solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .msg-type-dot-text {
+    font-size: 20rpx;
+    color: #fff;
+    font-weight: 800;
+    line-height: 1;
+  }
+}
+.msg-type-label {
+  font-size: $font-sm;
+  color: $text-primary;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---------- Section Title ---------- */
+.msg-section-title {
+  padding: 36rpx 32rpx 16rpx;
+
+  text {
+    font-size: $font-lg;
+    font-weight: 900;
+    color: $text-primary;
+  }
+}
+
+/* ---------- 列表 ---------- */
+.msg-list-card {
+  margin: 0 32rpx;
+  background: $bg-card;
+  border-radius: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+  overflow: hidden;
+}
+
+.msg-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 24rpx;
+
+  &:active { background: $bg-hover; }
+}
+
+.msg-row-av {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.msg-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+
+  .msg-row-main {
+    font-size: $font-base;
+    font-weight: 800;
+    color: $text-primary;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .msg-row-sub {
+    font-size: $font-sm;
+    color: $text-secondary;
+
+    &.accent { color: $accent; font-weight: 700; }
+  }
+}
+
+.msg-row-thumb {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 20rpx;
+  background: $bg-hover;
+  flex-shrink: 0;
+}
+
+.msg-row-btn {
+  height: 56rpx;
+  padding: 0 24rpx;
+  border-radius: 28rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:active { transform: scale(.96); }
+
+  .msg-row-btn-text {
+    font-size: $font-sm;
+    color: #fff;
+    font-weight: 800;
+    line-height: 1;
+  }
+}
+
+.msg-row-divider {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 0;
+  height: 1rpx;
+  background: $border-light;
+}
+
+.msg-end-pad {
+  height: 32rpx;
+}

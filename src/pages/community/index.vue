@@ -72,6 +72,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 
 interface FeedItem {
@@ -87,12 +88,7 @@ interface FeedItem {
   liked: boolean;
 }
 
-const statusBarHeight = ref(0);
-try {
-  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight || 20;
-} catch (_e) {
-  statusBarHeight.value = 20;
-}
+const { statusBarHeight } = useSystemInfo();
 
 const tabs = [
   { key: 'recommend', label: '推荐' },
@@ -172,7 +168,7 @@ const colLeft = computed(() => feedList.value.filter((_, i) => i % 2 === 0));
 const colRight = computed(() => feedList.value.filter((_, i) => i % 2 === 1));
 
 const onCardTap = (item: FeedItem) => {
-  uni.navigateTo({ url: `/pages/catch/detail?id=${item.id}` });
+  uni.navigateTo({ url: `/subpackages/catch/detail?id=${item.id}` });
 };
 
 const onLike = (item: FeedItem) => {
@@ -190,111 +186,4 @@ const onRefresh = async () => {
 };
 </script>
 
-<style lang="scss" scoped>
-@import '@/uni.scss';
-
-.community-page {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: $bg-page;
-}
-
-/* ---------- 顶部 Tab + 搜索 ---------- */
-.feed-header {
-  flex: none;
-  z-index: 9;
-  background: $bg-page;
-  display: flex;
-  align-items: center;
-  padding: 16rpx 32rpx;
-  gap: 16rpx;
-}
-
-.feed-tabs {
-  flex: 1;
-  display: flex;
-  gap: 32rpx;
-  height: 80rpx;
-  align-items: center;
-}
-
-.feed-tab {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  padding: 8rpx 4rpx;
-
-  .feed-tab-text {
-    font-size: $font-lg;
-    font-weight: 500;
-    color: $text-secondary;
-    line-height: 1;
-  }
-
-  .feed-tab-bar {
-    width: 32rpx;
-    height: 6rpx;
-    border-radius: 3rpx;
-    background: $primary;
-  }
-
-  &.active .feed-tab-text {
-    font-weight: 800;
-    color: $text-primary;
-  }
-}
-
-.feed-actions {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-
-  .icon-btn {
-    width: 64rpx;
-    height: 64rpx;
-    border-radius: 50%;
-    background: $bg-card;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4rpx 14rpx rgba(0,0,0,.06);
-
-    &:active { transform: scale(.94); }
-  }
-}
-
-/* ---------- 瀑布流 ---------- */
-.feed-scroll {
-  flex: 1;
-  min-height: 0;
-  padding-bottom: calc(#{$tabbar-height} + 24rpx + env(safe-area-inset-bottom));
-}
-
-.feed-grid {
-  display: flex;
-  gap: 16rpx;
-  padding: 0 32rpx;
-}
-
-.feed-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.feed-end {
-  padding: 40rpx 0;
-  text-align: center;
-
-  .feed-end-text {
-    font-size: $font-xs;
-    color: $text-placeholder;
-  }
-}
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

@@ -1,0 +1,255 @@
+.profile-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  flex: none;
+  position: relative;
+  width: 100%;
+  height: 472rpx; /* 236px */
+  overflow: visible;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 52, 45, 0.6);
+}
+.hero-setting {
+  position: absolute;
+  right: 32rpx;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+.hero-user {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  padding: 96rpx 32rpx 28rpx;
+  gap: 28rpx;
+  align-items: flex-start;
+  z-index: 2;
+}
+.hero-avatar {
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 50%;
+  border: 6rpx solid #fff;
+  background: $soft-primary;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  .hero-avatar-img {
+    width: 100%;
+    height: 100%;
+  }
+}
+.hero-meta {
+  flex: 1;
+  min-width: 0;
+  padding-top: 8rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+
+  .hero-name {
+    font-size: 44rpx;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+  }
+  .hero-sign {
+    font-size: 26rpx;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+}
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.hero-tag {
+  height: 44rpx;
+  padding: 0 20rpx;
+  border-radius: 22rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  .hero-tag-text {
+    font-size: 22rpx;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1;
+  }
+  &--accent { background: rgba(245, 166, 35, 0.86); }
+  &--ghost  { background: rgba(255, 255, 255, 0.18); }
+}
+
+/* ---------- 滚动区域 ---------- */
+.profile-scroll {
+  flex: 1;
+  min-height: 0;
+  /* 88rpx = stats-card 露出 hero 下方的部分 (168 - 80), 让下方卡片接其下方 */
+  padding-top: 88rpx;
+  padding-bottom: calc(#{$tabbar-height} + env(safe-area-inset-bottom));
+}
+
+/* ---------- 统计卡 (脱离 scroll-view, absolute 悬浮在 hero 底部) ---------- */
+.stats-card {
+  position: absolute;
+  /* 472rpx (hero 高度) - 80rpx (上浮量) */
+  top: 392rpx;
+  left: 32rpx;
+  right: 32rpx;
+  height: 168rpx;
+  background: $bg-card;
+  border-radius: 28rpx;
+  box-shadow: 0 12rpx 36rpx rgba(26, 43, 51, 0.14);
+  display: flex;
+  align-items: center;
+  padding: 0 16rpx;
+  z-index: 4;
+}
+.stats-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+
+  .stats-num {
+    font-size: 48rpx;
+    font-weight: 900;
+    color: $primary;
+    line-height: 1;
+
+    &.accent { color: $accent; }
+  }
+  .stats-label {
+    font-size: $font-sm;
+    color: $text-secondary;
+  }
+}
+.stats-div {
+  width: 2rpx;
+  height: 80rpx;
+  background: $border-light;
+}
+
+/* ---------- 鱼库成就 ---------- */
+.fish-card {
+  margin: 28rpx 32rpx 0;
+  padding: 28rpx;
+  background: $bg-card;
+  border-radius: 28rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.fish-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .fish-title {
+    font-size: $font-lg;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .fish-more {
+    font-size: $font-sm;
+    color: $primary;
+    font-weight: 700;
+  }
+}
+.fish-row {
+  display: flex;
+  gap: 24rpx;
+}
+.fish-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+
+  &:active { transform: scale(.96); }
+}
+.fish-circle {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fish-name {
+  font-size: 22rpx;
+  color: $text-primary;
+
+  &.locked { color: $text-placeholder; }
+}
+
+/* ---------- 菜单 ---------- */
+.menu-card {
+  margin: 28rpx 32rpx 0;
+  background: $bg-card;
+  border-radius: 28rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+  overflow: hidden;
+}
+.menu-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 0 32rpx;
+  height: 104rpx;
+
+  &:active { background: $bg-hover; }
+
+  .menu-label {
+    flex: 1;
+    font-size: 30rpx;
+    font-weight: 800;
+    color: $text-primary;
+  }
+}
+.menu-div {
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 0;
+  height: 1rpx;
+  background: $border-light;
+}
+
+.end-pad { height: 32rpx; }

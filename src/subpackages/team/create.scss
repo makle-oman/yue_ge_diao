@@ -1,0 +1,234 @@
+.team-create {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+}
+
+/* ---------- 钓点卡 ---------- */
+.spot-card {
+  background: $bg-card;
+  border-radius: 32rpx;
+  padding: 28rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+
+  &:active { background: $bg-hover; }
+}
+.spot-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: $soft-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.spot-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+
+  .spot-main {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .spot-sub {
+    font-size: 24rpx;
+    color: $text-secondary;
+  }
+}
+
+/* ---------- 字段卡 ---------- */
+.card {
+  background: $bg-card;
+  border-radius: 32rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 116rpx;
+  padding: 0 32rpx;
+  gap: 16rpx;
+
+  .row-label {
+    font-size: 28rpx;
+    font-weight: 900;
+    color: $text-primary;
+    flex-shrink: 0;
+  }
+  .row-value {
+    display: flex;
+    align-items: center;
+    gap: 4rpx;
+  }
+  .row-value-text {
+    font-size: 26rpx;
+    color: $text-primary;
+
+    &.accent { color: $primary; font-weight: 800; }
+  }
+  &:active { background: $bg-hover; }
+}
+.divider {
+  height: 1rpx;
+  background: $border-light;
+  margin: 0 32rpx;
+}
+
+/* ---------- Stepper ---------- */
+.stepper {
+  height: 64rpx;
+  padding: 0 20rpx;
+  border-radius: 32rpx;
+  background: $bg-page;
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+}
+.step-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: .6; }
+
+  .step-btn-text {
+    font-size: 36rpx;
+    line-height: 1;
+    font-weight: 900;
+
+    &.muted   { color: $text-secondary; }
+    &.primary { color: $primary; }
+  }
+}
+.step-num {
+  min-width: 36rpx;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+
+/* ---------- Switch ---------- */
+.switch {
+  width: 88rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  background: $border-base;
+  position: relative;
+  transition: background .2s;
+  flex-shrink: 0;
+
+  &.on {
+    background: $primary;
+
+    .switch-dot { transform: translateX(36rpx); }
+  }
+}
+.switch-dot {
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+  transition: transform .2s;
+}
+
+/* ---------- 备注 ---------- */
+.note-card {
+  background: $bg-card;
+  border-radius: 32rpx;
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+}
+.note-title {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.note-input {
+  width: 100%;
+  min-height: 140rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background: $bg-page;
+  font-size: 26rpx;
+  color: $text-primary;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+/* ---------- 政策提醒 ---------- */
+.policy-card {
+  background: $soft-orange;
+  border-radius: 32rpx;
+  padding: 28rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+
+  .policy-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: $text-primary;
+    line-height: 1.5;
+  }
+}
+
+.end-pad { height: 32rpx; }
+
+/* ---------- 底部 ---------- */
+.bottom-bar {
+  flex: none;
+  background: $bg-card;
+  border-top: 1rpx solid $border-light;
+  padding: 20rpx 32rpx;
+}
+.submit-btn {
+  height: 104rpx;
+  border-radius: 52rpx;
+  background: $primary;
+  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { transform: scale(.98); }
+
+  .submit-btn-text {
+    font-size: 32rpx;
+    color: #fff;
+    font-weight: 900;
+  }
+}

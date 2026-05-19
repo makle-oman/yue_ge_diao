@@ -1,0 +1,108 @@
+.publish-sheet {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.sheet {
+  background: $bg-card;
+  border-radius: 56rpx 56rpx 0 0;
+  padding: 24rpx 32rpx 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.handle {
+  align-self: center;
+  width: 96rpx;
+  height: 10rpx;
+  border-radius: 6rpx;
+  background: $border-base;
+  margin-bottom: 16rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: $text-primary;
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  height: 144rpx;
+  padding: 0 8rpx;
+
+  &:active { background: $bg-hover; }
+}
+
+.row-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.tone-primary   { background: $primary; }
+  &.tone-secondary { background: $secondary; }
+  &.tone-accent    { background: $accent; }
+}
+
+.row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+
+  .row-main {
+    font-size: 32rpx;
+    font-weight: 800;
+    color: $text-primary;
+  }
+  .row-sub {
+    font-size: 24rpx;
+    color: $text-secondary;
+  }
+}
+
+.row-divider {
+  position: absolute;
+  left: 8rpx;
+  right: 8rpx;
+  bottom: 0;
+  height: 1rpx;
+  background: $border-light;
+}
+
+.spacer { height: 24rpx; }
+
+.cancel-btn {
+  height: 104rpx;
+  border-radius: 32rpx;
+  background: $bg-page;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: .8; }
+
+  .cancel-text {
+    font-size: 32rpx;
+    color: $text-secondary;
+    font-weight: 700;
+  }
+}
+
+.safe-pad { width: 100%; }

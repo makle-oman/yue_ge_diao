@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 
 const props = defineProps<{
@@ -39,12 +39,7 @@ const emit = defineEmits<{
   (e: 'back'): void;
 }>();
 
-const statusBarHeight = ref(0);
-try {
-  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight || 20;
-} catch (_e) {
-  statusBarHeight.value = 20;
-}
+const { statusBarHeight } = useSystemInfo();
 
 const onBack = () => {
   emit('back');
