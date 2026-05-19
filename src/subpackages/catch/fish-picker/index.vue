@@ -137,17 +137,7 @@ const onDone = () => {
   setTimeout(() => uni.navigateBack({ delta: 1 }), 600);
 };
 const onCustom = () => {
-  uni.showModal({
-    title: '添加自定义鱼种',
-    placeholderText: '请输入鱼种名称',
-    editable: true,
-    success: (res) => {
-      if (res.confirm && res.content) {
-        selected.value = res.content;
-        uni.showToast({ title: '已添加 ' + res.content, icon: 'success' });
-      }
-    },
-  });
+  uni.navigateTo({ url: '/subpackages/catch/custom-fish/index' });
 };
 </script>
 

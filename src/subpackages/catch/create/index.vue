@@ -65,18 +65,11 @@
             </view>
           </view>
           <view class="divider" />
-          <view class="row method-row">
+          <view class="row select" @click="openMethodSheet">
             <text class="row-label">钓法</text>
-            <view class="method-chips">
-              <view
-                v-for="m in methods"
-                :key="m"
-                class="method-chip"
-                :class="{ active: form.method === m }"
-                @click="form.method = m"
-              >
-                <text>{{ m }}</text>
-              </view>
+            <view class="row-value">
+              <text class="row-value-text">{{ form.method }}</text>
+              <mxy-icon name="chevron_right" :size="32" color="#99A5AD" />
             </view>
           </view>
         </view>
@@ -128,14 +121,83 @@
         <view class="end-pad" />
       </view>
     </scroll-view>
+
+    <!-- Design 35: 钓法选择浮层 -->
+    <view v-if="methodSheetOpen" class="method-layer">
+      <view class="method-scrim" @click="closeMethodSheet" />
+      <view class="method-sheet" :style="{ paddingBottom: (safeBottom + 24) + 'px' }">
+        <view class="ms-handle" />
+        <view class="ms-head">
+          <text class="ms-cancel" @click="closeMethodSheet">取消</text>
+          <text class="ms-title">选择钓法</text>
+          <text class="ms-done" @click="onMethodConfirm">确定</text>
+        </view>
+
+        <view class="ms-selected">
+          <text class="ms-selected-text">当前选择：{{ pendingMethod }}</text>
+          <mxy-icon name="check_circle" :size="44" color="#2D8F87" />
+        </view>
+
+        <view class="ms-options">
+          <template v-for="(m, idx) in methodOptions" :key="m.name">
+            <view
+              class="ms-option"
+              :class="{ selected: pendingMethod === m.name }"
+              @click="onPickMethod(m)"
+            >
+              <text class="ms-option-text">{{ m.name }}</text>
+              <mxy-icon
+                v-if="m.isOther"
+                name="chevron_right"
+                :size="44"
+                color="#6B7B85"
+              />
+              <mxy-icon
+                v-else-if="pendingMethod === m.name"
+                name="radio_button_checked"
+                :size="44"
+                color="#2D8F87"
+              />
+              <mxy-icon
+                v-else
+                name="radio_button_unchecked"
+                :size="44"
+                color="#6B7B85"
+              />
+            </view>
+            <view v-if="idx < methodOptions.length - 1" class="ms-option-divider" />
+          </template>
+        </view>
+
+        <view class="ms-note">
+          <mxy-icon name="lightbulb" :size="40" color="#5BA9C4" />
+          <text class="ms-note-text">同一套弹层可复用于饵料、隐私、天气、鱼情等选项</text>
+        </view>
+        <view class="ms-safe" />
+      </view>
+    </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 
-const methods = ['手竿', '路亚', '海钓', '抛竿'];
+const { safeBottom } = useSystemInfo();
+
+interface MethodOption {
+  name: string;
+  isOther?: boolean;
+}
+const methodOptions: MethodOption[] = [
+  { name: '台钓' },
+  { name: '路亚' },
+  { name: '矶钓' },
+  { name: '海竿' },
+  { name: '其他钓法', isOther: true },
+];
 
 const form = ref({
   photos: ['https://images.unsplash.com/photo-1770475746172-e96a7fc5d8de?w=300'],
@@ -143,7 +205,7 @@ const form = ref({
   weight: '1.2斤',
   length: '28cm',
   spot: '燕子矶江边',
-  method: '手竿',
+  method: '台钓',
   desc: '今天气压回升,鱼口明显变好,早口半小时连上三条。',
   publicSpot: true,
   allowComment: true,
@@ -153,6 +215,34 @@ const weather = ref({
   auto: true,
   text: '多云 24℃ · 东风 3 级 · 气压稳定',
 });
+
+/* ---------- 钓法弹层 (Design 35) ---------- */
+const methodSheetOpen = ref(false);
+const pendingMethod = ref(form.value.method);
+
+const openMethodSheet = () => {
+  pendingMethod.value = form.value.method;
+  methodSheetOpen.value = true;
+};
+const closeMethodSheet = () => { methodSheetOpen.value = false; };
+const onPickMethod = (m: MethodOption) => {
+  if (m.isOther) {
+    uni.showModal({
+      title: '输入钓法',
+      placeholderText: '如 矶筏、滩钓',
+      editable: true,
+      success: (res) => {
+        if (res.confirm && res.content) pendingMethod.value = res.content;
+      },
+    });
+    return;
+  }
+  pendingMethod.value = m.name;
+};
+const onMethodConfirm = () => {
+  form.value.method = pendingMethod.value;
+  methodSheetOpen.value = false;
+};
 
 const onPickFish = () => uni.navigateTo({ url: '/subpackages/catch/fish-picker/index' });
 const onPickSpot = () => uni.navigateTo({ url: '/subpackages/catch/spot-picker/index' });

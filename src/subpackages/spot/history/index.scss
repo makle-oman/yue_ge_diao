@@ -1,0 +1,494 @@
+* { box-sizing: border-box; }
+
+.history-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+}
+
+/* ---------- 顶部导航 ---------- */
+.hs-header {
+  flex: none;
+  background: $bg-card;
+  border-bottom: 1rpx solid $border-light;
+}
+.hs-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96rpx;
+  padding: 0 32rpx;
+
+  .hs-back {
+    width: 56rpx;
+    height: 56rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hs-title {
+    font-size: 36rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .hs-filter {
+    font-size: 28rpx;
+    font-weight: 900;
+    color: $primary;
+    padding: 0 8rpx;
+
+    &:active { opacity: .6; }
+  }
+}
+
+/* ---------- 滚动区 ---------- */
+.hs-scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---------- 钓点摘要卡 ---------- */
+.hs-spot-card {
+  margin: 24rpx 32rpx 0;
+  padding: 28rpx;
+  background: $bg-card;
+  border-radius: 40rpx;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.10);
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+.hs-spot-map {
+  width: 152rpx;
+  height: 152rpx;
+  border-radius: 32rpx;
+  background: $soft-blue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hs-spot-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+
+  .hs-spot-title {
+    font-size: 34rpx;
+    font-weight: 900;
+    color: $text-primary;
+    line-height: 1.2;
+  }
+  .hs-spot-meta {
+    font-size: 24rpx;
+    color: $text-secondary;
+    line-height: 1.3;
+  }
+}
+.hs-spot-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.hs-tag {
+  height: 48rpx;
+  padding: 0 20rpx;
+  border-radius: 24rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 22rpx;
+    font-weight: 800;
+    line-height: 1;
+  }
+  &--primary {
+    background: $soft-primary;
+    text { color: $primary; }
+  }
+  &--accent {
+    background: $soft-orange;
+    text { color: $accent; }
+  }
+}
+
+/* ---------- 趋势图 ---------- */
+.hs-trend {
+  margin: 24rpx 32rpx 0;
+  padding: 28rpx;
+  background: $bg-card;
+  border-radius: 36rpx;
+  border: 1rpx solid $border-light;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.hs-trend-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .hs-trend-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .hs-trend-meta {
+    font-size: 24rpx;
+    font-weight: 800;
+    color: $primary;
+  }
+}
+.hs-bars {
+  display: flex;
+  align-items: flex-end;
+  height: 120rpx;
+  gap: 20rpx;
+}
+.hs-bar {
+  flex: 1;
+  border-radius: 12rpx;
+  background: $soft-primary;
+
+  &.tall { background: $primary; }
+  &.peak { background: $accent; }
+}
+
+/* ---------- 过滤 chips ---------- */
+.hs-chips {
+  display: flex;
+  gap: 16rpx;
+  margin: 24rpx 32rpx 0;
+}
+.hs-chip {
+  height: 60rpx;
+  padding: 0 28rpx;
+  border-radius: 30rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 26rpx;
+    font-weight: 800;
+    color: $text-primary;
+  }
+
+  &.active {
+    background: $primary;
+    border-color: $primary;
+
+    text { color: #fff; }
+  }
+}
+
+/* ---------- 鱼获列表 ---------- */
+.hs-list {
+  margin: 24rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.hs-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 24rpx;
+  background: $bg-card;
+  border-radius: 36rpx;
+  border: 1rpx solid $border-light;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.08);
+
+  &:active { transform: scale(.99); }
+}
+.hs-row-icon {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  text {
+    font-size: 36rpx;
+    font-weight: 900;
+    line-height: 1;
+  }
+  &.tone-primary { background: $soft-primary; text { color: $primary; } }
+  &.tone-blue    { background: $soft-blue;    text { color: $secondary; } }
+  &.tone-accent  { background: $soft-orange;  text { color: $accent; } }
+}
+.hs-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+
+  .hs-row-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .hs-row-meta {
+    font-size: 24rpx;
+    color: $text-secondary;
+  }
+  .hs-row-foot {
+    font-size: 24rpx;
+    color: $text-primary;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.hs-end-pad { height: 40rpx; }
+
+/* ---------- 底部 ---------- */
+.hs-bottom {
+  flex: none;
+  background: $bg-card;
+  border-top: 1rpx solid $border-light;
+  padding: 20rpx 32rpx 0;
+  display: flex;
+  gap: 20rpx;
+}
+.hs-btn-ghost {
+  width: 208rpx;
+  height: 104rpx;
+  border-radius: 52rpx;
+  background: $bg-page;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: .8; }
+
+  text {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+}
+.hs-btn-primary {
+  flex: 1;
+  height: 104rpx;
+  border-radius: 52rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.32);
+
+  &:active { transform: scale(.98); }
+
+  text {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: #fff;
+  }
+}
+
+/* ---------- 筛选浮层 (Design 34) ---------- */
+.hs-filter-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+.hs-filter-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+}
+.hs-filter-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $bg-card;
+  border-radius: 56rpx 56rpx 0 0;
+  padding: 24rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  max-height: 85vh;
+  overflow: hidden;
+}
+.hs-fh-handle {
+  align-self: center;
+  width: 88rpx;
+  height: 10rpx;
+  border-radius: 6rpx;
+  background: $border-base;
+}
+.hs-fh-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72rpx;
+
+  .hs-fh-reset {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: $text-secondary;
+  }
+  .hs-fh-title {
+    font-size: 34rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .hs-fh-done {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $primary;
+  }
+}
+.hs-fh-section-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 900;
+  color: $text-primary;
+  margin-bottom: 16rpx;
+}
+.hs-fh-section {
+  display: flex;
+  flex-direction: column;
+}
+.hs-fh-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.hs-fh-chip {
+  height: 68rpx;
+  padding: 0 28rpx;
+  border-radius: 34rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 26rpx;
+    font-weight: 800;
+    color: $text-primary;
+  }
+
+  &.active {
+    background: $primary;
+    border-color: $primary;
+    text { color: #fff; font-weight: 900; }
+  }
+  &.soft {
+    background: $soft-primary;
+    border-color: $primary;
+    text { color: $primary; font-weight: 900; }
+  }
+}
+
+/* 排序卡 */
+.hs-fh-sort {
+  background: $bg-page;
+  border-radius: 32rpx;
+  overflow: hidden;
+}
+.hs-fh-sort-row {
+  height: 96rpx;
+  padding: 0 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:active { background: $bg-hover; }
+
+  .hs-fh-sort-text {
+    font-size: 26rpx;
+    color: $text-secondary;
+    font-weight: 800;
+  }
+
+  &.active .hs-fh-sort-text {
+    color: $text-primary;
+    font-weight: 900;
+  }
+}
+
+/* 开关卡 */
+.hs-fh-switches {
+  background: $bg-page;
+  border-radius: 36rpx;
+  padding: 8rpx 0;
+}
+.hs-fh-switch-row {
+  height: 96rpx;
+  padding: 0 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .hs-fh-switch-label {
+    font-size: 28rpx;
+    font-weight: 800;
+    color: $text-primary;
+  }
+}
+.hs-fh-switch {
+  position: relative;
+  width: 84rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  background: $border-base;
+  transition: background .2s;
+
+  .hs-fh-switch-dot {
+    position: absolute;
+    top: 4rpx;
+    left: 4rpx;
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.18);
+    transition: transform .2s;
+  }
+  &.on {
+    background: $primary;
+    .hs-fh-switch-dot { transform: translateX(36rpx); }
+  }
+}
+
+/* 底部 CTA */
+.hs-fh-apply {
+  flex: none;
+  margin: 8rpx 0 0;
+  height: 104rpx;
+  border-radius: 52rpx;
+  background: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.32);
+
+  &:active { transform: scale(.98); }
+
+  text {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: #fff;
+  }
+}
+.hs-fh-safe { width: 100%; }

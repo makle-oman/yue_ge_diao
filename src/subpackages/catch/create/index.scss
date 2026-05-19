@@ -1,3 +1,5 @@
+* { box-sizing: border-box; }
+
 .catch-create {
   position: relative;
   height: 100vh;
@@ -247,3 +249,114 @@
 }
 
 .end-pad { height: 32rpx; }
+
+/* ---------- Design 35: 钓法选择浮层 ---------- */
+.method-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+.method-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.48);
+}
+.method-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $bg-card;
+  border-radius: 56rpx 56rpx 0 0;
+  padding: 24rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+  max-height: 80vh;
+}
+.ms-handle {
+  align-self: center;
+  width: 88rpx;
+  height: 10rpx;
+  border-radius: 6rpx;
+  background: $border-base;
+}
+.ms-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72rpx;
+
+  .ms-cancel {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: $text-secondary;
+  }
+  .ms-title {
+    font-size: 34rpx;
+    font-weight: 900;
+    color: $text-primary;
+  }
+  .ms-done {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: $primary;
+  }
+}
+.ms-selected {
+  height: 108rpx;
+  padding: 0 32rpx;
+  border-radius: 36rpx;
+  background: $soft-primary;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .ms-selected-text {
+    font-size: 28rpx;
+    font-weight: 900;
+    color: $primary;
+  }
+}
+.ms-options {
+  background: $bg-page;
+  border-radius: 36rpx;
+  overflow: hidden;
+}
+.ms-option {
+  height: 96rpx;
+  padding: 0 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:active { background: $bg-hover; }
+
+  .ms-option-text {
+    font-size: 30rpx;
+    font-weight: 800;
+    color: $text-primary;
+  }
+  &.selected .ms-option-text { font-weight: 900; }
+}
+.ms-option-divider {
+  height: 1rpx;
+  background: $border-light;
+  margin: 0 32rpx;
+}
+.ms-note {
+  padding: 24rpx;
+  border-radius: 32rpx;
+  background: $soft-blue;
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+
+  .ms-note-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: $text-primary;
+    line-height: 1.4;
+  }
+}
+.ms-safe { width: 100%; }
