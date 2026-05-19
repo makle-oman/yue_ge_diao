@@ -34,13 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 
-const safeBottom = ref(0);
-try {
-  const info = uni.getSystemInfoSync();
-  safeBottom.value = info.safeAreaInsets?.bottom || 0;
-} catch (_e) { /* ignore */ }
+const { safeBottom } = useSystemInfo();
 
 type Tone = 'primary' | 'secondary' | 'accent';
 

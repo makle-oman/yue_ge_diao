@@ -21,7 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 
 const props = withDefaults(defineProps<{
@@ -40,14 +41,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{ (e: 'back'): void }>();
 
-const statusBarHeight = ref(0);
-try {
-  // uni 同步 API,可能在 SSR 阶段报错,做容错
-  const sys = uni.getSystemInfoSync();
-  statusBarHeight.value = sys.statusBarHeight || 20;
-} catch (_e) {
-  statusBarHeight.value = 20;
-}
+const { statusBarHeight } = useSystemInfo();
 
 const iconColor = computed(() => (props.transparent ? props.inverseColor : '#1A2B33'));
 const textColor = computed(() => (props.transparent ? props.inverseColor : '#1A2B33'));

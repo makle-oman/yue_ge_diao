@@ -68,6 +68,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 
 type ChipKey = 'all' | 'wild' | 'pond' | 'near';
 type Tone = 'primary' | 'blue' | 'orange';
@@ -86,10 +87,7 @@ interface SpotItem {
   readonly distanceKm: number;
 }
 
-const statusBarHeight = ref(20);
-try {
-  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight || 20;
-} catch (_e) { /* SSR fallback */ }
+const { statusBarHeight } = useSystemInfo();
 
 const activeChip = ref<ChipKey>('all');
 const chips: readonly ChipItem[] = [

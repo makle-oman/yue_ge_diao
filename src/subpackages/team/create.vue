@@ -101,13 +101,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 
-const safeBottom = ref(0);
-try {
-  const info = uni.getSystemInfoSync();
-  safeBottom.value = info.safeAreaInsets?.bottom || 0;
-} catch (_e) { /* ignore */ }
+const { safeBottom } = useSystemInfo();
 
 const form = ref({
   spot: '燕子矶江边',

@@ -124,16 +124,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 
-const statusBarHeight = ref(0);
-const safeBottom = ref(0);
-try {
-  const info = uni.getSystemInfoSync();
-  statusBarHeight.value = info.statusBarHeight || 20;
-  safeBottom.value = info.safeAreaInsets?.bottom || 0;
-} catch (_e) {
-  statusBarHeight.value = 20;
-}
+const { statusBarHeight, safeBottom } = useSystemInfo();
 
 const author = ref({
   name: '老王钓鱼',

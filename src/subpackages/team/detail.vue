@@ -95,16 +95,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 
-const statusBarHeight = ref(0);
-const safeBottom = ref(0);
-try {
-  const info = uni.getSystemInfoSync();
-  statusBarHeight.value = info.statusBarHeight || 20;
-  safeBottom.value = info.safeAreaInsets?.bottom || 0;
-} catch (_e) {
-  statusBarHeight.value = 20;
-}
+const { statusBarHeight, safeBottom } = useSystemInfo();
 
 const team = ref({
   cover: 'https://images.unsplash.com/photo-1665355259602-6d57b0639ab0?w=900',

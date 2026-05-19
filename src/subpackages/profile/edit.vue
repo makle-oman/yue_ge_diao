@@ -93,13 +93,10 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 
-const safeBottom = ref(0);
-try {
-  const info = uni.getSystemInfoSync();
-  safeBottom.value = info.safeAreaInsets?.bottom || 0;
-} catch (_e) { /* ignore */ }
+const { safeBottom } = useSystemInfo();
 
 const ageOptions = ['1年内', '1-3年', '3-5年', '5年以上'];
 const playOptions = ['野钓', '路亚', '黑坑', '海钓', '冰钓'];

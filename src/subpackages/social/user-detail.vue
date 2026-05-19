@@ -98,6 +98,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useSystemInfo } from '@/utils/useSystemInfo';
 
 const { statusBarHeight } = useSystemInfo();
 
