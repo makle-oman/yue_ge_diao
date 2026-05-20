@@ -71,7 +71,6 @@
         </view>
       </view>
 
-      <view class="hs-end-pad" />
     </scroll-view>
 
     <!-- 底部 -->

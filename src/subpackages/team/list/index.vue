@@ -63,7 +63,6 @@
         </view>
       </view>
 
-      <view class="end-pad" />
     </scroll-view>
   </view>
 </template>

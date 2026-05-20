@@ -119,7 +119,6 @@
           />
         </view>
 
-        <view class="end-pad" />
       </view>
     </scroll-view>
 
@@ -128,6 +127,74 @@
         <text class="submit-btn-text">提交钓点,等待审核</text>
       </view>
     </view>
+
+    <!-- 钓点类型 Sheet -->
+    <mxy-bottom-sheet
+      v-model:visible="typeOpen"
+      title="钓点类型"
+      @done="onTypeDone"
+    >
+      <view class="picker-current">
+        <text class="picker-current-text">当前选择：{{ form.type }}</text>
+        <mxy-icon name="check_circle" :size="40" color="#2D8F87" />
+      </view>
+
+      <view class="picker-options-card">
+        <view v-for="(opt, i) in typeOptions" :key="opt.value">
+          <view class="picker-option" @click="draftType = opt.value">
+            <view class="picker-option-left">
+              <mxy-icon :name="opt.icon" :size="40" :color="opt.value === draftType ? '#2D8F87' : '#6B7B85'" />
+              <text class="picker-option-text" :class="{ active: opt.value === draftType }">{{ opt.label }}</text>
+            </view>
+            <mxy-icon
+              :name="opt.value === draftType ? 'check_circle' : 'radio_button_unchecked'"
+              :size="40"
+              :color="opt.value === draftType ? '#2D8F87' : '#99A5AD'"
+            />
+          </view>
+          <view v-if="i !== typeOptions.length - 1" class="picker-divider" />
+        </view>
+      </view>
+
+      <view class="picker-tip">
+        <mxy-icon name="info" :size="36" color="#5BA9C4" />
+        <text class="picker-tip-text">不同钓点类型决定后续筛选规则与是否需要付费提示，提交后由审核确认。</text>
+      </view>
+    </mxy-bottom-sheet>
+
+    <!-- 水域类型 Sheet -->
+    <mxy-bottom-sheet
+      v-model:visible="waterOpen"
+      title="水域类型"
+      @done="onWaterDone"
+    >
+      <view class="picker-current">
+        <text class="picker-current-text">当前选择：{{ form.water }}</text>
+        <mxy-icon name="check_circle" :size="40" color="#2D8F87" />
+      </view>
+
+      <view class="picker-options-card">
+        <view v-for="(opt, i) in waterOptions" :key="opt.value">
+          <view class="picker-option" @click="draftWater = opt.value">
+            <view class="picker-option-left">
+              <mxy-icon :name="opt.icon" :size="40" :color="opt.value === draftWater ? '#2D8F87' : '#6B7B85'" />
+              <text class="picker-option-text" :class="{ active: opt.value === draftWater }">{{ opt.label }}</text>
+            </view>
+            <mxy-icon
+              :name="opt.value === draftWater ? 'check_circle' : 'radio_button_unchecked'"
+              :size="40"
+              :color="opt.value === draftWater ? '#2D8F87' : '#99A5AD'"
+            />
+          </view>
+          <view v-if="i !== waterOptions.length - 1" class="picker-divider" />
+        </view>
+      </view>
+
+      <view class="picker-tip">
+        <mxy-icon name="water" :size="36" color="#5BA9C4" />
+        <text class="picker-tip-text">水域类型用于天气与潮汐适配，海钓将额外展示风浪与潮位窗口。</text>
+      </view>
+    </mxy-bottom-sheet>
   </view>
 </template>
 
@@ -174,14 +241,44 @@ const onRelocate = () => {
     uni.showToast({ title: `精度 ${accuracy.value}m`, icon: 'success' });
   }, 800);
 };
-const onPickType = () => uni.showActionSheet({
-  itemList: ['野钓点', '黑坑', '水库', '收费塘'],
-  success: (r) => { form.value.type = ['野钓点', '黑坑', '水库', '收费塘'][r.tapIndex]; },
-});
-const onPickWater = () => uni.showActionSheet({
-  itemList: ['江河', '湖泊', '水库', '海钓'],
-  success: (r) => { form.value.water = ['江河', '湖泊', '水库', '海钓'][r.tapIndex]; },
-});
+const onPickType = () => {
+  draftType.value = form.value.type as SpotTypeKey;
+  typeOpen.value = true;
+};
+const onPickWater = () => {
+  draftWater.value = form.value.water as WaterTypeKey;
+  waterOpen.value = true;
+};
+
+type SpotTypeKey = '野钓点' | '黑坑' | '水库' | '收费塘';
+type WaterTypeKey = '江河' | '湖泊' | '水库' | '海钓';
+
+const typeOptions: { value: SpotTypeKey; label: SpotTypeKey; icon: string }[] = [
+  { value: '野钓点', label: '野钓点', icon: 'nature' },
+  { value: '黑坑',   label: '黑坑',   icon: 'pool' },
+  { value: '水库',   label: '水库',   icon: 'water' },
+  { value: '收费塘', label: '收费塘', icon: 'payments' },
+];
+const waterOptions: { value: WaterTypeKey; label: WaterTypeKey; icon: string }[] = [
+  { value: '江河', label: '江河', icon: 'waves' },
+  { value: '湖泊', label: '湖泊', icon: 'water_drop' },
+  { value: '水库', label: '水库', icon: 'water' },
+  { value: '海钓', label: '海钓', icon: 'sailing' },
+];
+
+const typeOpen = ref(false);
+const waterOpen = ref(false);
+const draftType = ref<SpotTypeKey>('野钓点');
+const draftWater = ref<WaterTypeKey>('江河');
+
+const onTypeDone = () => {
+  form.value.type = draftType.value;
+  typeOpen.value = false;
+};
+const onWaterDone = () => {
+  form.value.water = draftWater.value;
+  waterOpen.value = false;
+};
 const onAddFish = () => uni.showToast({ title: '选择鱼种 (待开发)', icon: 'none' });
 const onRemoveFish = (idx: number) => form.value.fish.splice(idx, 1);
 const onAddPhoto = () => {

@@ -87,7 +87,6 @@
         </view>
       </view>
 
-      <view class="end-pad" />
     </scroll-view>
 
     <CustomTabBar current="profile" />

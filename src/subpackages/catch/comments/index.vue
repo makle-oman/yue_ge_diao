@@ -138,6 +138,43 @@
         </view>
       </view>
     </view>
+
+    <!-- 评论排序 Sheet (Design 38) -->
+    <mxy-bottom-sheet
+      v-model:visible="sortOpen"
+      title="评论排序"
+      @done="onSortDone"
+    >
+      <view class="sort-current">
+        <text class="sort-current-text">当前排序：{{ sortLabel }}</text>
+        <mxy-icon name="check_circle" :size="40" color="#2D8F87" />
+      </view>
+
+      <view class="sort-options-card">
+        <view
+          v-for="(opt, i) in sortOptions"
+          :key="opt.value"
+        >
+          <view class="sort-option" @click="onPickSort(opt.value)">
+            <view class="sort-option-left">
+              <mxy-icon :name="opt.icon" :size="40" :color="opt.value === draftSort ? '#2D8F87' : '#6B7B85'" />
+              <text class="sort-option-text" :class="{ active: opt.value === draftSort }">{{ opt.label }}</text>
+            </view>
+            <mxy-icon
+              :name="opt.value === draftSort ? 'check_circle' : 'radio_button_unchecked'"
+              :size="40"
+              :color="opt.value === draftSort ? '#2D8F87' : '#99A5AD'"
+            />
+          </view>
+          <view v-if="i !== sortOptions.length - 1" class="sort-divider" />
+        </view>
+      </view>
+
+      <view class="sort-tip">
+        <mxy-icon name="tune" :size="36" color="#5BA9C4" />
+        <text class="sort-tip-text">排序会保留在当前评论列表，下次进入该鱼获详情仍使用最近选择。</text>
+      </view>
+    </mxy-bottom-sheet>
   </view>
 </template>
 
@@ -231,14 +268,27 @@ const onSend = () => {
 
 /* ---------- 顶部排序 / 底部快速发 / 举报 ---------- */
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
+
+type SortKey = '最热' | '最新' | '只看楼主';
+const sortOptions: { value: SortKey; label: SortKey; icon: string }[] = [
+  { value: '最热',     label: '最热',     icon: 'local_fire_department' },
+  { value: '最新',     label: '最新',     icon: 'schedule' },
+  { value: '只看楼主', label: '只看楼主', icon: 'person' },
+];
+const sortOpen = ref(false);
+const draftSort = ref<SortKey>('最热');
+
 const onSortMenu = () => {
-  uni.showActionSheet({
-    itemList: ['最热', '最新', '只看楼主'],
-    success: (res) => {
-      sortLabel.value = ['最热', '最新', '只看楼主'][res.tapIndex];
-    },
-    fail: () => {},
-  });
+  draftSort.value = sortLabel.value as SortKey;
+  sortOpen.value = true;
+};
+const onPickSort = (v: SortKey) => {
+  draftSort.value = v;
+};
+const onSortDone = () => {
+  sortLabel.value = draftSort.value;
+  sortOpen.value = false;
+  uni.showToast({ title: `已按「${sortLabel.value}」排序`, icon: 'none' });
 };
 const onQuickSend = () => openReply();
 const onReport = () => {

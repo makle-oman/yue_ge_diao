@@ -1,33 +1,35 @@
 <template>
   <view class="user-detail">
-    <view class="hero">
-      <image class="hero-img" :src="user.cover" mode="aspectFill" />
-      <view class="hero-shade" />
-      <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
-        <view class="icon-btn" @click="onBack">
-          <mxy-icon name="arrow_back" :size="40" color="#fff" />
-        </view>
-        <view class="icon-btn" @click="onMore">
-          <mxy-icon name="more_horiz" :size="40" color="#fff" />
-        </view>
+    <!-- 顶部悬浮（脱离滚动流） -->
+    <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <view class="icon-btn" @click="onBack">
+        <mxy-icon name="arrow_back" :size="40" color="#fff" />
       </view>
-
-      <view class="hero-content">
-        <view class="avatar-ring">
-          <mxy-avatar :src="user.avatar" :size="128" />
-        </view>
-        <view class="hero-text">
-          <text class="hero-name">{{ user.name }}</text>
-          <text class="hero-meta">{{ user.years }}年钓龄 · {{ user.style }} · {{ user.distance }}</text>
-          <view class="credit-pill">
-            <mxy-icon name="verified" :size="24" color="#F5A623" />
-            <text class="credit-text">信用 {{ user.credit }}</text>
-          </view>
-        </view>
+      <view class="icon-btn" @click="onMore">
+        <mxy-icon name="more_horiz" :size="40" color="#fff" />
       </view>
     </view>
 
     <scroll-view class="content" scroll-y>
+      <view class="hero">
+        <image class="hero-img" :src="user.cover" mode="aspectFill" />
+        <view class="hero-shade" />
+
+        <view class="hero-content">
+          <view class="avatar-ring">
+            <mxy-avatar :src="user.avatar" :size="128" />
+          </view>
+          <view class="hero-text">
+            <text class="hero-name">{{ user.name }}</text>
+            <text class="hero-meta">{{ user.years }}年钓龄 · {{ user.style }} · {{ user.distance }}</text>
+            <view class="credit-pill">
+              <mxy-icon name="verified" :size="24" color="#F5A623" />
+              <text class="credit-text">信用 {{ user.credit }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <view class="panel">
         <view class="stats-card">
           <view class="stats-cell">
@@ -90,7 +92,6 @@
           <text class="empty-text">暂未公开钓点</text>
         </view>
 
-        <view class="end-pad" />
       </view>
     </scroll-view>
   </view>

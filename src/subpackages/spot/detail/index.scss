@@ -38,7 +38,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 16rpx 32rpx 0;
-  z-index: 3;
+  z-index: 10;
+  pointer-events: none;
+
+  .hero-icon-btn { pointer-events: auto; }
 }
 .hero-icon-btn {
   width: 80rpx;
@@ -310,7 +313,6 @@
   }
 }
 
-.end-pad { height: 200rpx; }
 
 /* ---------- 底部 CTA ---------- */
 .bottom-bar {

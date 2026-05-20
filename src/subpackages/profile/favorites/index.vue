@@ -63,9 +63,45 @@
           </view>
         </view>
 
-        <view class="end-pad" />
       </view>
     </scroll-view>
+
+    <!-- 取消收藏确认 Sheet (Design 37) -->
+    <mxy-bottom-sheet
+      v-model:visible="removeOpen"
+      title="取消收藏"
+      @cancel="removeOpen = false"
+      @done="removeOpen = false"
+    >
+      <view v-if="removeTarget" class="unfav-banner">
+        <view class="unfav-thumb">
+          <mxy-icon name="location_on" :size="40" color="#5BA9C4" />
+        </view>
+        <view class="unfav-banner-info">
+          <text class="unfav-banner-name">{{ removeTarget.name }}</text>
+          <text class="unfav-banner-sub">取消后可重新从{{ removeTarget.kind === 'user' ? '钓友主页' : '钓点详情' }}收藏</text>
+        </view>
+      </view>
+
+      <view class="unfav-body">
+        <text class="unfav-body-title">确认取消收藏？</text>
+        <text class="unfav-body-desc">该{{ removeTarget?.kind === 'user' ? '钓友' : '钓点' }}会从"我的收藏"中移除，不影响你的历史浏览和鱼获记录。</text>
+      </view>
+
+      <view class="unfav-buttons">
+        <view class="unfav-btn unfav-btn--ghost" @click="removeOpen = false">
+          <text class="unfav-btn-text">保留收藏</text>
+        </view>
+        <view class="unfav-btn unfav-btn--danger" @click="onConfirmRemove">
+          <text class="unfav-btn-text white">确认取消</text>
+        </view>
+      </view>
+
+      <view class="unfav-tip">
+        <mxy-icon name="info" :size="36" color="#5BA9C4" />
+        <text class="unfav-tip-text">取消收藏不会通知{{ removeTarget?.kind === 'user' ? '对方' : '钓点发布者' }}。</text>
+      </view>
+    </mxy-bottom-sheet>
   </view>
 </template>
 
@@ -187,16 +223,20 @@ const onRemove = (f: FavItem) => {
     onOpen(f);
     return;
   }
-  uni.showModal({
-    title: '取消收藏',
-    content: `确认取消收藏「${f.name}」?`,
-    success: (r) => {
-      if (!r.confirm) return;
-      const list = f.kind === 'spot' ? favoriteSpots : favoriteUsers;
-      list.value = list.value.filter(item => item.id !== f.id);
-      uni.showToast({ title: '已取消', icon: 'success' });
-    },
-  });
+  removeTarget.value = f;
+  removeOpen.value = true;
+};
+
+const removeOpen = ref(false);
+const removeTarget = ref<FavItem | null>(null);
+
+const onConfirmRemove = () => {
+  const f = removeTarget.value;
+  if (!f) return;
+  const list = f.kind === 'spot' ? favoriteSpots : favoriteUsers;
+  list.value = list.value.filter(item => item.id !== f.id);
+  removeOpen.value = false;
+  uni.showToast({ title: '已取消收藏', icon: 'success' });
 };
 </script>
 

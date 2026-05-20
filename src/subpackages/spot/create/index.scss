@@ -280,7 +280,6 @@
   box-sizing: border-box;
 }
 
-.end-pad { height: 24rpx; }
 
 /* ---------- 底部 ---------- */
 .bottom-bar {
@@ -304,5 +303,71 @@
     font-size: 32rpx;
     color: #fff;
     font-weight: 900;
+  }
+}
+
+/* ---------- 钓点类型 / 水域类型 Sheet ---------- */
+.picker-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  height: 108rpx;
+  border-radius: 28rpx;
+  background: $soft-primary;
+
+  .picker-current-text {
+    font-size: 28rpx;
+    font-weight: 900;
+    color: $primary;
+  }
+}
+
+.picker-options-card {
+  background: $bg-page;
+  border-radius: 28rpx;
+  padding: 8rpx 0;
+}
+.picker-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  height: 96rpx;
+
+  &:active { background: $bg-hover; }
+
+  .picker-option-left {
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+  }
+  .picker-option-text {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: $text-primary;
+
+    &.active { color: $primary; }
+  }
+}
+.picker-divider {
+  height: 1rpx;
+  background: $border-light;
+  margin: 0 32rpx;
+}
+
+.picker-tip {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: $soft-blue;
+
+  .picker-tip-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: $text-primary;
+    line-height: 1.35;
   }
 }

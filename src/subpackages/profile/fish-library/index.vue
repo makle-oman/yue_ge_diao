@@ -99,7 +99,6 @@
           </view>
         </view>
 
-        <view class="end-pad" />
       </view>
     </scroll-view>
   </view>

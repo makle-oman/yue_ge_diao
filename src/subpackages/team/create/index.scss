@@ -206,7 +206,6 @@
   }
 }
 
-.end-pad { height: 32rpx; }
 
 /* ---------- 底部 ---------- */
 .bottom-bar {
@@ -230,5 +229,71 @@
     font-size: 32rpx;
     color: #fff;
     font-weight: 900;
+  }
+}
+
+/* ---------- 费用方式 Sheet (Design 39) ---------- */
+.cost-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  height: 108rpx;
+  border-radius: 28rpx;
+  background: $soft-primary;
+
+  .cost-current-text {
+    font-size: 28rpx;
+    font-weight: 900;
+    color: $primary;
+  }
+}
+
+.cost-options-card {
+  background: $bg-page;
+  border-radius: 28rpx;
+  padding: 8rpx 0;
+}
+.cost-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  height: 96rpx;
+
+  &:active { background: $bg-hover; }
+
+  .cost-option-left {
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+  }
+  .cost-option-text {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: $text-primary;
+
+    &.active { color: $primary; }
+  }
+}
+.cost-divider {
+  height: 1rpx;
+  background: $border-light;
+  margin: 0 32rpx;
+}
+
+.cost-tip {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: $soft-blue;
+
+  .cost-tip-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: $text-primary;
+    line-height: 1.35;
   }
 }

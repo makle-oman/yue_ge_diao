@@ -422,3 +422,69 @@
     }
   }
 }
+
+/* ---------- 评论排序 Sheet (Design 38) ---------- */
+.sort-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  height: 108rpx;
+  border-radius: 28rpx;
+  background: $soft-primary;
+
+  .sort-current-text {
+    font-size: 28rpx;
+    font-weight: 900;
+    color: $primary;
+  }
+}
+
+.sort-options-card {
+  background: $bg-page;
+  border-radius: 28rpx;
+  padding: 8rpx 0;
+}
+.sort-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  height: 96rpx;
+
+  &:active { background: $bg-hover; }
+
+  .sort-option-left {
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+  }
+  .sort-option-text {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: $text-primary;
+
+    &.active { color: $primary; }
+  }
+}
+.sort-divider {
+  height: 1rpx;
+  background: $border-light;
+  margin: 0 32rpx;
+}
+
+.sort-tip {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: $soft-blue;
+
+  .sort-tip-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: $text-primary;
+    line-height: 1.35;
+  }
+}

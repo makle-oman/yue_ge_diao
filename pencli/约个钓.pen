@@ -13876,7 +13876,8 @@
               "fill": "$muted",
               "content": "搜索钓点 / 地址 / 鱼种",
               "fontFamily": "Inter",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -14082,7 +14083,8 @@
               "fill": "$muted",
               "content": "野钓 · 免费 · 可停车",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -14142,7 +14144,8 @@
               "fill": "$muted",
               "content": "评分 4.5 · 今天 3 条鱼获",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -14212,7 +14215,8 @@
               "fill": "$muted",
               "content": "路亚 · 江湾 · 夜钓友好",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -14272,7 +14276,8 @@
               "fill": "$muted",
               "content": "评分 4.7 · 最近 18 人去过",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -14342,7 +14347,8 @@
               "fill": "$muted",
               "content": "水库 · 收费 30 · 有厕所",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -14402,7 +14408,8 @@
               "fill": "$muted",
               "content": "评分 4.3 · 周末人多",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -14472,7 +14479,8 @@
               "fill": "$muted",
               "content": "黑坑 · 100/4小时 · 可停车",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -14532,7 +14540,8 @@
               "fill": "$muted",
               "content": "评分 4.1 · 今日放鱼",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         }
@@ -14748,7 +14757,8 @@
               "fill": "$muted",
               "content": "钓点",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "rectangle",
@@ -14778,7 +14788,8 @@
               "fill": "$muted",
               "content": "想去",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "rectangle",
@@ -14808,7 +14819,8 @@
               "fill": "$muted",
               "content": "浏览",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -14964,7 +14976,8 @@
               "fill": "$muted",
               "content": "想去 86 · 浏览 1.2k · 4.5分",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -14974,7 +14987,8 @@
               "fill": "$muted",
               "content": "更新于今天 08:20",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -15080,7 +15094,8 @@
               "fill": "$muted",
               "content": "水库 · 收费 30 · 草鱼 鲤鱼",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -15090,7 +15105,8 @@
               "fill": "$muted",
               "content": "昨天提交，等待确认",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -15196,7 +15212,8 @@
               "fill": "$muted",
               "content": "想去 21 · 浏览 460 · 今日放鱼",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -15206,7 +15223,8 @@
               "fill": "$muted",
               "content": "更新于 05-18",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -15312,7 +15330,8 @@
               "fill": "$muted",
               "content": "野钓 · 夜钓点 · 翘嘴",
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -15322,7 +15341,8 @@
               "fill": "$muted",
               "content": "补环境照后曝光更好",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -15644,7 +15664,8 @@
               "content": "气压稳定，东南风 2 级，距你 4.8km",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -15742,7 +15763,8 @@
               "content": "路亚 · 翘嘴 鲈鱼 · 夜钓友好",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -15777,7 +15799,8 @@
               "fill": "$muted",
               "content": "最近更新 · 可快速查看",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -15875,7 +15898,8 @@
               "content": "野钓 · 免费 · 鲫鱼 鳊鱼",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -15910,7 +15934,8 @@
               "fill": "$muted",
               "content": "最近更新 · 可快速查看",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -16008,7 +16033,8 @@
               "content": "燕子矶江边 · 蚯蚓 · 晴转多云",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -16043,7 +16069,8 @@
               "fill": "$muted",
               "content": "最近更新 · 可快速查看",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         }
@@ -16215,7 +16242,8 @@
               "fill": "#FFFFFFCC",
               "content": "淡水鱼 / 海鱼 · 已点亮 12 / 56 种",
               "fontFamily": "Inter",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -16494,7 +16522,8 @@
           "fill": "$muted",
           "content": "最近点亮",
           "fontFamily": "Inter",
-          "fontSize": 12
+          "fontSize": 12,
+          "fontWeight": "normal"
         },
         {
           "type": "frame",
@@ -16585,7 +16614,8 @@
               "fill": "$muted",
               "content": "12次 · 1.2kg",
               "fontFamily": "Inter",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -16678,7 +16708,8 @@
               "fill": "$muted",
               "content": "6次 · 3.8kg",
               "fontFamily": "Inter",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -16771,7 +16802,8 @@
               "fill": "$muted",
               "content": "4次 · 0.9kg",
               "fontFamily": "Inter",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -16864,7 +16896,8 @@
               "fill": "$muted",
               "content": "3次 · 1.6kg",
               "fontFamily": "Inter",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -16957,7 +16990,8 @@
               "fill": "$muted",
               "content": "1次 · 2.1kg",
               "fontFamily": "Inter",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -17031,7 +17065,8 @@
               "fill": "$muted",
               "content": "未点亮",
               "fontFamily": "Inter",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -17105,7 +17140,8 @@
               "fill": "$muted",
               "content": "推荐去老山水库外湾，近 7 天草鱼记录最多",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         }
@@ -17321,7 +17357,8 @@
               "fill": "$muted",
               "content": "总鱼获",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "rectangle",
@@ -17351,7 +17388,8 @@
               "fill": "$muted",
               "content": "鱼种",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             },
             {
               "type": "rectangle",
@@ -17381,7 +17419,8 @@
               "fill": "$muted",
               "content": "最大记录",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -17488,7 +17527,8 @@
               "fill": "$muted",
               "content": "搜索鱼种 / 钓点 / 饵料",
               "fontFamily": "Inter",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -17594,7 +17634,8 @@
               "content": "燕子矶江边 · 蚯蚓 · 晴转多云",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -17607,7 +17648,8 @@
               "content": "气压回升后开口，第三竿就中鱼。",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -17617,7 +17659,8 @@
               "fill": "$muted",
               "content": "♡ 32 · 评论 8 · 已公开",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -17701,7 +17744,8 @@
               "content": "江心洲北汊 · 米诺 · 东南风",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -17714,7 +17758,8 @@
               "content": "窗口只有二十分钟，慢收中鱼。",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -17724,7 +17769,8 @@
               "fill": "$muted",
               "content": "♡ 32 · 评论 8 · 已公开",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -17808,7 +17854,8 @@
               "content": "老山水库外湾 · 玉米 · 阴天",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -17821,7 +17868,8 @@
               "content": "守到天黑，最后一口很稳。",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -17831,7 +17879,8 @@
               "fill": "$muted",
               "content": "♡ 32 · 评论 8 · 已公开",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -18056,7 +18105,8 @@
               "fill": "$muted",
               "content": "搜昵称 / 玩法 / 常去钓点",
               "fontFamily": "Inter",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             },
             {
               "type": "icon_font",
@@ -18213,7 +18263,8 @@
               "fill": "$muted",
               "content": "默认不暴露精确位置，仅显示大致距离",
               "fontFamily": "Inter",
-              "fontSize": 11
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -18318,7 +18369,8 @@
               "content": "1.2km · 常去燕子矶江边 · 5年钓龄",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -18476,7 +18528,8 @@
               "content": "2.4km · 江心洲北汊 · 晚口活跃",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -18634,7 +18687,8 @@
               "content": "4.8km · 老山水库 · 10年钓龄",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -18792,7 +18846,8 @@
               "content": "6.3km · 青龙湾黑坑 · 今日放鱼",
               "lineHeight": 1.25,
               "fontFamily": "Inter",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -19095,7 +19150,8 @@
                   "fill": "$muted",
                   "content": "搜索城市 / 区县",
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -19141,7 +19197,8 @@
                   "fill": "$muted",
                   "content": "江宁区 · 已为你筛选附近钓点",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -19309,7 +19366,8 @@
                   "fill": "$muted",
                   "content": "23 个钓点 · 12 位钓友在线",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "icon_font",
@@ -19355,7 +19413,8 @@
                   "fill": "$muted",
                   "content": "8 个钓点 · 3 位钓友在线",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -19649,7 +19708,8 @@
                   "fill": "$muted",
                   "content": "与你的钓点、鱼获、组队有关",
                   "fontFamily": "Inter",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -19726,7 +19786,8 @@
                   "content": "“这位置明早还能去吗？” · 5分钟前",
                   "lineHeight": 1.25,
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "ellipse",
@@ -19812,7 +19873,8 @@
                   "content": "燕子矶江边 · 12分钟前",
                   "lineHeight": 1.25,
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "ellipse",
@@ -19898,7 +19960,8 @@
                   "content": "江心洲夜钓队 · 1小时前",
                   "lineHeight": 1.25,
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -26442,6 +26505,3187 @@
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
                   "content": "同一套弹层可复用于饵料、隐私、天气、鱼情等选项",
+                  "lineHeight": 1.25,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "PUKmP",
+      "x": 4150,
+      "y": 3480,
+      "name": "36 聊天更多操作 375x812",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$background",
+      "cornerRadius": 28,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "qPKBi",
+          "x": 0,
+          "y": 0,
+          "name": "Status",
+          "width": 375,
+          "height": 44,
+          "fill": "#FFFFFF00",
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "Xbw9K",
+              "x": 24,
+              "y": 13,
+              "fill": "$text",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ks4ni",
+          "x": 0,
+          "y": 44,
+          "name": "Chat Nav",
+          "width": 375,
+          "height": 56,
+          "fill": "$surface",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "$border"
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "F4Fj6N",
+              "x": 16,
+              "y": 16,
+              "width": 24,
+              "height": 24,
+              "iconFontName": "arrow_back",
+              "iconFontFamily": "Material Symbols Outlined",
+              "fill": "$text"
+            },
+            {
+              "type": "ellipse",
+              "id": "qip2k",
+              "x": 62,
+              "y": 9,
+              "fill": "$soft-primary",
+              "width": 38,
+              "height": 38
+            },
+            {
+              "type": "text",
+              "id": "JfMr2",
+              "x": 116,
+              "y": 9,
+              "fill": "$text",
+              "content": "阿峰路亚",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "900"
+            },
+            {
+              "type": "text",
+              "id": "SrRt2",
+              "x": 116,
+              "y": 32,
+              "fill": "$muted",
+              "content": "刚刚在线 · 来自组队约",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "icon_font",
+              "id": "jha4x",
+              "x": 333,
+              "y": 16,
+              "width": 26,
+              "height": 26,
+              "iconFontName": "more_horiz",
+              "iconFontFamily": "Material Symbols Outlined",
+              "fill": "$text"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Y8f7By",
+          "x": 16,
+          "y": 116,
+          "width": 343,
+          "height": 48,
+          "fill": "$soft-orange",
+          "cornerRadius": 18,
+          "gap": 8,
+          "padding": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "eBxzD",
+              "width": 20,
+              "height": 20,
+              "iconFontName": "shield",
+              "iconFontFamily": "Material Symbols Outlined",
+              "fill": "$accent"
+            },
+            {
+              "type": "text",
+              "id": "nrfxj",
+              "fill": "$text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "私聊仅用于约钓沟通,勿提前转账或离开平台交易",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hyYyH",
+          "x": 139,
+          "y": 190,
+          "width": 96,
+          "height": 26,
+          "fill": "$surface",
+          "cornerRadius": 13,
+          "layout": "vertical",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "k4N0Hr",
+              "fill": "$muted",
+              "content": "今天 09:18",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "e1y1B",
+          "x": 16,
+          "y": 246,
+          "width": 265,
+          "height": 82,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "vertical",
+          "padding": 14,
+          "children": [
+            {
+              "type": "text",
+              "id": "O9ZF0g",
+              "fill": "$text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "周六那场还有 1 个名额,你如果能 5 点半到,我给你留位。",
+              "lineHeight": 1.35,
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "t6rryU",
+          "x": 16,
+          "y": 348,
+          "width": 305,
+          "height": 78,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "gap": 12,
+          "padding": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 2,
+              "id": "wnAaj",
+              "fill": "$primary",
+              "width": 4,
+              "height": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "stujK",
+              "width": "fill_container",
+              "fill": "#FFFFFF00",
+              "layout": "vertical",
+              "gap": 5,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wADC9",
+                  "fill": "$text",
+                  "content": "周六清晨一起出的",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "ls0iv",
+                  "fill": "$muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "燕子矶江边 · 05月25日 05:30 · 还差1人",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "AWycg",
+          "x": 94,
+          "y": 442,
+          "width": 265,
+          "height": 84,
+          "fill": "$primary",
+          "cornerRadius": 20,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#2D8F8730",
+            "offset": {
+              "x": 0,
+              "y": 4
+            },
+            "blur": 14
+          },
+          "layout": "vertical",
+          "padding": 14,
+          "children": [
+            {
+              "type": "text",
+              "id": "B9Vz6y",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "可以,我带路亚竿和抄网,到了给你发定位。",
+              "lineHeight": 1.35,
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "bRE64",
+          "x": 16,
+          "y": 544,
+          "width": 265,
+          "height": 82,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "vertical",
+          "padding": 14,
+          "children": [
+            {
+              "type": "text",
+              "id": "ckoEe",
+              "fill": "$text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "好,报名后我把集合点和停车位置发你。",
+              "lineHeight": 1.35,
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "A8bhR",
+          "x": 0,
+          "y": 0,
+          "fill": "#00000066",
+          "width": 375,
+          "height": 812
+        },
+        {
+          "type": "frame",
+          "id": "Va3oc",
+          "x": 0,
+          "y": 350,
+          "name": "Chat More Sheet",
+          "width": 375,
+          "height": 462,
+          "fill": "$surface",
+          "cornerRadius": [
+            28,
+            28,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            12,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "X23KAd",
+              "width": 44,
+              "height": 5,
+              "fill": "$border",
+              "cornerRadius": 3
+            },
+            {
+              "type": "frame",
+              "id": "npPyB",
+              "width": "fill_container",
+              "height": 36,
+              "fill": "#FFFFFF00",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "CizhT",
+                  "fill": "$muted",
+                  "content": "取消",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "Mw5jg",
+                  "fill": "$text",
+                  "content": "聊天设置",
+                  "fontFamily": "Inter",
+                  "fontSize": 17,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "xYZS8",
+                  "fill": "$primary",
+                  "content": "完成",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "900"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1d5WE",
+              "width": "fill_container",
+              "height": 58,
+              "fill": "$soft-primary",
+              "cornerRadius": 18,
+              "padding": [
+                0,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "uiUCf",
+                  "fill": "$primary",
+                  "content": "阿峰路亚 · 组队私聊",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "GIcPH",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "verified_user",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$primary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TafCT",
+              "name": "Chat Actions",
+              "width": "fill_container",
+              "height": 204,
+              "fill": "$background",
+              "cornerRadius": 18,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "kFD4l",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fhDaH",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "ixmso",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "person",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "HTAyN",
+                          "fill": "$text",
+                          "content": "查看个人主页",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "Ddzbd",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "chevron_right",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "SgFzP",
+                  "fill": "$border",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "c6sJt",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YGu6l",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "jyEd1",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "notifications_off",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "S0AMEI",
+                          "fill": "$text",
+                          "content": "消息免打扰",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "DM7mR",
+                      "width": 42,
+                      "height": 24,
+                      "fill": "$border",
+                      "cornerRadius": 12,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "jq7dS",
+                          "x": 2,
+                          "y": 2,
+                          "fill": "$surface",
+                          "width": 20,
+                          "height": 20
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "RwL9R",
+                  "fill": "$border",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "DmuGr",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "m2fwFC",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "PCjNq",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "report",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$warning"
+                        },
+                        {
+                          "type": "text",
+                          "id": "X6RT8L",
+                          "fill": "$warning",
+                          "content": "举报",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "SuRdu",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "chevron_right",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Tg9pm",
+                  "fill": "$border",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "K5X94",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "SFo0H",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "mtdtH",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "block",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$warning"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jwaa3",
+                          "fill": "$warning",
+                          "content": "拉黑",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "gxxOl",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "chevron_right",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "x7tay",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$soft-orange",
+              "cornerRadius": 16,
+              "gap": 8,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "n6rLu8",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "shield",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$secondary"
+                },
+                {
+                  "type": "text",
+                  "id": "PV0JI",
+                  "fill": "$text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "私聊安全设置只影响当前会话，举报和拉黑提交后可在设置中管理。",
+                  "lineHeight": 1.25,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Nafyp",
+      "x": 4565,
+      "y": 3480,
+      "name": "37 取消收藏确认 375x812",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$background",
+      "cornerRadius": 28,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "S8eR4",
+          "x": 0,
+          "y": 0,
+          "name": "Status",
+          "width": 375,
+          "height": 44,
+          "fill": "#FFFFFF00",
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "xKTHW",
+              "x": 24,
+              "y": 13,
+              "fill": "$text",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "tzebF",
+          "x": 0,
+          "y": 44,
+          "fill": "$surface",
+          "width": 375,
+          "height": 48
+        },
+        {
+          "type": "icon_font",
+          "id": "Vmy5b",
+          "x": 16,
+          "y": 56,
+          "width": 24,
+          "height": 24,
+          "iconFontName": "arrow_back",
+          "iconFontFamily": "Material Symbols Outlined",
+          "fill": "$text"
+        },
+        {
+          "type": "text",
+          "id": "i3oEq",
+          "x": 151,
+          "y": 56,
+          "fill": "$text",
+          "content": "我的收藏",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "900"
+        },
+        {
+          "type": "icon_font",
+          "id": "z2qfD",
+          "x": 337,
+          "y": 56,
+          "width": 24,
+          "height": 24,
+          "iconFontName": "search",
+          "iconFontFamily": "Material Symbols Outlined",
+          "fill": "$text"
+        },
+        {
+          "type": "frame",
+          "id": "FGQrj",
+          "x": 16,
+          "y": 112,
+          "width": 343,
+          "height": 42,
+          "fill": "$surface",
+          "cornerRadius": 21,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "padding": 4,
+          "children": [
+            {
+              "type": "frame",
+              "id": "P9YQFE",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$primary",
+              "cornerRadius": 17,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JfG0J",
+                  "fill": "#FFFFFF",
+                  "content": "钓点 3",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sAcal",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "#FFFFFF00",
+              "cornerRadius": 17,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "vxYMt",
+                  "fill": "$text",
+                  "content": "钓友 3",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Ceads",
+          "x": 16,
+          "y": 170,
+          "width": 343,
+          "height": 116,
+          "fill": "$primary",
+          "cornerRadius": 18,
+          "gap": 18,
+          "padding": 18,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "oOEd5",
+              "fill": "#FFFFFF",
+              "content": "86",
+              "fontFamily": "Inter",
+              "fontSize": 42,
+              "fontWeight": "900"
+            },
+            {
+              "type": "frame",
+              "id": "BzvxW",
+              "width": "fill_container",
+              "fill": "#FFFFFF00",
+              "layout": "vertical",
+              "gap": 5,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "KoaoG",
+                  "fill": "#FFFFFF",
+                  "content": "江心洲北汊 · 翘嘴窗口",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "n7zdN",
+                  "fill": "#FFFFFFCC",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "气压稳定, 东南风 2 级\n距你 4.8km",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "UThQ2",
+          "x": 16,
+          "y": 304,
+          "width": 343,
+          "height": 118,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Qm62a",
+              "x": 14,
+              "y": 14,
+              "width": 42,
+              "height": 24,
+              "fill": "$soft-primary",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "type": "text",
+              "id": "f2eeIk",
+              "x": 24,
+              "y": 18,
+              "fill": "$primary",
+              "content": "钓点",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "900"
+            },
+            {
+              "type": "text",
+              "id": "jCBFH",
+              "x": 16,
+              "y": 50,
+              "fill": "$text",
+              "content": "江心洲北汊",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "900"
+            },
+            {
+              "type": "text",
+              "id": "PCYlK",
+              "x": 16,
+              "y": 76,
+              "fill": "$muted",
+              "textGrowth": "fixed-width",
+              "width": 240,
+              "content": "路亚 · 翘嘴/鲈鱼 · 江湾\n今日宜钓评分 86",
+              "lineHeight": 1.35,
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "kXDls",
+              "x": 303,
+              "y": 50,
+              "fill": "$primary",
+              "content": "取消",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "900"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "V6tPrR",
+          "x": 16,
+          "y": 434,
+          "width": 343,
+          "height": 118,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "jwzJr",
+              "x": 14,
+              "y": 14,
+              "width": 42,
+              "height": 24,
+              "fill": "$soft-primary",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "type": "text",
+              "id": "eAVnQ",
+              "x": 24,
+              "y": 18,
+              "fill": "$primary",
+              "content": "钓点",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "900"
+            },
+            {
+              "type": "text",
+              "id": "oPBBc",
+              "x": 16,
+              "y": 50,
+              "fill": "$text",
+              "content": "燕子矶江边",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "900"
+            },
+            {
+              "type": "text",
+              "id": "oqAYk",
+              "x": 16,
+              "y": 76,
+              "fill": "$muted",
+              "textGrowth": "fixed-width",
+              "width": 240,
+              "content": "野钓 · 鲫鱼 · 05-12 早窗\n收藏于今天",
+              "lineHeight": 1.35,
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Y1OgfW",
+              "x": 303,
+              "y": 50,
+              "fill": "$primary",
+              "content": "取消",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "900"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "uCPrN",
+          "x": 16,
+          "y": 582,
+          "width": 343,
+          "height": 118,
+          "fill": "$soft-orange",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "YEZ7P",
+              "x": 14,
+              "y": 14,
+              "width": 42,
+              "height": 24,
+              "fill": "$soft-orange",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "type": "text",
+              "id": "M1jEbA",
+              "x": 24,
+              "y": 18,
+              "fill": "$accent",
+              "content": "鱼获",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "900"
+            },
+            {
+              "type": "text",
+              "id": "m6gSWk",
+              "x": 16,
+              "y": 50,
+              "fill": "$text",
+              "content": "老王的 1.2斤板鲫",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "900"
+            },
+            {
+              "type": "text",
+              "id": "v00Qs",
+              "x": 16,
+              "y": 76,
+              "fill": "$text",
+              "textGrowth": "fixed-width",
+              "width": 240,
+              "content": "燕子矶江边 · 5-12 早窗\n气压回升, 早窗连竿",
+              "lineHeight": 1.35,
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "onKTR",
+              "x": 303,
+              "y": 50,
+              "fill": "$primary",
+              "content": "查看",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "900"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "ZC7eG",
+          "x": 0,
+          "y": 0,
+          "fill": "#00000066",
+          "width": 375,
+          "height": 812
+        },
+        {
+          "type": "frame",
+          "id": "ezDhT",
+          "x": 0,
+          "y": 390,
+          "name": "Favorite Cancel Sheet",
+          "width": 375,
+          "height": 422,
+          "fill": "$surface",
+          "cornerRadius": [
+            28,
+            28,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            12,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ZKOtj",
+              "width": 44,
+              "height": 5,
+              "fill": "$border",
+              "cornerRadius": 3
+            },
+            {
+              "type": "frame",
+              "id": "sj7fy",
+              "width": "fill_container",
+              "height": 36,
+              "fill": "#FFFFFF00",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cNyRV",
+                  "fill": "$muted",
+                  "content": "取消",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "R5pfcs",
+                  "fill": "$text",
+                  "content": "取消收藏",
+                  "fontFamily": "Inter",
+                  "fontSize": 17,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "Ctbgb",
+                  "fill": "$primary",
+                  "content": "完成",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "900"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Ktj71",
+              "width": "fill_container",
+              "height": 74,
+              "fill": "$soft-primary",
+              "cornerRadius": 18,
+              "gap": 12,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oxPTB",
+                  "width": 46,
+                  "height": 46,
+                  "fill": "$map-water",
+                  "cornerRadius": 14
+                },
+                {
+                  "type": "frame",
+                  "id": "KlKQM",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 5,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "f5Ft95",
+                      "fill": "$text",
+                      "content": "燕子矶江边",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "900"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Scru5",
+                      "fill": "$muted",
+                      "content": "取消后可重新从钓点详情收藏",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wiJoD",
+              "width": "fill_container",
+              "height": 94,
+              "fill": "$background",
+              "cornerRadius": 18,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Sv4w8",
+                  "fill": "$text",
+                  "content": "确认取消收藏？",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "RXrIc",
+                  "fill": "$muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "该钓点会从“我的收藏”中移除，不影响你的历史浏览和鱼获记录。",
+                  "lineHeight": 1.3,
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Js1au",
+              "width": "fill_container",
+              "height": 52,
+              "fill": "#FFFFFF00",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "eGzeN",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$background",
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "HsdpS",
+                      "fill": "$text",
+                      "content": "保留收藏",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "900"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UTObG",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$warning",
+                  "cornerRadius": 26,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Rz8Le",
+                      "fill": "#FFFFFF",
+                      "content": "确认取消",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "900"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s3byz6",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$soft-blue",
+              "cornerRadius": 16,
+              "gap": 8,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "R3RivL",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "info",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$secondary"
+                },
+                {
+                  "type": "text",
+                  "id": "RcOEk",
+                  "fill": "$text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "取消收藏不会通知钓点发布者。",
+                  "lineHeight": 1.25,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "raxpN",
+      "x": 4980,
+      "y": 3480,
+      "name": "38 评论排序选项 375x812",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$background",
+      "cornerRadius": 28,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "X12ok",
+          "x": 0,
+          "y": 0,
+          "name": "Status",
+          "width": 375,
+          "height": 44,
+          "fill": "#FFFFFF00",
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "i4JNIz",
+              "x": 24,
+              "y": 13,
+              "fill": "$text",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "iLdOE",
+          "x": 0,
+          "y": 44,
+          "width": 375,
+          "height": 48,
+          "fill": "$surface",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "$border"
+          },
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "OR6d2",
+              "width": 24,
+              "height": 24,
+              "iconFontName": "arrow_back",
+              "iconFontFamily": "Material Symbols Outlined",
+              "fill": "$text"
+            },
+            {
+              "type": "text",
+              "id": "EisPG",
+              "fill": "$text",
+              "content": "评论 32",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "900"
+            },
+            {
+              "type": "frame",
+              "id": "ozeg7",
+              "fill": "#FFFFFF00",
+              "gap": 3,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M5BgT",
+                  "fill": "$primary",
+                  "content": "最热",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "Da9vO",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "keyboard_arrow_down",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$primary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Pt56t",
+          "x": 16,
+          "y": 112,
+          "width": 343,
+          "height": 84,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "gap": 12,
+          "padding": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "y9DvH",
+              "width": 60,
+              "height": 60,
+              "fill": "$soft-blue",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "J1OiLj",
+                  "width": 26,
+                  "height": 26,
+                  "iconFontName": "image",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$secondary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uKB3C",
+              "width": "fill_container",
+              "fill": "#FFFFFF00",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "KPg6u",
+                  "fill": "$text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "今天燕子矶口还不错,鲫鱼开口很稳",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "VxZoa",
+                  "fill": "$muted",
+                  "content": "阿楠 · 2小时前 · 128赞",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Ht2Mo",
+          "x": 16,
+          "y": 226,
+          "width": 343,
+          "height": 42,
+          "fill": "$surface",
+          "cornerRadius": 21,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "padding": 4,
+          "children": [
+            {
+              "type": "frame",
+              "id": "BWIx6",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$primary",
+              "cornerRadius": 17,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "b3iGuQ",
+                  "fill": "#FFFFFF",
+                  "content": "全部",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "z4gCJT",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "#FFFFFF00",
+              "cornerRadius": 17,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "jSbBw",
+                  "fill": "$text",
+                  "content": "只看楼主",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hzfdh",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "#FFFFFF00",
+              "cornerRadius": 17,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "nmjps",
+                  "fill": "$text",
+                  "content": "最新",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "pCfps",
+          "x": 16,
+          "y": 294,
+          "width": 343,
+          "height": 488,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "l1hsFY",
+              "width": "fill_container",
+              "height": 118,
+              "fill": "#FFFFFF00",
+              "gap": 10,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "Af66U",
+                  "fill": "$soft-primary",
+                  "width": 36,
+                  "height": 36
+                },
+                {
+                  "type": "frame",
+                  "id": "KcD7r",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 7,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KqbiI",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF00",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "TCFOo",
+                          "fill": "$text",
+                          "content": "小周台钓",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "900"
+                        },
+                        {
+                          "type": "text",
+                          "id": "AVvNw",
+                          "fill": "$primary",
+                          "content": "👍 18",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "dLR4W",
+                      "fill": "$text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "这个位置今天水流怎么样?上次去有点走水。",
+                      "lineHeight": 1.35,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "a9YRfL",
+                      "fill": "$muted",
+                      "content": "12分钟前 · 回复",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "KVQHP",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "O6XtLJ",
+              "width": "fill_container",
+              "height": 118,
+              "fill": "#FFFFFF00",
+              "gap": 10,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "l8R8OV",
+                  "fill": "$soft-blue",
+                  "width": 36,
+                  "height": 36
+                },
+                {
+                  "type": "frame",
+                  "id": "o9ogZC",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 7,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tLaG5",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF00",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vRHEq",
+                          "fill": "$text",
+                          "content": "阿峰路亚",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "900"
+                        },
+                        {
+                          "type": "text",
+                          "id": "s41uA",
+                          "fill": "$primary",
+                          "content": "👍 7",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "TEZBg",
+                      "fill": "$text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "翘嘴有口吗?晚上想去试下。",
+                      "lineHeight": 1.35,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "OZp5k",
+                      "fill": "$muted",
+                      "content": "32分钟前 · 回复",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "P5h3C",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "RA7m3",
+              "width": "fill_container",
+              "height": 118,
+              "fill": "#FFFFFF00",
+              "gap": 10,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "xdS1l",
+                  "fill": "$soft-orange",
+                  "width": 36,
+                  "height": 36
+                },
+                {
+                  "type": "frame",
+                  "id": "TsEcZ",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 7,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Zb4JT",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF00",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "o8O9i0",
+                          "fill": "$text",
+                          "content": "江边老王",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "900"
+                        },
+                        {
+                          "type": "text",
+                          "id": "KKuUC",
+                          "fill": "$primary",
+                          "content": "👍 3",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "N4mbr5",
+                      "fill": "$text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "停车注意别压线,昨天有人被贴单。",
+                      "lineHeight": 1.35,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "WCDU6",
+                      "fill": "$muted",
+                      "content": "1小时前 · 回复",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "njzCF",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "d6vUP",
+          "x": 0,
+          "y": 0,
+          "fill": "#00000066",
+          "width": 375,
+          "height": 812
+        },
+        {
+          "type": "frame",
+          "id": "TROGi",
+          "x": 0,
+          "y": 418,
+          "name": "Comment Sort Sheet V2",
+          "width": 375,
+          "height": 394,
+          "fill": "$surface",
+          "cornerRadius": [
+            28,
+            28,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            12,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Ajw6Q",
+              "width": 44,
+              "height": 5,
+              "fill": "$border",
+              "cornerRadius": 3
+            },
+            {
+              "type": "frame",
+              "id": "w0WU0l",
+              "width": "fill_container",
+              "height": 36,
+              "fill": "#FFFFFF00",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "jvjWZ",
+                  "fill": "$muted",
+                  "content": "取消",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "XPCzD",
+                  "fill": "$text",
+                  "content": "评论排序",
+                  "fontFamily": "Inter",
+                  "fontSize": 17,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "bevys",
+                  "fill": "$primary",
+                  "content": "完成",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "900"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Av2LK",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$soft-primary",
+              "cornerRadius": 18,
+              "padding": [
+                0,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "g32Mw",
+                  "fill": "$primary",
+                  "content": "当前排序：最热",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "AoVlB",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "check_circle",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$primary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lymrC",
+              "name": "Sort Radios",
+              "width": "fill_container",
+              "height": 154,
+              "fill": "$background",
+              "cornerRadius": 18,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qeYoz",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QJeEQ",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "qkqzA",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "local_fire_department",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wY51m",
+                          "fill": "$text",
+                          "content": "最热",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "scahV",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "check_circle",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "tyLMM",
+                  "fill": "$border",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "YpAgH",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "WTQ1f",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "kU8Z9",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "schedule",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Gjhg9",
+                          "fill": "$text",
+                          "content": "最新",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "aWa0x",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "radio_button_unchecked",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "xOdGd",
+                  "fill": "$border",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "OunLM",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "H7d41",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "C1884",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "account_circle",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$accent"
+                        },
+                        {
+                          "type": "text",
+                          "id": "u7rYj",
+                          "fill": "$text",
+                          "content": "只看楼主",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "MTrm8",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "radio_button_unchecked",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MTT3j",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$soft-blue",
+              "cornerRadius": 16,
+              "gap": 8,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "FZYcH",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "tune",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$secondary"
+                },
+                {
+                  "type": "text",
+                  "id": "lpML5",
+                  "fill": "$text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "排序会保留在当前评论列表，下次进入该鱼获详情仍使用最近选择。",
+                  "lineHeight": 1.25,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "G6NBh",
+      "x": 5395,
+      "y": 3480,
+      "name": "39 组队费用方式选项 375x812",
+      "clip": true,
+      "width": 375,
+      "height": 812,
+      "fill": "$background",
+      "cornerRadius": 28,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "e8uJ2P",
+          "x": 0,
+          "y": 0,
+          "name": "Status",
+          "width": 375,
+          "height": 44,
+          "fill": "#FFFFFF00",
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "X3Ii3h",
+              "x": 24,
+              "y": 13,
+              "fill": "$text",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "b0JoS",
+          "x": 0,
+          "y": 44,
+          "width": 375,
+          "height": 48,
+          "fill": "$surface",
+          "stroke": {
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "$border"
+          },
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "F6xyS",
+              "width": 24,
+              "height": 24,
+              "iconFontName": "arrow_back",
+              "iconFontFamily": "Material Symbols Outlined",
+              "fill": "$text"
+            },
+            {
+              "type": "text",
+              "id": "dDflv",
+              "fill": "$text",
+              "content": "发起组队",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "900"
+            },
+            {
+              "type": "frame",
+              "id": "GhgrD",
+              "width": 58,
+              "height": 36,
+              "fill": "$primary",
+              "cornerRadius": 18,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "UbrZf",
+                  "fill": "#FFFFFF",
+                  "content": "发布",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "zrwTS",
+          "x": 16,
+          "y": 112,
+          "width": 343,
+          "height": 92,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "gap": 14,
+          "padding": 16,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ARlXI",
+              "width": 50,
+              "height": 50,
+              "fill": "$soft-primary",
+              "cornerRadius": 25,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "wAqjC",
+                  "width": 24,
+                  "height": 24,
+                  "iconFontName": "location_on",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$primary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "allvq",
+              "width": "fill_container",
+              "fill": "#FFFFFF00",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MRTgP",
+                  "fill": "$text",
+                  "content": "钓点",
+                  "fontFamily": "Inter",
+                  "fontSize": 17,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "M8EIWM",
+                  "fill": "$muted",
+                  "content": "燕子矶江边 · 可从地图选择",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "icon_font",
+              "id": "QyBvD",
+              "width": 22,
+              "height": 22,
+              "iconFontName": "chevron_right",
+              "iconFontFamily": "Material Symbols Outlined",
+              "fill": "$muted"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "pUydV",
+          "x": 16,
+          "y": 222,
+          "width": 343,
+          "height": 386,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "fGRrA",
+              "width": "fill_container",
+              "height": 76,
+              "fill": "#FFFFFF00",
+              "padding": [
+                0,
+                20
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "hlF6D",
+                  "fill": "$text",
+                  "content": "时间",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "frame",
+                  "id": "OG9WW",
+                  "fill": "#FFFFFF00",
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "HUSC4",
+                      "fill": "$primary",
+                      "content": "05月25日 05:30-11:00",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "900"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "FPFRD",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "chevron_right",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "M9lFq",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "YaTp2",
+              "width": "fill_container",
+              "height": 76,
+              "fill": "#FFFFFF00",
+              "padding": [
+                0,
+                20
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T9vSq9",
+                  "fill": "$text",
+                  "content": "目标鱼种",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "frame",
+                  "id": "nDqEM",
+                  "fill": "#FFFFFF00",
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "H6PhM",
+                      "fill": "$primary",
+                      "content": "鲫鱼 / 鲤鱼",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "900"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "Sy39t",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "chevron_right",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "WFkHw",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "Gyy07",
+              "width": "fill_container",
+              "height": 76,
+              "fill": "#FFFFFF00",
+              "padding": [
+                0,
+                20
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "J0UWZv",
+                  "fill": "$text",
+                  "content": "人数限制",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "frame",
+                  "id": "aVA70",
+                  "fill": "#FFFFFF00",
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "QbLOH",
+                      "fill": "$primary",
+                      "content": "−    6    +",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "900"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "ddKrK",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "chevron_right",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "cX3ch",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "IoKVh",
+              "width": "fill_container",
+              "height": 76,
+              "fill": "#FFFFFF00",
+              "padding": [
+                0,
+                20
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tQDX8",
+                  "fill": "$text",
+                  "content": "费用方式",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "frame",
+                  "id": "KUnOz",
+                  "fill": "#FFFFFF00",
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OHXzz",
+                      "fill": "$primary",
+                      "content": "AA",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "900"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "qoK3G",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "chevron_right",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "JOiaC",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "pT8pl",
+              "width": "fill_container",
+              "height": 76,
+              "fill": "#FFFFFF00",
+              "padding": [
+                0,
+                20
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "A8ccam",
+                  "fill": "$text",
+                  "content": "需要拼车",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "frame",
+                  "id": "yUUPn",
+                  "width": 54,
+                  "height": 32,
+                  "fill": "$primary",
+                  "cornerRadius": 16,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "i6gEzi",
+                      "x": 24,
+                      "y": 3,
+                      "fill": "$surface",
+                      "width": 26,
+                      "height": 26
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "u0It6",
+              "fill": "$border",
+              "width": "fill_container",
+              "height": 1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "q9RZhc",
+          "x": 16,
+          "y": 620,
+          "width": 343,
+          "height": 192,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A2B3310",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 12
+          },
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "t4BrV",
+              "fill": "$text",
+              "content": "备注",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "900"
+            },
+            {
+              "type": "frame",
+              "id": "vvtNF",
+              "width": "fill_container",
+              "height": 108,
+              "fill": "$background",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wuCEU",
+                  "fill": "$text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "早口窗口短，建议 5 点前到。带抄网，岸边湿滑。",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "nMj4X",
+          "x": 0,
+          "y": 0,
+          "fill": "#00000066",
+          "width": 375,
+          "height": 812
+        },
+        {
+          "type": "frame",
+          "id": "dyU0S",
+          "x": 0,
+          "y": 418,
+          "name": "Fee Option Sheet V2",
+          "width": 375,
+          "height": 394,
+          "fill": "$surface",
+          "cornerRadius": [
+            28,
+            28,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            12,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Rebu2",
+              "width": 44,
+              "height": 5,
+              "fill": "$border",
+              "cornerRadius": 3
+            },
+            {
+              "type": "frame",
+              "id": "XwCBX",
+              "width": "fill_container",
+              "height": 36,
+              "fill": "#FFFFFF00",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "OSkv9",
+                  "fill": "$muted",
+                  "content": "取消",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "rzefD",
+                  "fill": "$text",
+                  "content": "费用方式",
+                  "fontFamily": "Inter",
+                  "fontSize": 17,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "text",
+                  "id": "sH3FI",
+                  "fill": "$primary",
+                  "content": "完成",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "900"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "d7dfu",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$soft-primary",
+              "cornerRadius": 18,
+              "padding": [
+                0,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tAqqn",
+                  "fill": "$primary",
+                  "content": "当前选择：AA",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "900"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "ko1HI",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "check_circle",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$primary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "N6P2b",
+              "name": "Fee Radios",
+              "width": "fill_container",
+              "height": 154,
+              "fill": "$background",
+              "cornerRadius": 18,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "m96oc4",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "K4RgQ",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "mr3ye",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "groups",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "o7fTzx",
+                          "fill": "$text",
+                          "content": "AA",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "ylYdP",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "check_circle",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "ig4kP",
+                  "fill": "$border",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "ecsus",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "C3hqMP",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "x7LOm",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "workspace_premium",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$accent"
+                        },
+                        {
+                          "type": "text",
+                          "id": "BL4GQ",
+                          "fill": "$text",
+                          "content": "发起人请客",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "tL47X",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "radio_button_unchecked",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "brnna",
+                  "fill": "$border",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "J9965",
+                  "width": "fill_container",
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Q6BiJv",
+                      "fill": "#FFFFFF00",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "Cp93Z",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "receipt_long",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$secondary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dnehU",
+                          "fill": "$text",
+                          "content": "各自承担",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "900"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "X0S1C",
+                      "width": 22,
+                      "height": 22,
+                      "iconFontName": "radio_button_unchecked",
+                      "iconFontFamily": "Material Symbols Outlined",
+                      "fill": "$muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sfAs8",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$soft-blue",
+              "cornerRadius": 16,
+              "gap": 8,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "yBuoo",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "lightbulb",
+                  "iconFontFamily": "Material Symbols Outlined",
+                  "fill": "$secondary"
+                },
+                {
+                  "type": "text",
+                  "id": "z6u3xG",
+                  "fill": "$text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "费用说明会展示在组队详情页，报名前所有钓友都能看到。",
                   "lineHeight": 1.25,
                   "fontFamily": "Inter",
                   "fontSize": 12,

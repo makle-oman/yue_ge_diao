@@ -61,7 +61,6 @@
         </view>
       </view>
 
-      <view class="msg-end-pad" />
     </scroll-view>
 
     <CustomTabBar current="message" />

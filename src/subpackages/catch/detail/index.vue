@@ -82,7 +82,6 @@
           <text class="comments-text">{{ catchData.commentPreview }}</text>
         </view>
 
-        <view class="end-pad" />
       </view>
     </scroll-view>
 

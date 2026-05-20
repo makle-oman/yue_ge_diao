@@ -81,7 +81,6 @@
         <text class="cf-helper-text">自定义鱼种仅在你的鱼库和发布记录中展示，后续可合并到官方鱼种。</text>
       </view>
 
-      <view class="cf-end-pad" />
     </scroll-view>
 
     <!-- 底部 CTA -->

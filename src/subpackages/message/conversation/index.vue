@@ -90,6 +90,62 @@
         </view>
       </view>
     </view>
+
+    <!-- 聊天更多操作 (Design 36) -->
+    <mxy-bottom-sheet
+      v-model:visible="moreOpen"
+      title="聊天设置"
+      @done="moreOpen = false"
+    >
+      <view class="more-banner">
+        <text class="more-banner-text">{{ peer.name }} · 组队私聊</text>
+        <mxy-icon name="verified_user" :size="40" color="#2D8F87" />
+      </view>
+
+      <view class="more-actions-card">
+        <view class="more-row" @click="onChatViewProfile">
+          <view class="more-row-left">
+            <mxy-icon name="person" :size="40" color="#1A2B33" />
+            <text class="more-row-text">查看个人主页</text>
+          </view>
+          <mxy-icon name="chevron_right" :size="36" color="#99A5AD" />
+        </view>
+        <view class="more-divider" />
+
+        <view class="more-row" @click="muted = !muted">
+          <view class="more-row-left">
+            <mxy-icon name="notifications_off" :size="40" color="#1A2B33" />
+            <text class="more-row-text">消息免打扰</text>
+          </view>
+          <view class="more-switch" :class="{ on: muted }">
+            <view class="more-switch-dot" />
+          </view>
+        </view>
+        <view class="more-divider" />
+
+        <view class="more-row" @click="onChatReport">
+          <view class="more-row-left">
+            <mxy-icon name="report" :size="40" color="#FF6B6B" />
+            <text class="more-row-text danger">举报</text>
+          </view>
+          <mxy-icon name="chevron_right" :size="36" color="#99A5AD" />
+        </view>
+        <view class="more-divider" />
+
+        <view class="more-row" @click="onChatBlock">
+          <view class="more-row-left">
+            <mxy-icon name="block" :size="40" color="#FF6B6B" />
+            <text class="more-row-text danger">拉黑</text>
+          </view>
+          <mxy-icon name="chevron_right" :size="36" color="#99A5AD" />
+        </view>
+      </view>
+
+      <view class="more-tip">
+        <mxy-icon name="shield" :size="36" color="#5BA9C4" />
+        <text class="more-tip-text">私聊安全设置只影响当前会话，举报和拉黑提交后可在设置中管理。</text>
+      </view>
+    </mxy-bottom-sheet>
   </view>
 </template>
 
@@ -149,10 +205,36 @@ const onBack = () => {
 };
 
 const onMore = () => {
+  moreOpen.value = true;
+};
+
+const moreOpen = ref(false);
+const muted = ref(false);
+
+const onChatViewProfile = () => {
+  moreOpen.value = false;
+  uni.navigateTo({ url: `/subpackages/social/user-detail/index?name=${peer.value.name}` })
+    .catch(() => {});
+};
+const onChatReport = () => {
+  moreOpen.value = false;
   uni.showActionSheet({
-    itemList: ['查看个人主页', '消息免打扰', '举报', '拉黑'],
-    success: () => {},
+    itemList: ['辱骂攻击', '广告引流', '诈骗信息', '其他'],
+    success: () => uni.showToast({ title: '已提交审核', icon: 'success' }),
     fail: () => {},
+  });
+};
+const onChatBlock = () => {
+  uni.showModal({
+    title: '拉黑该用户',
+    content: '拉黑后将不再收到对方消息，可在设置中解除',
+    confirmColor: '#FF6B6B',
+    success: (r) => {
+      if (!r.confirm) return;
+      moreOpen.value = false;
+      uni.showToast({ title: '已拉黑', icon: 'success' });
+      setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 800);
+    },
   });
 };
 

@@ -1,28 +1,30 @@
 <template>
   <view class="team-detail">
-    <!-- Hero -->
-    <view class="hero">
-      <image class="hero-img" :src="team.cover" mode="aspectFill" />
-      <view class="hero-shade" />
-      <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
-        <view class="icon-btn" @click="onBack">
-          <mxy-icon name="arrow_back" :size="40" color="#fff" />
-        </view>
-        <view class="status-badge">
-          <text class="status-badge-text">{{ team.statusText }}</text>
-        </view>
+    <!-- 顶部悬浮（脱离滚动流） -->
+    <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <view class="icon-btn" @click="onBack">
+        <mxy-icon name="arrow_back" :size="40" color="#fff" />
       </view>
-      <view class="hero-bottom">
-        <text class="hero-title">{{ team.title }}</text>
-        <text class="hero-sub">{{ team.subtitle }}</text>
-        <view class="countdown">
-          <text class="countdown-text">距离出发 {{ countdown }}</text>
-        </view>
+      <view class="status-badge">
+        <text class="status-badge-text">{{ team.statusText }}</text>
       </view>
     </view>
 
     <!-- 内容 -->
     <scroll-view class="content" scroll-y>
+      <!-- Hero（随内容滚动） -->
+      <view class="hero">
+        <image class="hero-img" :src="team.cover" mode="aspectFill" />
+        <view class="hero-shade" />
+        <view class="hero-bottom">
+          <text class="hero-title">{{ team.title }}</text>
+          <text class="hero-sub">{{ team.subtitle }}</text>
+          <view class="countdown">
+            <text class="countdown-text">距离出发 {{ countdown }}</text>
+          </view>
+        </view>
+      </view>
+
       <view class="panel">
         <!-- 汇总 -->
         <view class="summary-card">
@@ -77,7 +79,6 @@
           <text class="desc-text">{{ team.desc }}</text>
         </view>
 
-        <view class="end-pad" />
       </view>
     </scroll-view>
 

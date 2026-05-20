@@ -32,7 +32,10 @@
   padding: 16rpx 32rpx 0;
   display: flex;
   justify-content: space-between;
-  z-index: 3;
+  z-index: 10;
+  pointer-events: none;
+
+  .icon-btn { pointer-events: auto; }
 }
 .icon-btn {
   width: 80rpx;
@@ -273,4 +276,3 @@
   }
 }
 
-.end-pad { height: 48rpx; }

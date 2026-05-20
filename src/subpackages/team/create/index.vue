@@ -86,7 +86,6 @@
           <text class="policy-text">发布后公开到附近列表；爽约可被发起人标记并影响排序。</text>
         </view>
 
-        <view class="end-pad" />
       </view>
     </scroll-view>
 
@@ -96,6 +95,43 @@
         <text class="submit-btn-text">发布组队</text>
       </view>
     </view>
+
+    <!-- 费用方式 Sheet (Design 39) -->
+    <mxy-bottom-sheet
+      v-model:visible="costOpen"
+      title="费用方式"
+      @done="onCostDone"
+    >
+      <view class="cost-current">
+        <text class="cost-current-text">当前选择：{{ form.cost }}</text>
+        <mxy-icon name="check_circle" :size="40" color="#2D8F87" />
+      </view>
+
+      <view class="cost-options-card">
+        <view
+          v-for="(opt, i) in costOptions"
+          :key="opt.value"
+        >
+          <view class="cost-option" @click="draftCost = opt.value">
+            <view class="cost-option-left">
+              <mxy-icon :name="opt.icon" :size="40" :color="opt.value === draftCost ? '#2D8F87' : '#6B7B85'" />
+              <text class="cost-option-text" :class="{ active: opt.value === draftCost }">{{ opt.label }}</text>
+            </view>
+            <mxy-icon
+              :name="opt.value === draftCost ? 'check_circle' : 'radio_button_unchecked'"
+              :size="40"
+              :color="opt.value === draftCost ? '#2D8F87' : '#99A5AD'"
+            />
+          </view>
+          <view v-if="i !== costOptions.length - 1" class="cost-divider" />
+        </view>
+      </view>
+
+      <view class="cost-tip">
+        <mxy-icon name="lightbulb" :size="36" color="#5BA9C4" />
+        <text class="cost-tip-text">费用说明会展示在组队详情页，报名前所有钓友都能看到。</text>
+      </view>
+    </mxy-bottom-sheet>
   </view>
 </template>
 
@@ -119,10 +155,24 @@ const form = ref({
 const onPickSpot = () => uni.showToast({ title: '选择钓点 (待开发)', icon: 'none' });
 const onPickTime = () => uni.showToast({ title: '选择时间 (待开发)', icon: 'none' });
 const onPickFish = () => uni.showToast({ title: '选择鱼种 (待开发)', icon: 'none' });
-const onPickCost = () => uni.showActionSheet({
-  itemList: ['AA', '发起人请客', '各自承担'],
-  success: (r) => { form.value.cost = ['AA', '发起人请客', '各自承担'][r.tapIndex]; },
-});
+
+type CostKey = 'AA' | '发起人请客' | '各自承担';
+const costOptions: { value: CostKey; label: CostKey; icon: string }[] = [
+  { value: 'AA',         label: 'AA',         icon: 'group' },
+  { value: '发起人请客', label: '发起人请客', icon: 'volunteer_activism' },
+  { value: '各自承担',   label: '各自承担',   icon: 'account_balance_wallet' },
+];
+const costOpen = ref(false);
+const draftCost = ref<CostKey>('AA');
+
+const onPickCost = () => {
+  draftCost.value = form.value.cost as CostKey;
+  costOpen.value = true;
+};
+const onCostDone = () => {
+  form.value.cost = draftCost.value;
+  costOpen.value = false;
+};
 const onStep = (delta: number) => {
   const next = form.value.max + delta;
   if (next < 2) {

@@ -1,30 +1,30 @@
 <template>
   <view class="spot-detail">
-    <!-- 顶部 Hero -->
-    <view class="hero">
-      <swiper class="hero-swiper" :current="heroIndex" @change="onHeroChange" circular>
-        <swiper-item v-for="(src, idx) in spot.gallery" :key="idx">
-          <image class="hero-img" :src="src" mode="aspectFill" />
-        </swiper-item>
-      </swiper>
-      <view class="hero-shade" />
-
-      <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
-        <view class="hero-icon-btn" @click="onBack">
-          <mxy-icon name="arrow_back" :size="40" color="#fff" />
-        </view>
-        <view class="hero-icon-btn" @click="onShare">
-          <mxy-icon name="ios_share" :size="40" color="#fff" />
-        </view>
+    <!-- 顶部悬浮操作（脱离滚动流） -->
+    <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <view class="hero-icon-btn" @click="onBack">
+        <mxy-icon name="arrow_back" :size="40" color="#fff" />
       </view>
-
-      <view class="hero-count">
-        <text class="hero-count-text">{{ heroIndex + 1 }}/{{ spot.gallery.length }}</text>
+      <view class="hero-icon-btn" @click="onShare">
+        <mxy-icon name="ios_share" :size="40" color="#fff" />
       </view>
     </view>
 
     <!-- 滚动内容 -->
     <scroll-view class="content" scroll-y>
+      <!-- 顶部 Hero（随内容滚动） -->
+      <view class="hero">
+        <swiper class="hero-swiper" :current="heroIndex" @change="onHeroChange" circular>
+          <swiper-item v-for="(src, idx) in spot.gallery" :key="idx">
+            <image class="hero-img" :src="src" mode="aspectFill" />
+          </swiper-item>
+        </swiper>
+        <view class="hero-shade" />
+        <view class="hero-count">
+          <text class="hero-count-text">{{ heroIndex + 1 }}/{{ spot.gallery.length }}</text>
+        </view>
+      </view>
+
       <!-- 钓点基础信息卡 -->
       <view class="spot-info">
         <view class="spot-info-head">
@@ -89,7 +89,6 @@
         </view>
       </view>
 
-      <view class="end-pad" />
     </scroll-view>
 
     <!-- 底部 CTA 栏 -->
