@@ -3,7 +3,7 @@
     class="mxy-icon"
     :class="[`weight-${weight}`, { filled }]"
     :style="iconStyle"
-  >{{ glyph }}</text>
+  >{{ name }}</text>
 </template>
 
 <script setup lang="ts">
@@ -12,14 +12,15 @@ import { computed } from 'vue';
 /**
  * 通用图标组件 - 基于 Material Symbols Outlined 字体
  *
+ * 字体在 App.vue 通过 @import 'styles/icon-font.scss' 全局以 base64 内联注入,
+ * 启动即可用,无需运行时加载,小程序/H5/App 三端一致。
+ *
  * 用法:
  *   <mxy-icon name="map" />               // 默认 36rpx,继承色
  *   <mxy-icon name="favorite" filled />   // 实心填充
  *   <mxy-icon name="add" :size="48" color="#fff" weight="700" />
  *
- * name 直接对应 Material Symbols 图标的 ligature 名称,
- * 例如设计稿里的 'map' / 'chat' / 'person' / 'chevron_right' 等。
- * 完整图标库见 https://fonts.google.com/icons
+ * 新增图标: 在 scripts/build-icon-font.mjs 的 ICON_NAMES 增加 ligature 名,重跑脚本。
  */
 const props = withDefaults(defineProps<{
   /** Material Symbols 图标名(ligature),例如 'map'、'chat'、'chevron_right' */
@@ -39,33 +40,6 @@ const props = withDefaults(defineProps<{
   filled: false,
 });
 
-/**
- * 兜底字符映射 - 仅在字体加载失败时显示,确保不会出现连字未生效的乱码。
- * Key 是 Material Symbols 的 ligature 名,Value 是降级 Unicode 字符。
- */
-const FALLBACK_GLYPH: Record<string, string> = {
-  arrow_back_ios_new: '‹',
-  chevron_right: '›',
-  chevron_left: '‹',
-  close: '✕',
-  add: '+',
-  check: '✓',
-  search: '🔍',
-  map: '🗺',
-  chat: '💬',
-  person: '👤',
-  notifications: '🔔',
-  favorite: '♥',
-  share: '↪',
-  more_horiz: '⋯',
-  edit: '✎',
-  settings: '⚙',
-  my_location: '📍',
-  location_on: '📍',
-};
-
-const glyph = computed(() => props.name);
-
 const iconStyle = computed(() => ({
   fontSize: props.size + 'rpx',
   width: props.size + 'rpx',
@@ -74,10 +48,6 @@ const iconStyle = computed(() => ({
   color: props.color,
   fontVariationSettings: `'FILL' ${props.filled ? 1 : 0}, 'wght' ${props.weight}, 'GRAD' 0, 'opsz' 24`,
 }));
-
-// 用于在 console 中查询兜底字符(暂时未启用,但保留)
-const _fallback = FALLBACK_GLYPH;
-void _fallback;
 </script>
 
 <style lang="scss" scoped>

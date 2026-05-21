@@ -2,7 +2,7 @@
   <view class="mxy-navbar" :class="{ transparent }" :style="{ paddingTop: statusBarHeight + 'px' }">
     <view
       class="navbar-inner"
-      :style="{ height: navBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+      :style="innerStyle"
     >
       <view class="left-slot" @click="onBack">
         <slot name="left">
@@ -49,6 +49,19 @@ const { statusBarHeight, navBarHeight, capsuleRightWidth } = useSystemInfo();
 const iconColor = computed(() => (props.transparent ? props.inverseColor : '#1A2B33'));
 const textColor = computed(() => (props.transparent ? props.inverseColor : '#1A2B33'));
 
+/**
+ * 微信小程序需要按胶囊位置动态对齐导航栏;
+ * H5/App 没有胶囊,返回空对象让下方 CSS 的 height: 88rpx 生效。
+ */
+const innerStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {};
+  // #ifdef MP-WEIXIN
+  s.height = navBarHeight.value + 'px';
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
+
 const onBack = () => {
   emit('back');
   uni.navigateBack({ delta: 1 }).catch(() => {
@@ -76,6 +89,7 @@ const onBack = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 88rpx;
   padding: 0 $space-sm;
 }
 

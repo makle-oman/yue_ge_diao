@@ -12,16 +12,26 @@
  *   menuButtonHeight  - 微信胶囊高
  *   menuButtonLeft    - 微信胶囊左边 X
  *   navBarHeight      - 自定义导航栏推荐高度 = (top - statusBar)*2 + height，
- *                       让自定义内容与胶囊垂直居中对齐
+ *                       让自定义内容与胶囊垂直居中对齐。
+ *                       ⚠️ 仅 MP-WEIXIN 返回真实值；其他端返回 0，
+ *                       由调用方根据值是否 > 0 决定是否应用 inline 高度
+ *                       （H5/App 应让 CSS 自带的固定高度生效）。
  *   capsuleRightWidth - 顶部右侧应预留宽度 = windowWidth - menuButton.left + 8，
  *                       任何顶部右侧浮元素用它作 padding-right / right，
- *                       即可避免被胶囊盖住
+ *                       即可避免被胶囊盖住。
+ *                       ⚠️ 仅 MP-WEIXIN 返回真实值；其他端返回 0
+ *                       （H5/App 没有胶囊，不需要预留空间）。
  *
  * 用法：
  *   const { statusBarHeight, navBarHeight, capsuleRightWidth } = useSystemInfo();
- *   <view :style="{ paddingTop: statusBarHeight + 'px',
- *                   paddingRight: capsuleRightWidth + 'px',
- *                   height: navBarHeight + statusBarHeight + 'px' }">
+ *   const navStyle = computed(() => {
+ *     // #ifdef MP-WEIXIN
+ *     return { height: navBarHeight.value + 'px', paddingRight: capsuleRightWidth.value + 'px' };
+ *     // #endif
+ *     // #ifndef MP-WEIXIN
+ *     return {};
+ *     // #endif
+ *   });
  */
 
 import { computed, ref } from 'vue';
@@ -56,18 +66,32 @@ export function useSystemInfo() {
   }
   // #endif
 
-  /** 推荐的自定义导航栏可见高度 (不含状态栏)。胶囊在其中天然垂直居中。 */
-  const navBarHeight = computed(() =>
-    Math.max(
+  /**
+   * 推荐的自定义导航栏可见高度 (不含状态栏)。胶囊在其中天然垂直居中。
+   * 非微信小程序返回 0,表示「不要应用 inline 高度,让 CSS 默认值生效」。
+   */
+  const navBarHeight = computed((): number => {
+    let v = 0;
+    // #ifdef MP-WEIXIN
+    v = Math.max(
       44,
       (menuButtonTop.value - statusBarHeight.value) * 2 + menuButtonHeight.value,
-    ),
-  );
+    );
+    // #endif
+    return v;
+  });
 
-  /** 顶部右侧需为胶囊预留的最小宽度（含 8px 视觉间距），px。 */
-  const capsuleRightWidth = computed(() =>
-    Math.max(96, windowWidth.value - menuButtonLeft.value + 8),
-  );
+  /**
+   * 顶部右侧需为胶囊预留的最小宽度(含 8px 视觉间距),px。
+   * 非微信小程序返回 0(无胶囊,无需预留)。
+   */
+  const capsuleRightWidth = computed((): number => {
+    let v = 0;
+    // #ifdef MP-WEIXIN
+    v = Math.max(96, windowWidth.value - menuButtonLeft.value + 8);
+    // #endif
+    return v;
+  });
 
   return {
     statusBarHeight,

@@ -33,7 +33,7 @@
     <view class="top-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view
         class="top-row"
-        :style="{ paddingRight: capsuleRightWidth + 'px' }"
+        :style="topRowStyle"
       >
         <view class="city-pill" @click="onCityTap">
           <text class="city-name">{{ city }}</text>
@@ -275,6 +275,17 @@ const CHIP_TYPE_MAP: Record<string, SpotType[]> = {
 const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
+
+/**
+ * 仅微信小程序需要给顶部右侧预留胶囊空间;H5/App 不需要 padding。
+ */
+const topRowStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {};
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 const city = ref('南京');
 const hasUnread = ref(true);
