@@ -1,4 +1,3 @@
-* { box-sizing: border-box; }
 
 .catch-detail {
   position: relative;
@@ -37,7 +36,7 @@
   z-index: 10; /* 高于 panel,始终浮在顶部 */
   pointer-events: none; /* 让中间空白处不拦截滚动 */
 
-  > * { pointer-events: auto; }
+  > view { pointer-events: auto; }
 }
 .hero-icon-btn {
   width: 80rpx;

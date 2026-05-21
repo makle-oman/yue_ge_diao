@@ -1,6 +1,9 @@
 <template>
   <view class="mxy-form-nav-wrap" :style="{ paddingTop: statusBarHeight + 'px' }">
-    <view class="mxy-form-nav">
+    <view
+      class="mxy-form-nav"
+      :style="{ height: navBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+    >
       <view class="nav-left" @click="onBack">
         <mxy-icon v-if="leftText" name="" :size="0" />
         <text v-if="leftText" class="left-text">{{ leftText }}</text>
@@ -39,7 +42,7 @@ const emit = defineEmits<{
   (e: 'back'): void;
 }>();
 
-const { statusBarHeight } = useSystemInfo();
+const { statusBarHeight, navBarHeight, capsuleRightWidth } = useSystemInfo();
 
 const onBack = () => {
   emit('back');
@@ -61,7 +64,6 @@ const onAction = () => {
   border-bottom: 1rpx solid $border-light;
 }
 .mxy-form-nav {
-  height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -1,6 +1,9 @@
 <template>
   <view class="mxy-navbar" :class="{ transparent }" :style="{ paddingTop: statusBarHeight + 'px' }">
-    <view class="navbar-inner">
+    <view
+      class="navbar-inner"
+      :style="{ height: navBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+    >
       <view class="left-slot" @click="onBack">
         <slot name="left">
           <mxy-icon v-if="showBack" name="arrow_back_ios_new" :size="40" :color="iconColor" />
@@ -41,7 +44,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{ (e: 'back'): void }>();
 
-const { statusBarHeight } = useSystemInfo();
+const { statusBarHeight, navBarHeight, capsuleRightWidth } = useSystemInfo();
 
 const iconColor = computed(() => (props.transparent ? props.inverseColor : '#1A2B33'));
 const textColor = computed(() => (props.transparent ? props.inverseColor : '#1A2B33'));
@@ -73,7 +76,6 @@ const onBack = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 88rpx;
   padding: 0 $space-sm;
 }
 

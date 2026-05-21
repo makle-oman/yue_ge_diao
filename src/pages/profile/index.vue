@@ -6,7 +6,11 @@
       <view class="hero-shade" />
 
       <!-- 设置按钮 -->
-      <view class="hero-setting" :style="{ top: statusBarHeight + 12 + 'px' }" @click="onSetting">
+      <view
+        class="hero-setting"
+        :style="{ top: statusBarHeight + 12 + 'px', right: capsuleRightWidth + 'px' }"
+        @click="onSetting"
+      >
         <mxy-icon name="settings" :size="40" color="#fff" />
       </view>
 
@@ -101,7 +105,7 @@ import CustomTabBar from '@/components/CustomTabBar.vue';
 interface FishItem { name: string; bg: string; locked?: boolean }
 interface MenuItem { key: string; label: string; icon: string; color: string; path?: string }
 
-const { statusBarHeight } = useSystemInfo();
+const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
 const user = ref({
   name: '老王钓鱼',

@@ -1,7 +1,10 @@
 <template>
   <view class="catch-detail">
     <!-- 固定在顶部的返回/分享按钮（不随内容滚动） -->
-    <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
+    <view
+      class="hero-top"
+      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+    >
       <view class="hero-icon-btn" @click="onBack">
         <mxy-icon name="arrow_back" :size="40" color="#fff" />
       </view>
@@ -125,7 +128,7 @@
 import { ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 
-const { statusBarHeight, safeBottom } = useSystemInfo();
+const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
 const author = ref({
   name: '老王钓鱼',

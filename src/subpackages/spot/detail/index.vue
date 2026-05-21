@@ -1,7 +1,10 @@
 <template>
   <view class="spot-detail">
     <!-- 顶部悬浮操作（脱离滚动流） -->
-    <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
+    <view
+      class="hero-top"
+      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+    >
       <view class="hero-icon-btn" @click="onBack">
         <mxy-icon name="arrow_back" :size="40" color="#fff" />
       </view>
@@ -114,7 +117,7 @@ interface Tag { label: string; tone: 'green' | 'blue' | 'orange' }
 interface Facility { label: string; sub: string }
 interface CatchItem { id: string; cover: string; tag?: string }
 
-const { statusBarHeight, safeBottom } = useSystemInfo();
+const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
 const heroIndex = ref(0);
 

@@ -2,7 +2,7 @@
   <view class="message-page">
     <!-- 顶部状态栏占位 + 标题栏 -->
     <view class="msg-header" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="msg-nav">
+      <view class="msg-nav" :style="{ paddingRight: capsuleRightWidth + 'px' }">
         <text class="msg-title">消息</text>
         <text class="msg-read-all" @click="onReadAll">全部已读</text>
       </view>
@@ -92,7 +92,7 @@ interface MsgRow {
   action?: string;
 }
 
-const { statusBarHeight } = useSystemInfo();
+const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
 const entryTypes = ref<EntryType[]>([
   { key: 'comment', label: '评论', icon: 'alternate_email', color: '#F5A623', bg: '#FFF4E1', badge: '2' },

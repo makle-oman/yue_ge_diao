@@ -2,7 +2,7 @@
   <view class="fish-lib">
     <!-- 渐变 Hero -->
     <view class="hero" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="hero-top">
+      <view class="hero-top" :style="{ paddingRight: capsuleRightWidth + 'px' }">
         <view class="hero-back" @click="onBack">
           <mxy-icon name="arrow_back" :size="40" color="#fff" />
         </view>
@@ -108,7 +108,7 @@
 import { ref, computed } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 
-const { statusBarHeight } = useSystemInfo();
+const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
 type SegKey = 'fresh' | 'sea';
 type ChipKey = 'unlocked' | 'common' | 'locked';

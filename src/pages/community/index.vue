@@ -1,7 +1,10 @@
 <template>
   <view class="community-page">
     <!-- 顶部 Tab + 搜索 -->
-    <view class="feed-header" :style="{ paddingTop: statusBarHeight + 'px' }">
+    <view
+      class="feed-header"
+      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+    >
       <view class="feed-tabs">
         <view
           v-for="tab in tabs"
@@ -88,7 +91,7 @@ interface FeedItem {
   liked: boolean;
 }
 
-const { statusBarHeight } = useSystemInfo();
+const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
 const tabs = [
   { key: 'recommend', label: '推荐' },

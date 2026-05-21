@@ -1,7 +1,10 @@
 <template>
   <view class="team-detail">
     <!-- 顶部悬浮（脱离滚动流） -->
-    <view class="hero-top" :style="{ paddingTop: statusBarHeight + 'px' }">
+    <view
+      class="hero-top"
+      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+    >
       <view class="icon-btn" @click="onBack">
         <mxy-icon name="arrow_back" :size="40" color="#fff" />
       </view>
@@ -98,7 +101,7 @@
 import { computed, ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 
-const { statusBarHeight, safeBottom } = useSystemInfo();
+const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
 const team = ref({
   cover: 'https://images.unsplash.com/photo-1665355259602-6d57b0639ab0?w=900',

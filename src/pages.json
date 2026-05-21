@@ -37,17 +37,11 @@
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "发布",
-        "backgroundColor": "transparent",
-        "backgroundColorTop": "transparent",
-        "backgroundColorBottom": "transparent",
         "disableScroll": true,
         "app-plus": {
           "background": "transparent",
           "popGesture": "none",
           "animationType": "slide-in-bottom"
-        },
-        "mp-weixin": {
-          "backgroundColor": "transparent"
         }
       }
     },
