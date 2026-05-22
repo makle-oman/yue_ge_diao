@@ -98,17 +98,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import CustomTabBar from '@/components/CustomTabBar.vue';
+import { fetchMe } from '@/api/users';
+import { getUser, isLoggedIn, logout, setUser } from '@/utils/auth';
 
 interface FishItem { name: string; bg: string; locked?: boolean }
-interface MenuItem { key: string; label: string; icon: string; color: string; path?: string }
+interface MenuItem { key: string; label: string; icon: string; color: string; path?: string; action?: 'logout' }
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
+// 钓龄 / 标签 / 签名后端暂未落库（user.fishingAgeBand / playStyles / bio 字段未在 schema 中开放），
+// 先用静态文案兜底，等后端字典补齐后再切真值。
 const user = ref({
-  name: '老王钓鱼',
+  name: '未登录',
   avatar: '',
   years: '5年钓龄',
   styles: ['野钓', '路亚'],
@@ -116,12 +121,12 @@ const user = ref({
 });
 
 const stats = ref({
-  spots: 23,
-  catches: 156,
-  max: '4.2kg',
+  spots: 0,
+  catches: 0,
+  max: '—',
 });
 
-const fishCollected = ref(12);
+const fishCollected = ref(0);
 const fishTotal = ref(56);
 
 const fishLib = ref<FishItem[]>([
@@ -132,16 +137,75 @@ const fishLib = ref<FishItem[]>([
 ]);
 
 const menus = ref<MenuItem[]>([
-  { key: 'catch', label: '我的鱼获', icon: 'phishing',     color: '#2D8F87', path: '/subpackages/profile/catches/index' },
-  { key: 'spot',  label: '我的钓点', icon: 'add_location', color: '#5BA9C4', path: '/subpackages/profile/spots/index' },
-  { key: 'team',  label: '我的组队', icon: 'groups',       color: '#F5A623', path: '/subpackages/team/list/index' },
-  { key: 'favor', label: '我的收藏', icon: 'star',         color: '#F5A623', path: '/subpackages/profile/favorites/index' },
+  { key: 'catch',  label: '我的鱼获', icon: 'phishing',     color: '#2D8F87', path: '/subpackages/profile/catches/index' },
+  { key: 'spot',   label: '我的钓点', icon: 'add_location', color: '#5BA9C4', path: '/subpackages/profile/spots/index' },
+  { key: 'team',   label: '我的组队', icon: 'groups',       color: '#F5A623', path: '/subpackages/team/list/index' },
+  { key: 'favor',  label: '我的收藏', icon: 'star',         color: '#F5A623', path: '/subpackages/profile/favorites/index' },
+  { key: 'logout', label: '退出登录', icon: 'logout',       color: '#C0392B', action: 'logout' },
 ]);
+
+// 先把缓存里的用户快照塞进去，立刻有 UI；网络再请求最新值覆盖
+function hydrateFromCache() {
+  const cached = getUser();
+  if (cached) {
+    user.value.name = cached.nickname || user.value.name;
+    user.value.avatar = cached.avatar || '';
+  }
+}
+
+async function loadMe() {
+  if (!isLoggedIn()) {
+    user.value.name = '未登录';
+    user.value.avatar = '';
+    return;
+  }
+  try {
+    const me = await fetchMe();
+    user.value.name = me.nickname || `钓友${String(me.id).slice(-4)}`;
+    user.value.avatar = me.avatar || '';
+    if (me.city) {
+      user.value.sign = `坐标 ${me.city}，愿者上钩。`;
+    }
+    // 同步缓存，下次进入页面 hydrate 更新
+    setUser({
+      id: me.id,
+      openid: me.openid,
+      nickname: me.nickname,
+      avatar: me.avatar,
+    });
+  } catch (e) {
+    // request.ts 已经统一处理 401 / Toast；这里只兜底
+    console.warn('[profile] fetchMe failed', e);
+  }
+}
+
+onMounted(() => {
+  hydrateFromCache();
+  loadMe();
+});
+
+// 从其它页面（如编辑资料）返回时，重新拉一次
+onShow(() => {
+  if (isLoggedIn()) loadMe();
+});
 
 const onSetting = () => uni.navigateTo({ url: '/subpackages/profile/setting/index' });
 const onMoreFish = () => uni.navigateTo({ url: '/subpackages/profile/fish-library/index' });
 const onFishTap = (f: FishItem) => uni.showToast({ title: f.locked ? '尚未解锁' : f.name, icon: 'none' });
 const onMenuTap = (m: MenuItem) => {
+  if (m.action === 'logout') {
+    uni.showModal({
+      title: '提示',
+      content: '确认退出登录？',
+      success: ({ confirm }) => {
+        if (!confirm) return;
+        logout();
+        uni.showToast({ title: '已退出', icon: 'success' });
+        setTimeout(() => uni.redirectTo({ url: '/pages/login/index' }), 400);
+      },
+    });
+    return;
+  }
   if (m.path) { uni.navigateTo({ url: m.path }); return; }
   uni.showToast({ title: `${m.label} (待开发)`, icon: 'none' });
 };

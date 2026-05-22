@@ -36,6 +36,12 @@
         <text class="phone-btn-text">手机号快捷登录</text>
       </view>
 
+      <!-- 开发期一键登录：仅 NODE_ENV !== 'production' 可见，方便联调 -->
+      <view v-if="enableDevLogin" class="phone-btn" style="margin-top: 16rpx; background: #FFF4E1;" @click="onDevQuickLogin">
+        <mxy-icon name="bug_report" :size="32" color="#B7791F" />
+        <text class="phone-btn-text" style="color: #B7791F;">[开发] 随机账号登录</text>
+      </view>
+
       <view class="benefits">
         <view class="benefit">
           <mxy-icon name="check_circle" :size="28" color="#2D8F87" />
@@ -64,10 +70,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import { devLogin } from '@/api/auth';
+import { setToken, setUser } from '@/utils/auth';
+import { env } from '@/config/env';
 
 const { statusBarHeight } = useSystemInfo();
 
 const agreed = ref(false);
+const enableDevLogin = env.enableDevLogin;
 
 const ensureAgreed = () => {
   if (!agreed.value) {
@@ -81,20 +91,46 @@ const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {
   uni.switchTab({ url: '/pages/index/index' });
 });
 
-const onWxLogin = () => {
+// 真·微信授权登录暂未接入；开发期复用 dev-login，便于在 H5 / 模拟器走通主流程
+const onWxLogin = async () => {
   if (!ensureAgreed()) return;
-  uni.showLoading({ title: '登录中...' });
-  setTimeout(() => {
-    uni.hideLoading();
-    uni.showToast({ title: '登录成功', icon: 'success' });
-    setTimeout(() => uni.redirectTo({ url: '/subpackages/profile/edit/index' }), 600);
-  }, 800);
+  if (!enableDevLogin) {
+    uni.showToast({ title: '微信授权登录 (待开发)', icon: 'none' });
+    return;
+  }
+  await runDevLogin('wx_mock');
 };
 
 const onPhoneLogin = () => {
   if (!ensureAgreed()) return;
   uni.showToast({ title: '手机号登录 (待开发)', icon: 'none' });
 };
+
+const onDevQuickLogin = async () => {
+  if (!ensureAgreed()) return;
+  await runDevLogin(`dev_${Date.now()}`);
+};
+
+async function runDevLogin(openid: string) {
+  uni.showLoading({ title: '登录中...' });
+  try {
+    const { token, user } = await devLogin({ openid });
+    setToken(token);
+    setUser(user);
+    uni.hideLoading();
+    uni.showToast({ title: '登录成功', icon: 'success' });
+    setTimeout(() => {
+      uni.switchTab({
+        url: '/pages/profile/index',
+        fail: () => uni.redirectTo({ url: '/pages/profile/index' }),
+      });
+    }, 600);
+  } catch (e) {
+    uni.hideLoading();
+    // request.ts 已经统一 Toast，这里仅打日志
+    console.warn('[login] dev-login failed', e);
+  }
+}
 
 const onPolicy = (k: 'user' | 'privacy') => {
   const title = k === 'user' ? '用户协议' : '隐私政策';

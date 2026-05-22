@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
+import { fetchAppConfig } from "@/api/common";
 
-onLaunch(() => {
+onLaunch(async () => {
   console.log("[约个钓] App Launch");
+  // 启动即拉一次 /common/config：拉到当前服务端版本、特性开关、上传约束、字典等
+  // 失败不阻塞 UI（showErrorToast: false），让用户在弱网下仍能进入应用
+  try {
+    const cfg = await fetchAppConfig();
+    console.log("[约个钓] config loaded:", cfg);
+    // 后续可挂到 pinia store / globalProperties
+  } catch (e) {
+    console.warn("[约个钓] config load failed", e);
+  }
 });
 
 onShow(() => {
