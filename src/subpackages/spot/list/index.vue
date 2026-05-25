@@ -24,14 +24,14 @@
             :key="c.key"
             :label="c.label"
             :active="activeChip === c.key"
-            @click="activeChip = c.key"
+            @click="onChip(c.key)"
           />
         </view>
       </scroll-view>
     </view>
 
     <!-- 列表 -->
-    <scroll-view class="content" scroll-y>
+    <scroll-view class="content" scroll-y @scrolltolower="loadMore">
       <view class="summary">
         <text class="summary-title">南京附近 · {{ filteredSpots.length }} 个钓点</text>
         <view class="sort-pill">
@@ -64,13 +64,26 @@
         </view>
       </view>
 
+      <view v-if="!loading && filteredSpots.length === 0" class="list-empty" style="text-align:center;color:#6B7B85;padding:80rpx 0;font-size:28rpx;">
+        <text>附近暂无钓点，换个范围试试</text>
+      </view>
+      <view v-if="loading" class="list-foot" style="text-align:center;color:#6B7B85;padding:32rpx 0;font-size:24rpx;">加载中…</view>
+      <view v-else-if="!hasMore && filteredSpots.length > 0" class="list-foot" style="text-align:center;color:#6B7B85;padding:32rpx 0;font-size:24rpx;">没有更多了</view>
+
     </scroll-view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import {
+  listSpots,
+  formatDistance,
+  SPOT_TYPE_LABEL,
+  type SpotListItem,
+  type SpotType,
+} from '@/api/spots';
 
 type ChipKey = 'all' | 'wild' | 'pond' | 'near';
 type Tone = 'primary' | 'blue' | 'orange';
@@ -85,11 +98,14 @@ interface SpotItem {
   readonly foot: string;
   readonly tone: Tone;
   readonly iconColor: string;
-  readonly kind: 'wild' | 'pond';
-  readonly distanceKm: number;
 }
 
 const { statusBarHeight } = useSystemInfo();
+
+const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
+const PAGE_LIMIT = 20;
+const NORMAL_RADIUS = 50000;
+const NEAR_RADIUS = 5000;
 
 const activeChip = ref<ChipKey>('all');
 const chips: readonly ChipItem[] = [
@@ -99,65 +115,119 @@ const chips: readonly ChipItem[] = [
   { key: 'near', label: '5km内' },
 ];
 
-const spots: readonly SpotItem[] = [
-  {
-    id: 's1',
-    name: '燕子矶江边',
-    distance: '2.3km',
-    distanceKm: 2.3,
-    meta: '评分 4.5 · 免费 · 可停车',
-    tags: ['鲫鱼', '翘嘴'],
-    foot: '今天 3 条鱼获',
-    tone: 'blue',
-    iconColor: '#5BA9C4',
-    kind: 'wild',
-  },
-  {
-    id: 's2',
-    name: '江心洲北汊',
-    distance: '2.3km',
-    distanceKm: 2.3,
-    meta: '路亚 · 江湾 · 夜钓友好',
-    tags: ['翘嘴', '鲈鱼'],
-    foot: '最近 18 人去过',
-    tone: 'primary',
-    iconColor: '#2D8F87',
-    kind: 'wild',
-  },
-  {
-    id: 's3',
-    name: '老山水库外湾',
-    distance: '2.3km',
-    distanceKm: 2.3,
-    meta: '水库 · 收费30 · 有厕所',
-    tags: ['鲤鱼', '草鱼'],
-    foot: '周末人多',
-    tone: 'primary',
-    iconColor: '#2D8F87',
-    kind: 'pond',
-  },
-  {
-    id: 's4',
-    name: '青龙湾黑坑',
-    distance: '2.3km',
-    distanceKm: 2.3,
-    meta: '黑坑 · 100/4小时 · 可停车',
-    tags: ['鲤鱼', '青鱼'],
-    foot: '今日放鱼',
-    tone: 'orange',
-    iconColor: '#F5A623',
-    kind: 'pond',
-  },
-];
+const center = ref({ ...DEFAULT_CENTER });
+const spots = ref<SpotItem[]>([]);
+const cursor = ref<string | null>(null);
+const hasMore = ref(true);
+const loading = ref(false);
 
-const filteredSpots = computed<readonly SpotItem[]>(() => {
-  switch (activeChip.value) {
-    case 'wild':  return spots.filter(s => s.kind === 'wild');
-    case 'pond':  return spots.filter(s => s.kind === 'pond');
-    case 'near':  return spots.filter(s => s.distanceKm <= 5);
-    default:      return spots;
+/** 后端 type → 列表卡片 tone（icon 背景）。 */
+const TYPE_TONE: Record<SpotType, { tone: Tone; iconColor: string }> = {
+  wild:  { tone: 'blue',    iconColor: '#5BA9C4' },
+  black: { tone: 'orange',  iconColor: '#F5A623' },
+  paid:  { tone: 'primary', iconColor: '#2D8F87' },
+  sea:   { tone: 'blue',    iconColor: '#5BA9C4' },
+};
+
+function buildMeta(item: SpotListItem): string {
+  const parts: string[] = [];
+  if (item.ratingCount > 0) parts.push(`评分 ${item.avgRating.toFixed(1)}`);
+  parts.push(SPOT_TYPE_LABEL[item.type]);
+  if (item.city) parts.push(item.city);
+  return parts.join(' · ');
+}
+
+function buildFoot(item: SpotListItem): string {
+  if (item.wantCount > 0) return `${item.wantCount} 人想去`;
+  if (item.ratingCount > 0) return `${item.ratingCount} 条评价`;
+  return '暂无人去过';
+}
+
+function adapt(item: SpotListItem): SpotItem {
+  const tone = TYPE_TONE[item.type] ?? TYPE_TONE.wild;
+  return {
+    id: item.id,
+    name: item.name,
+    distance: formatDistance(item.distance),
+    meta: buildMeta(item),
+    tags: item.fishSpecies.slice(0, 3),
+    foot: buildFoot(item),
+    tone: tone.tone,
+    iconColor: tone.iconColor,
+  };
+}
+
+/** chip → 请求参数。`near` 收紧 radius，其它三个用 type 过滤。 */
+function paramsForChip(chip: ChipKey, cur: string | null) {
+  const base = {
+    lat: center.value.latitude,
+    lng: center.value.longitude,
+    radius: NORMAL_RADIUS,
+    limit: PAGE_LIMIT,
+    cursor: cur,
+  };
+  switch (chip) {
+    case 'wild': return { ...base, type: 'wild' as SpotType };
+    case 'pond': return { ...base, type: 'black' as SpotType };
+    case 'near': return { ...base, radius: NEAR_RADIUS };
+    default:     return base;
   }
-});
+}
+
+async function loadFirstPage() {
+  if (loading.value) return;
+  loading.value = true;
+  cursor.value = null;
+  hasMore.value = true;
+  spots.value = [];
+  try {
+    const resp = await listSpots(paramsForChip(activeChip.value, null));
+    spots.value = resp.list.map(adapt);
+    cursor.value = resp.nextCursor;
+    hasMore.value = resp.hasMore;
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '加载失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function loadMore() {
+  if (loading.value || !hasMore.value) return;
+  loading.value = true;
+  try {
+    const resp = await listSpots(paramsForChip(activeChip.value, cursor.value));
+    spots.value = spots.value.concat(resp.list.map(adapt));
+    cursor.value = resp.nextCursor;
+    hasMore.value = resp.hasMore;
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '加载更多失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function locateThenLoad() {
+  try {
+    const loc: any = await new Promise((resolve, reject) =>
+      uni.getLocation({ type: 'gcj02', success: resolve, fail: reject }),
+    );
+    center.value = { latitude: loc.latitude, longitude: loc.longitude };
+  } catch (_) {
+    // 拿不到定位就用 DEFAULT_CENTER
+  }
+  await loadFirstPage();
+}
+
+onMounted(locateThenLoad);
+
+function onChip(key: ChipKey) {
+  if (activeChip.value === key) return;
+  activeChip.value = key;
+  loadFirstPage();
+}
+
+const filteredSpots = computed(() => spots.value);
 
 const onOpenMap = () => uni.switchTab({ url: '/pages/index/index' }).catch(() => uni.navigateBack({ delta: 1 }));
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => uni.switchTab({ url: '/pages/index/index' }));

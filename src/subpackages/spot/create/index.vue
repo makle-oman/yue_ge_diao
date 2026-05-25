@@ -9,12 +9,12 @@
           <view class="loc-map">
             <view class="loc-river" />
             <view class="loc-dot" />
-            <text class="loc-title">现场定位已通过</text>
+            <text class="loc-title">{{ locTitle }}</text>
           </view>
           <view class="loc-row">
             <view class="loc-acc">
-              <mxy-icon name="check_circle" :size="24" color="#2D8F87" />
-              <text class="loc-acc-text">精度 {{ accuracy }}m,可上报</text>
+              <mxy-icon :name="locOk ? 'check_circle' : 'error_outline'" :size="24" :color="locOk ? '#2D8F87' : '#F5A623'" />
+              <text class="loc-acc-text">{{ locHint }}</text>
             </view>
             <view class="loc-relocate" @click="onRelocate">
               <text>重新定位</text>
@@ -199,13 +199,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import {
+  createSpot,
+  SPOT_TYPE_LABEL,
+  WATER_TYPE_LABEL,
+  type SpotType,
+  type WaterType,
+} from '@/api/spots';
 
 const { safeBottom } = useSystemInfo();
 
-const accuracy = ref(18);
+const ACCURACY_LIMIT = 50;
+
+const accuracy = ref<number>(0);
+const lat = ref<number>(0);
+const lng = ref<number>(0);
+const submitting = ref(false);
+
+const locOk = computed(() => accuracy.value > 0 && accuracy.value <= ACCURACY_LIMIT);
+const locTitle = computed(() => {
+  if (accuracy.value === 0) return '正在获取定位…';
+  if (locOk.value) return '现场定位已通过';
+  return '当前精度偏低';
+});
+const locHint = computed(() => {
+  if (accuracy.value === 0) return '请稍候，正在获取经纬度';
+  if (locOk.value) return `精度 ${accuracy.value}m，可上报`;
+  return `精度 ${accuracy.value}m，需 <${ACCURACY_LIMIT}m`;
+});
 
 const conditions = [
   { key: 'park',   label: '可停车' },
@@ -215,16 +240,33 @@ const conditions = [
   { key: 'night',  label: '可夜钓' },
 ];
 
+type SpotTypeKey = '野钓点' | '黑坑' | '收费塘' | '海钓';
+type WaterTypeKey = '江河' | '湖泊' | '水库' | '池塘' | '海域';
+
+const TYPE_LABEL_TO_CODE: Record<SpotTypeKey, SpotType> = {
+  '野钓点': 'wild',
+  '黑坑': 'black',
+  '收费塘': 'paid',
+  '海钓': 'sea',
+};
+const WATER_LABEL_TO_CODE: Record<WaterTypeKey, WaterType> = {
+  '江河': 'river',
+  '湖泊': 'lake',
+  '水库': 'reservoir',
+  '池塘': 'pond',
+  '海域': 'sea',
+};
+
 const form = ref({
-  name: '燕子矶江边',
-  type: '野钓点',
-  water: '江河',
-  fish: ['鲫鱼', '鲤鱼'],
-  conditions: ['park'] as string[],
-  photos: [
-    'https://images.unsplash.com/photo-1763833196218-6cdc5d7ee9c0?w=300',
-  ],
-  desc: '缓流，早晚窗口好，水边注意防滑。',
+  name: '',
+  type: '野钓点' as SpotTypeKey,
+  typeCode: 'wild' as SpotType,
+  water: '江河' as WaterTypeKey,
+  waterCode: 'river' as WaterType,
+  fish: [] as string[],
+  conditions: [] as string[],
+  photos: [] as string[],
+  desc: '',
 });
 
 const toggleCondition = (k: string) => {
@@ -233,37 +275,62 @@ const toggleCondition = (k: string) => {
   else form.value.conditions.push(k);
 };
 
-const onRelocate = () => {
-  uni.showLoading({ title: '重新定位...' });
-  setTimeout(() => {
-    uni.hideLoading();
-    accuracy.value = Math.max(5, Math.floor(Math.random() * 25) + 5);
-    uni.showToast({ title: `精度 ${accuracy.value}m`, icon: 'success' });
-  }, 800);
-};
+/** 真正调 uni.getLocation 拿经纬度+精度。失败给 toast 不阻塞。 */
+async function fetchLocation(silent = false) {
+  if (!silent) uni.showLoading({ title: '定位中...' });
+  try {
+    const loc: any = await new Promise((resolve, reject) =>
+      uni.getLocation({
+        type: 'gcj02',
+        isHighAccuracy: true,
+        highAccuracyExpireTime: 4000,
+        success: resolve,
+        fail: reject,
+      }),
+    );
+    lat.value = loc.latitude;
+    lng.value = loc.longitude;
+    accuracy.value = Math.round(loc.accuracy ?? 0);
+    if (!silent) {
+      uni.hideLoading();
+      if (accuracy.value > ACCURACY_LIMIT) {
+        uni.showToast({ title: `精度 ${accuracy.value}m 偏低，请到开阔处再试`, icon: 'none' });
+      } else {
+        uni.showToast({ title: `精度 ${accuracy.value}m`, icon: 'success' });
+      }
+    }
+  } catch (_) {
+    if (!silent) {
+      uni.hideLoading();
+      uni.showToast({ title: '定位失败', icon: 'none' });
+    }
+  }
+}
+
+onLoad(() => { fetchLocation(true); });
+
+const onRelocate = () => fetchLocation(false);
 const onPickType = () => {
-  draftType.value = form.value.type as SpotTypeKey;
+  draftType.value = form.value.type;
   typeOpen.value = true;
 };
 const onPickWater = () => {
-  draftWater.value = form.value.water as WaterTypeKey;
+  draftWater.value = form.value.water;
   waterOpen.value = true;
 };
-
-type SpotTypeKey = '野钓点' | '黑坑' | '水库' | '收费塘';
-type WaterTypeKey = '江河' | '湖泊' | '水库' | '海钓';
 
 const typeOptions: { value: SpotTypeKey; label: SpotTypeKey; icon: string }[] = [
   { value: '野钓点', label: '野钓点', icon: 'nature' },
   { value: '黑坑',   label: '黑坑',   icon: 'pool' },
-  { value: '水库',   label: '水库',   icon: 'water' },
   { value: '收费塘', label: '收费塘', icon: 'payments' },
+  { value: '海钓',   label: '海钓',   icon: 'sailing' },
 ];
 const waterOptions: { value: WaterTypeKey; label: WaterTypeKey; icon: string }[] = [
   { value: '江河', label: '江河', icon: 'waves' },
   { value: '湖泊', label: '湖泊', icon: 'water_drop' },
   { value: '水库', label: '水库', icon: 'water' },
-  { value: '海钓', label: '海钓', icon: 'sailing' },
+  { value: '池塘', label: '池塘', icon: 'water_drop' },
+  { value: '海域', label: '海域', icon: 'sailing' },
 ];
 
 const typeOpen = ref(false);
@@ -273,14 +340,32 @@ const draftWater = ref<WaterTypeKey>('江河');
 
 const onTypeDone = () => {
   form.value.type = draftType.value;
+  form.value.typeCode = TYPE_LABEL_TO_CODE[draftType.value];
   typeOpen.value = false;
 };
 const onWaterDone = () => {
   form.value.water = draftWater.value;
+  form.value.waterCode = WATER_LABEL_TO_CODE[draftWater.value];
   waterOpen.value = false;
 };
-const onAddFish = () => uni.showToast({ title: '选择鱼种 (待开发)', icon: 'none' });
+
+const onAddFish = () => {
+  uni.showModal({
+    title: '添加鱼种',
+    editable: true,
+    placeholderText: '如 鲫鱼 / 鲤鱼 / 翘嘴',
+    success: (res) => {
+      if (res.confirm) {
+        const value = (res.content || '').trim();
+        if (value && !form.value.fish.includes(value)) {
+          form.value.fish.push(value);
+        }
+      }
+    },
+  });
+};
 const onRemoveFish = (idx: number) => form.value.fish.splice(idx, 1);
+
 const onAddPhoto = () => {
   uni.chooseImage({
     count: 9 - form.value.photos.length,
@@ -290,13 +375,59 @@ const onAddPhoto = () => {
   });
 };
 const onDelPhoto = (idx: number) => form.value.photos.splice(idx, 1);
-const onSubmit = () => {
-  if (!form.value.name.trim()) {
+
+const onSubmit = async () => {
+  if (submitting.value) return;
+  const name = form.value.name.trim();
+  if (!name) {
     uni.showToast({ title: '请填写钓点名称', icon: 'none' });
     return;
   }
-  uni.showToast({ title: '已提交,等待审核', icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 800);
+  if (!lat.value || !lng.value) {
+    uni.showToast({ title: '请先完成定位', icon: 'none' });
+    return;
+  }
+  if (accuracy.value > ACCURACY_LIMIT) {
+    uni.showToast({ title: `定位精度 ${accuracy.value}m，需 <${ACCURACY_LIMIT}m 才可上报`, icon: 'none' });
+    return;
+  }
+
+  const facilities: Record<string, boolean> = {};
+  for (const k of form.value.conditions) facilities[k] = true;
+  // 收费塘类型默认带 paid:true，便于搜索 hasParking/hasToilet 之外的复合查询
+  if (form.value.typeCode === 'paid') facilities.paid = true;
+
+  submitting.value = true;
+  uni.showLoading({ title: '提交中...' });
+  try {
+    // TODO(upload): 等 uni.uploadFile 封装好后把 form.photos 上传换成 OSS key 再传给后端。
+    // 当前 chooseImage 拿到的是本地 temp 路径，后端没法解析，先剥掉。
+    const resp = await createSpot({
+      name,
+      type: form.value.typeCode,
+      waterType: form.value.waterCode,
+      lat: lat.value,
+      lng: lng.value,
+      accuracy: accuracy.value,
+      city: undefined,
+      description: form.value.desc.trim() || undefined,
+      fishSpecies: form.value.fish.length ? form.value.fish : undefined,
+      facilities: Object.keys(facilities).length ? facilities : undefined,
+      // photos: form.value.photos,  // 待接上传后再启用
+    });
+    uni.hideLoading();
+    uni.showToast({ title: '已提交', icon: 'success' });
+    setTimeout(() => {
+      uni.redirectTo({ url: `/subpackages/spot/detail/index?id=${resp.id}` }).catch(() => {
+        uni.navigateBack({ delta: 1 }).catch(() => {});
+      });
+    }, 600);
+  } catch (e: any) {
+    uni.hideLoading();
+    uni.showToast({ title: e?.msg || '提交失败', icon: 'none' });
+  } finally {
+    submitting.value = false;
+  }
 };
 </script>
 

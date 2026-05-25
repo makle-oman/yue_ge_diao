@@ -125,7 +125,7 @@
           "x": 16,
           "y": 48,
           "name": "Mini Program Nav",
-          "width": 343,
+          "width": 254,
           "height": 40,
           "fill": "#FFFFFF00",
           "gap": 8,
@@ -1378,6 +1378,92 @@
               "fontWeight": "800"
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_igoNH_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_igoNH_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_igoNH_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_igoNH_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_igoNH_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_igoNH_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_igoNH_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -1484,7 +1570,7 @@
           "x": 16,
           "y": 50,
           "name": "Feed Header",
-          "width": 343,
+          "width": 254,
           "height": 42,
           "fill": "#FFFFFF00",
           "layout": "none",
@@ -1492,7 +1578,7 @@
             {
               "type": "frame",
               "id": "LIM4p",
-              "x": 74,
+              "x": 46,
               "y": 3,
               "name": "tabBg",
               "width": 196,
@@ -1584,7 +1670,7 @@
             {
               "type": "icon_font",
               "id": "plRgq",
-              "x": 315,
+              "x": 228,
               "y": 8,
               "name": "searchIcon",
               "width": 24,
@@ -2521,6 +2607,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_V5Ni9_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_V5Ni9_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V5Ni9_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V5Ni9_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_V5Ni9_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V5Ni9_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V5Ni9_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -2980,6 +3152,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_UF6nS_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_UF6nS_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_UF6nS_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_UF6nS_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_UF6nS_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_UF6nS_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_UF6nS_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -3086,7 +3344,7 @@
           "x": 16,
           "y": 52,
           "name": "Nav",
-          "width": 343,
+          "width": 254,
           "height": 40,
           "fill": "#FFFFFF00",
           "justifyContent": "space_between",
@@ -4017,6 +4275,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_r0V0ZV_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_r0V0ZV_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_r0V0ZV_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_r0V0ZV_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_r0V0ZV_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_r0V0ZV_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_r0V0ZV_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -4093,7 +4437,7 @@
             {
               "type": "frame",
               "id": "vDuUq",
-              "x": 323,
+              "x": 230,
               "y": 52,
               "name": "set",
               "width": 36,
@@ -5069,6 +5413,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_IssN4_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_IssN4_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_IssN4_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_IssN4_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_IssN4_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_IssN4_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_IssN4_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -5126,6 +5556,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -5781,6 +6213,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_m3GKln_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_m3GKln_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_m3GKln_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_m3GKln_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_m3GKln_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_m3GKln_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_m3GKln_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -5870,7 +6388,7 @@
             {
               "type": "frame",
               "id": "FPYsk",
-              "x": 319,
+              "x": 230,
               "y": 52,
               "name": "share",
               "width": 40,
@@ -6571,6 +7089,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_Jq6EL_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_Jq6EL_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Jq6EL_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Jq6EL_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_Jq6EL_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Jq6EL_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Jq6EL_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -6660,7 +7264,7 @@
             {
               "type": "frame",
               "id": "yi84M",
-              "x": 319,
+              "x": 230,
               "y": 52,
               "name": "share",
               "width": 40,
@@ -7274,6 +7878,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_OaCDN_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_OaCDN_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_OaCDN_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_OaCDN_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_OaCDN_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_OaCDN_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_OaCDN_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -7791,6 +8481,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_h0ip3f_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_h0ip3f_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h0ip3f_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h0ip3f_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_h0ip3f_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h0ip3f_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h0ip3f_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -7848,6 +8624,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -8638,6 +9416,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_n4muHs_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_n4muHs_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_n4muHs_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_n4muHs_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_n4muHs_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_n4muHs_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_n4muHs_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -8695,6 +9559,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -9459,6 +10325,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_M9ZdLf_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_M9ZdLf_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_M9ZdLf_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_M9ZdLf_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_M9ZdLf_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_M9ZdLf_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_M9ZdLf_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -9506,7 +10458,7 @@
           "x": 16,
           "y": 52,
           "name": "Nearby Nav",
-          "width": 343,
+          "width": 254,
           "height": 40,
           "fill": "#FFFFFF00",
           "justifyContent": "space_between",
@@ -10342,6 +11294,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_aClYc_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_aClYc_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_aClYc_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_aClYc_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_aClYc_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_aClYc_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_aClYc_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -10389,7 +11427,7 @@
           "x": 16,
           "y": 52,
           "name": "nav",
-          "width": 343,
+          "width": 254,
           "height": 42,
           "fill": "#FFFFFF00",
           "justifyContent": "space_between",
@@ -11069,6 +12107,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_EbHWL_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_EbHWL_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_EbHWL_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_EbHWL_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_EbHWL_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_EbHWL_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_EbHWL_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -11158,7 +12282,7 @@
             {
               "type": "frame",
               "id": "brWmC",
-              "x": 277,
+              "x": 198,
               "y": 54,
               "name": "statusBadge",
               "width": 70,
@@ -11706,6 +12830,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_h9ugw_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_h9ugw_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h9ugw_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h9ugw_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_h9ugw_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h9ugw_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_h9ugw_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -11763,6 +12973,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -12343,6 +13555,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_V7193_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_V7193_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V7193_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V7193_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_V7193_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V7193_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_V7193_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -12432,7 +13730,7 @@
             {
               "type": "frame",
               "id": "iFVZ9",
-              "x": 319,
+              "x": 230,
               "y": 52,
               "name": "more",
               "width": 40,
@@ -12947,6 +14245,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_f8nry_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_f8nry_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_f8nry_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_f8nry_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_f8nry_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_f8nry_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_f8nry_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -13004,6 +14388,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -13705,6 +15091,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_Ve3AY_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_Ve3AY_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Ve3AY_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Ve3AY_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_Ve3AY_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Ve3AY_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Ve3AY_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -13809,7 +15281,7 @@
         {
           "type": "frame",
           "id": "p18_mapbtn",
-          "x": 319,
+          "x": 230,
           "y": 50,
           "name": "map button",
           "width": 40,
@@ -14542,6 +16014,92 @@
               "fontFamily": "Inter",
               "fontSize": 11,
               "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p18_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p18_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p18_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p18_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p18_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p18_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p18_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
             }
           ]
         }
@@ -15401,6 +16959,92 @@
               "fontWeight": "900"
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p19_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p19_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p19_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p19_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p19_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p19_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p19_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -15525,7 +17169,7 @@
         {
           "type": "icon_font",
           "id": "p20_search",
-          "x": 337,
+          "x": 244,
           "y": 57,
           "width": 22,
           "height": 22,
@@ -16073,6 +17717,92 @@
               "fontWeight": "normal"
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p20_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p20_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p20_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p20_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p20_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p20_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p20_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -16215,7 +17945,7 @@
             {
               "type": "icon_font",
               "id": "p21_share",
-              "x": 328,
+              "x": 244,
               "y": 61,
               "width": 21,
               "height": 21,
@@ -17144,6 +18874,92 @@
               "fontWeight": "normal"
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p21_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p21_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p21_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p21_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p21_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p21_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p21_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -17926,6 +19742,92 @@
               "fontFamily": "Inter",
               "fontSize": 15,
               "fontWeight": "900"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p22_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p22_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p22_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p22_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p22_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p22_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p22_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
             }
           ]
         }
@@ -18925,6 +20827,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p25_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p25_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p25_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p25_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p25_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p25_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p25_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -19417,6 +21405,92 @@
                   "fontWeight": "normal"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p23_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p23_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p23_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p23_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p23_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p23_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p23_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
             }
           ]
         }
@@ -19991,6 +22065,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_p24_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_p24_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p24_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p24_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_p24_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p24_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_p24_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -20098,7 +22258,7 @@
             {
               "type": "icon_font",
               "id": "BGVyd",
-              "x": 334,
+              "x": 244,
               "y": 16,
               "name": "p26_more",
               "width": 24,
@@ -20541,6 +22701,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_yT6uj_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_yT6uj_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_yT6uj_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_yT6uj_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_yT6uj_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_yT6uj_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_yT6uj_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -20598,6 +22844,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -21161,6 +23409,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_fb7ar_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_fb7ar_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_fb7ar_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_fb7ar_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_fb7ar_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_fb7ar_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_fb7ar_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -21218,6 +23552,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -21926,6 +24262,92 @@
               "fontWeight": "800"
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_MdYET_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_MdYET_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_MdYET_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_MdYET_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_MdYET_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_MdYET_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_MdYET_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -21983,6 +24405,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -22613,6 +25037,92 @@
               "fill": "$primary"
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_K94wC_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_K94wC_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_K94wC_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_K94wC_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_K94wC_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_K94wC_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_K94wC_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -22670,6 +25180,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -23270,6 +25782,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_zscBj_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_zscBj_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_zscBj_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_zscBj_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_zscBj_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_zscBj_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_zscBj_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -23648,6 +26246,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_vKg86_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_vKg86_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_vKg86_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_vKg86_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_vKg86_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_vKg86_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_vKg86_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -23705,6 +26389,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -24230,6 +26916,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_lWudv_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_lWudv_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_lWudv_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_lWudv_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_lWudv_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_lWudv_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_lWudv_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -24287,6 +27059,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -25067,6 +27841,92 @@
                   "fontWeight": "900"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_d0wR7_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_d0wR7_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_d0wR7_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_d0wR7_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_d0wR7_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_d0wR7_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_d0wR7_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
             }
           ]
         }
@@ -25861,6 +28721,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_NTCeZ_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_NTCeZ_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_NTCeZ_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_NTCeZ_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_NTCeZ_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_NTCeZ_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_NTCeZ_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -26513,6 +29459,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_nbySP_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_nbySP_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_nbySP_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_nbySP_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_nbySP_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_nbySP_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_nbySP_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -26615,7 +29647,7 @@
             {
               "type": "icon_font",
               "id": "jha4x",
-              "x": 333,
+              "x": 244,
               "y": 16,
               "width": 26,
               "height": 26,
@@ -27245,6 +30277,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_PUKmP_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_PUKmP_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_PUKmP_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_PUKmP_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_PUKmP_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_PUKmP_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_PUKmP_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -27319,7 +30437,7 @@
         {
           "type": "icon_font",
           "id": "z2qfD",
-          "x": 337,
+          "x": 244,
           "y": 56,
           "width": 24,
           "height": 24,
@@ -27955,6 +31073,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_Nafyp_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_Nafyp_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Nafyp_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Nafyp_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_Nafyp_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Nafyp_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_Nafyp_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -28010,6 +31214,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -28816,6 +32022,92 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_raxpN_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_raxpN_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_raxpN_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_raxpN_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_raxpN_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_raxpN_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_raxpN_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
+            }
+          ]
         }
       ]
     },
@@ -28871,6 +32163,8 @@
             "fill": "$border"
           },
           "padding": [
+            0,
+            112,
             0,
             16
           ],
@@ -29692,6 +32986,92 @@
                   "fontWeight": "normal"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "capsule_G6NBh_1",
+          "x": 278,
+          "y": 56,
+          "name": "WeChat Capsule Safe Area",
+          "width": 87,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#D7D7D7"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000012",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "blur": 4
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "capsule_G6NBh_dot1",
+              "x": 15,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_G6NBh_dot2",
+              "x": 24,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_G6NBh_dot3",
+              "x": 33,
+              "y": 14,
+              "fill": "#111111",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "rectangle",
+              "id": "capsule_G6NBh_divider",
+              "x": 47,
+              "y": 7,
+              "fill": "#E2E2E2",
+              "width": 1,
+              "height": 18
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_G6NBh_ring",
+              "x": 61,
+              "y": 8,
+              "fill": "#FFFFFF00",
+              "width": 16,
+              "height": 16,
+              "stroke": {
+                "thickness": 2,
+                "fill": "#111111"
+              }
+            },
+            {
+              "type": "ellipse",
+              "id": "capsule_G6NBh_center",
+              "x": 66,
+              "y": 13,
+              "fill": "#111111",
+              "width": 6,
+              "height": 6
             }
           ]
         }

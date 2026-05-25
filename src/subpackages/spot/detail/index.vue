@@ -96,8 +96,8 @@
 
     <!-- 底部 CTA 栏 -->
     <view class="bottom-bar" :style="{ paddingBottom: 20 + safeBottom + 'px' }">
-      <view class="bottom-btn bottom-btn--ghost" @click="onWantGo">
-        <text class="bottom-btn-text">想去</text>
+      <view class="bottom-btn bottom-btn--ghost" :class="{ 'bottom-btn--wanted': isWanted }" @click="onWantGo">
+        <text class="bottom-btn-text">{{ wantBtnLabel }}</text>
       </view>
       <view class="bottom-btn bottom-btn--blue" @click="onNavigate">
         <text class="bottom-btn-text blue">导航</text>
@@ -110,8 +110,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import {
+  spotDetail,
+  wantSpot,
+  spotHistory,
+  SPOT_TYPE_LABEL,
+  WATER_TYPE_LABEL,
+  type SpotDetail,
+  type CatchHistoryItem,
+} from '@/api/spots';
 
 interface Tag { label: string; tone: 'green' | 'blue' | 'orange' }
 interface Facility { label: string; sub: string }
@@ -119,27 +129,33 @@ interface CatchItem { id: string; cover: string; tag?: string }
 
 const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
+const FALLBACK_GALLERY = [
+  'https://images.unsplash.com/photo-1727524315467-264c0bd47a13?w=900',
+  'https://images.unsplash.com/photo-1564875009929-58c9517cd6fd?w=900',
+  'https://images.unsplash.com/photo-1635712291708-7afe9e037503?w=900',
+];
+const FALLBACK_CATCH_COVER = 'https://images.unsplash.com/photo-1741134913547-46bbab5a1f60?w=400';
+const TAG_TONES: Tag['tone'][] = ['green', 'blue', 'orange'];
+
 const heroIndex = ref(0);
+const spotId = ref('');
+const loading = ref(true);
+const isWanted = ref(false);
+const wantPending = ref(false);
 
 const spot = ref({
-  id: 's1',
-  name: '燕子矶江边',
-  type: '野钓点',
-  distance: '2.3km',
-  feature: '江边缓流',
-  rate: 4.5,
-  want: 128,
-  recent: 18,
-  tags: [
-    { label: '鲫鱼', tone: 'green' },
-    { label: '鲤鱼', tone: 'blue' },
-    { label: '免费', tone: 'orange' },
-  ] as Tag[],
-  gallery: [
-    'https://images.unsplash.com/photo-1727524315467-264c0bd47a13?w=900',
-    'https://images.unsplash.com/photo-1564875009929-58c9517cd6fd?w=900',
-    'https://images.unsplash.com/photo-1635712291708-7afe9e037503?w=900',
-  ],
+  id: '',
+  name: '加载中…',
+  type: '',
+  distance: '',
+  feature: '',
+  rate: 0,
+  want: 0,
+  recent: 0,
+  tags: [] as Tag[],
+  gallery: FALLBACK_GALLERY as string[],
+  lat: 0,
+  lng: 0,
 });
 
 const weather = ref({
@@ -148,23 +164,134 @@ const weather = ref({
   sub: '24℃ 多云，东北风 3 级，建议早晚窗口作钓。',
 });
 
-const facilities = ref<Facility[]>([
-  { label: '停车', sub: '路边少量' },
-  { label: '厕所', sub: '800m' },
-  { label: '水深', sub: '1.5-3m' },
-]);
+const facilities = ref<Facility[]>([]);
+const catches = ref<CatchItem[]>([]);
 
-const catches = ref<CatchItem[]>([
-  { id: 'c1', cover: 'https://images.unsplash.com/photo-1635712291708-7afe9e037503?w=400', tag: '鲫鱼 1斤' },
-  { id: 'c2', cover: 'https://images.unsplash.com/photo-1564875009929-58c9517cd6fd?w=400' },
-  { id: 'c3', cover: 'https://images.unsplash.com/photo-1741134913547-46bbab5a1f60?w=400' },
-]);
+const wantBtnLabel = computed(() => (isWanted.value ? '已想去' : '想去'));
+
+/** photos 里既可能是绝对 URL 也可能是 OSS key；OSS 没接上传 host 前回退占位。 */
+function normalizeGallery(photos: string[]): string[] {
+  const usable = photos.filter((p) => /^https?:\/\//.test(p));
+  return usable.length > 0 ? usable : FALLBACK_GALLERY;
+}
+
+function pickCover(photos: string[]): string {
+  const first = photos[0];
+  if (first && /^https?:\/\//.test(first)) return first;
+  return FALLBACK_CATCH_COVER;
+}
+
+function buildTags(item: SpotDetail): Tag[] {
+  const tags: Tag[] = [];
+  item.fishSpecies.slice(0, 2).forEach((label, i) => {
+    tags.push({ label, tone: TAG_TONES[i % TAG_TONES.length] });
+  });
+  const paid = item.facilities?.paid;
+  if (paid === true) tags.push({ label: '收费', tone: 'orange' });
+  else if (paid === false) tags.push({ label: '免费', tone: 'green' });
+  return tags;
+}
+
+function buildFacilities(item: SpotDetail): Facility[] {
+  const list: Facility[] = [];
+  const f = item.facilities || {};
+  if ('park' in f) list.push({ label: '停车', sub: f.park ? '可停车' : '无' });
+  if ('toilet' in f) list.push({ label: '厕所', sub: f.toilet ? '有' : '无' });
+  if (item.waterType) list.push({ label: '水域', sub: WATER_TYPE_LABEL[item.waterType] ?? '—' });
+  if (list.length === 0) list.push({ label: '提示', sub: '暂无设施信息' });
+  return list;
+}
+
+function buildHeader(item: SpotDetail): string {
+  // 详情接口不返回距离，用「类型 · 城市」占位
+  const parts: string[] = [`${SPOT_TYPE_LABEL[item.type]}点`];
+  if (item.city) parts.push(item.city);
+  if (item.waterType) parts.push(WATER_TYPE_LABEL[item.waterType]);
+  return parts.join(' · ');
+}
+
+function adaptCatch(item: CatchHistoryItem): CatchItem {
+  const fish = item.fishSpecies[0];
+  const weightKg = item.weight ? (item.weight / 500).toFixed(1) + '斤' : '';
+  const tag = fish ? (weightKg ? `${fish} ${weightKg}` : fish) : undefined;
+  return {
+    id: item.id,
+    cover: pickCover(item.photos),
+    tag,
+  };
+}
+
+async function loadDetail() {
+  if (!spotId.value) {
+    uni.showToast({ title: '钓点 id 缺失', icon: 'none' });
+    return;
+  }
+  loading.value = true;
+  try {
+    const d = await spotDetail(spotId.value);
+    spot.value = {
+      id: d.id,
+      name: d.name,
+      type: SPOT_TYPE_LABEL[d.type],
+      distance: d.city || '',
+      feature: d.description || buildHeader(d),
+      rate: d.ratingCount > 0 ? d.avgRating : 0,
+      want: d.wantCount,
+      recent: d.catchCount7Days,
+      tags: buildTags(d),
+      gallery: normalizeGallery(d.photos),
+      lat: d.lat,
+      lng: d.lng,
+    };
+    facilities.value = buildFacilities(d);
+    isWanted.value = d.yourWantStatus;
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '加载详情失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function loadCatchesPreview() {
+  if (!spotId.value) return;
+  try {
+    const resp = await spotHistory(spotId.value, { days: 30, limit: 6 });
+    catches.value = resp.catches.map(adaptCatch);
+  } catch (_) {
+    // 鱼获预览失败不打断主流程
+  }
+}
+
+onLoad((options) => {
+  spotId.value = String(options?.id ?? '');
+  loadDetail();
+  loadCatchesPreview();
+});
 
 const onHeroChange = (e: any) => { heroIndex.value = e.detail.current; };
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });
 const onNavigate = () => uni.showToast({ title: '调起地图导航 (待开发)', icon: 'none' });
-const onWantGo = () => uni.showToast({ title: '已加入想去', icon: 'success' });
+
+async function onWantGo() {
+  if (!spot.value.id || wantPending.value) return;
+  wantPending.value = true;
+  const next = isWanted.value ? 'unwant' : 'want';
+  try {
+    const resp = await wantSpot(spot.value.id, next);
+    isWanted.value = next === 'want';
+    spot.value.want = resp.wantCount;
+    uni.showToast({
+      title: isWanted.value ? '已加入想去' : '已取消想去',
+      icon: 'success',
+    });
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '操作失败', icon: 'none' });
+  } finally {
+    wantPending.value = false;
+  }
+}
+
 const onPostCatch = () => uni.navigateTo({ url: `/subpackages/catch/create/index?spotId=${spot.value.id}` });
 const onMoreCatches = () =>
   uni.navigateTo({ url: `/subpackages/spot/history/index?id=${spot.value.id}` });

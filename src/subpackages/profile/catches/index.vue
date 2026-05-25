@@ -218,7 +218,8 @@ const onFilter = () => uni.showActionSheet({
   success: (r) => {
     sortLabel.value = ['时间', '重量', '点赞'][r.tapIndex];
   },
-}).catch(() => {});
+  fail: () => {},
+});
 
 const onSort = () => onFilter();
 

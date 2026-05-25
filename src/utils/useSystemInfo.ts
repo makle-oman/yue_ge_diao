@@ -19,8 +19,8 @@
  *   capsuleRightWidth - 顶部右侧应预留宽度 = windowWidth - menuButton.left + 8，
  *                       任何顶部右侧浮元素用它作 padding-right / right，
  *                       即可避免被胶囊盖住。
- *                       ⚠️ 仅 MP-WEIXIN 返回真实值；其他端返回 0
- *                       （H5/App 没有胶囊，不需要预留空间）。
+ *                       MP-WEIXIN：实测胶囊位置；
+ *                       H5/App：按 MP 胶囊最小宽度 96px 预留，保持跨端右边距视觉一致。
  *
  * 用法：
  *   const { statusBarHeight, navBarHeight, capsuleRightWidth } = useSystemInfo();
@@ -82,11 +82,13 @@ export function useSystemInfo() {
   });
 
   /**
-   * 顶部右侧需为胶囊预留的最小宽度(含 8px 视觉间距),px。
-   * 非微信小程序返回 0(无胶囊,无需预留)。
+   * 顶部右侧需为胶囊预留的最小宽度（含 8px 视觉间距），px。
+   * MP-WEIXIN：按胶囊实测左缘 + 8 反推预留；
+   * H5/App：返回 96px（= MP 胶囊最小宽度），让两端右边距视觉一致，
+   *         避免 H5 顶栏右侧元素贴边。
    */
   const capsuleRightWidth = computed((): number => {
-    let v = 0;
+    let v = 96;
     // #ifdef MP-WEIXIN
     v = Math.max(96, windowWidth.value - menuButtonLeft.value + 8);
     // #endif

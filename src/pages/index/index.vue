@@ -225,8 +225,14 @@
 import { computed, onMounted, ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import CustomTabBar from '@/components/CustomTabBar.vue';
-
-type SpotType = 'wild' | 'pond' | 'sea' | 'paid';
+import {
+  nearbySpots,
+  formatDistance,
+  SPOT_TYPE_LABEL,
+  type SpotListItem,
+  type SpotType,
+  type WaterType,
+} from '@/api/spots';
 
 interface FilterChip { key: string; label: string }
 interface SpotItem {
@@ -234,6 +240,7 @@ interface SpotItem {
   markerId: number;
   name: string;
   type: SpotType;
+  waterType: WaterType | null;
   cover: string;
   tag: string;
   distance: string;
@@ -257,22 +264,56 @@ interface NotificationItem {
 
 const TYPE_EMOJI: Record<SpotType, string> = {
   wild: '🌊',
-  pond: '🎣',
+  black: '🎣',
   sea: '⚓',
   paid: '💰',
 };
 
-const CHIP_TYPE_MAP: Record<string, SpotType[]> = {
-  all:   ['wild', 'pond', 'sea', 'paid'],
-  wild:  ['wild'],
-  pond:  ['pond'],
-  reser: ['wild'],
-  river: ['wild'],
-  sea:   ['sea'],
-  rent:  ['paid'],
+/** chip → (item) => boolean。多维度过滤（type + waterType）。 */
+const CHIP_PREDICATE: Record<string, (s: SpotItem) => boolean> = {
+  all:   () => true,
+  wild:  (s) => s.type === 'wild',
+  pond:  (s) => s.type === 'black',
+  reser: (s) => s.waterType === 'reservoir',
+  river: (s) => s.waterType === 'river',
+  sea:   (s) => s.type === 'sea' || s.waterType === 'sea',
+  rent:  (s) => s.type === 'paid',
 };
 
 const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
+const NEARBY_RADIUS_M = 10000;
+const NEARBY_LIMIT = 30;
+const FALLBACK_COVER = 'https://images.unsplash.com/photo-1727524315467-264c0bd47a13?w=600';
+
+/** 后端 photos[0] 可能是 OSS key（如 spots/seed/xx.webp），还没接上传 host 时回退到占位图。 */
+function pickCover(photos: string[]): string {
+  const first = photos[0];
+  if (first && /^https?:\/\//.test(first)) return first;
+  return FALLBACK_COVER;
+}
+
+/** 后端 avgRating 是 0-5 分，前端「宜钓 N」展示需要 0-100 整数；评分为 0 时回退一个中性值。 */
+function ratingToScore(avgRating: number, ratingCount: number): number {
+  if (!ratingCount || avgRating <= 0) return 70;
+  return Math.round(avgRating * 20);
+}
+
+/** 把后端 SpotListItem 适配成首页卡片 + map marker 用的本地 shape。 */
+function adaptSpot(item: SpotListItem): SpotItem {
+  return {
+    id: item.id,
+    markerId: Number(item.id) || 0,
+    name: item.name,
+    type: item.type,
+    waterType: item.waterType,
+    cover: pickCover(item.photos),
+    tag: SPOT_TYPE_LABEL[item.type] ?? '钓点',
+    distance: formatDistance(item.distance),
+    score: ratingToScore(item.avgRating, item.ratingCount),
+    latitude: item.lat,
+    longitude: item.lng,
+  };
+}
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
@@ -352,61 +393,12 @@ const notificationPreview = ref<NotificationItem[]>([
 ]);
 
 const center = ref({ ...DEFAULT_CENTER });
-
-const spots = ref<SpotItem[]>([
-  {
-    id: 's1',
-    markerId: 1,
-    name: '玄武湖东岸',
-    type: 'wild',
-    cover: 'https://images.unsplash.com/photo-1727524315467-264c0bd47a13?w=600',
-    tag: '热门',
-    distance: '1.2km',
-    score: 88,
-    latitude: 32.072,
-    longitude: 118.805,
-  },
-  {
-    id: 's2',
-    markerId: 2,
-    name: '紫金山水库',
-    type: 'wild',
-    cover: 'https://images.unsplash.com/photo-1635712291708-7afe9e037503?w=600',
-    tag: '清静',
-    distance: '4.5km',
-    score: 92,
-    latitude: 32.082,
-    longitude: 118.844,
-  },
-  {
-    id: 's3',
-    markerId: 3,
-    name: '秦淮河老门东',
-    type: 'wild',
-    cover: 'https://images.unsplash.com/photo-1564875009929-58c9517cd6fd?w=600',
-    tag: '城市',
-    distance: '2.8km',
-    score: 75,
-    latitude: 32.022,
-    longitude: 118.785,
-  },
-  {
-    id: 's4',
-    markerId: 4,
-    name: '将军山黑坑',
-    type: 'paid',
-    cover: 'https://images.unsplash.com/photo-1741134913547-46bbab5a1f60?w=600',
-    tag: '收费',
-    distance: '8.6km',
-    score: 80,
-    latitude: 31.952,
-    longitude: 118.730,
-  },
-]);
+const spots = ref<SpotItem[]>([]);
+const loadingSpots = ref(false);
 
 const filteredSpots = computed(() => {
-  const allowed = CHIP_TYPE_MAP[activeChip.value] ?? CHIP_TYPE_MAP.all;
-  return spots.value.filter((s) => allowed.includes(s.type));
+  const pred = CHIP_PREDICATE[activeChip.value] ?? CHIP_PREDICATE.all;
+  return spots.value.filter(pred);
 });
 
 const markers = computed(() =>
@@ -455,7 +447,34 @@ async function locateUser(silent = false) {
   }
 }
 
-onMounted(() => { locateUser(true); });
+/**
+ * 拉附近钓点。
+ * - 默认半径 NEARBY_RADIUS_M（10km），后端按距离升序返回。
+ * - 失败 toast 一下但不抛，避免首页空白；spots 保持上一次的值。
+ */
+async function loadSpots(silent = false) {
+  if (loadingSpots.value) return;
+  loadingSpots.value = true;
+  try {
+    const { list } = await nearbySpots({
+      lat: center.value.latitude,
+      lng: center.value.longitude,
+      radius: NEARBY_RADIUS_M,
+      limit: NEARBY_LIMIT,
+    });
+    spots.value = list.map(adaptSpot);
+    activeSpotId.value = '';
+  } catch (e: any) {
+    if (!silent) uni.showToast({ title: e?.msg || '附近钓点拉取失败', icon: 'none' });
+  } finally {
+    loadingSpots.value = false;
+  }
+}
+
+onMounted(async () => {
+  await locateUser(true);
+  await loadSpots(true);
+});
 
 const onCityTap = () => {
   showCitySheet.value = true;
@@ -486,7 +505,10 @@ const markAllRead = () => {
 const onNotificationTap = (item: NotificationItem) => {
   uni.navigateTo({ url: item.target });
 };
-const onLocate = () => { locateUser(false); };
+const onLocate = async () => {
+  await locateUser(false);
+  await loadSpots(true);
+};
 const onReportSpot = () => uni.navigateTo({ url: '/subpackages/spot/create/index' });
 const onViewAllSpots = () => uni.navigateTo({ url: '/subpackages/spot/list/index' });
 const onNearbyAnglers = () => uni.navigateTo({ url: '/subpackages/social/nearby-users/index' });

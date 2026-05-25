@@ -178,63 +178,158 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
+import {
+  spotDetail,
+  spotHistory,
+  type CatchHistoryItem,
+} from '@/api/spots';
 
 const { statusBarHeight, safeBottom } = useSystemInfo();
 
+const spotId = ref('');
+const loading = ref(true);
+
 const spot = ref({
-  name: '燕子矶江边',
+  name: '加载中…',
   days: 30,
-  total: 46,
-  score: 86,
+  total: 0,
+  score: 0,
 });
 
-const weekTotal = 18;
-const bars = [
-  { h: 44, tone: '' },
-  { h: 72, tone: 'tall' },
-  { h: 56, tone: '' },
-  { h: 92, tone: 'tall' },
-  { h: 68, tone: '' },
-  { h: 104, tone: 'peak' },
-  { h: 60, tone: '' },
-];
+const weekTrend = ref<{ date: string; count: number }[]>([]);
+const weekTotal = computed(() => weekTrend.value.reduce((s, b) => s + b.count, 0));
+
+const BAR_MIN_H = 44;
+const BAR_MAX_H = 104;
+
+/** weekTrend 桶 → 柱图高度 + tone 三档；空数据兜底成 7 根 min-h 灰柱。 */
+const bars = computed(() => {
+  if (weekTrend.value.length === 0) {
+    return Array.from({ length: 7 }, () => ({ h: BAR_MIN_H, tone: '' }));
+  }
+  const max = Math.max(...weekTrend.value.map((b) => b.count));
+  return weekTrend.value.map((b) => {
+    if (max === 0) return { h: BAR_MIN_H, tone: '' };
+    const ratio = b.count / max;
+    const h = Math.round(BAR_MIN_H + ratio * (BAR_MAX_H - BAR_MIN_H));
+    let tone = '';
+    if (b.count === max) tone = 'peak';
+    else if (ratio >= 0.5) tone = 'tall';
+    return { h, tone };
+  });
+});
 
 const chips = ['全部', '鲫鱼', '本周'];
 const activeChip = ref('全部');
 
 interface CatchRow {
+  id: string;
   glyph: string;
   tone: 'tone-primary' | 'tone-blue' | 'tone-accent';
   title: string;
   meta: string;
   foot: string;
+  fish: string;
+  ts: number;
+  hasPhoto: boolean;
 }
-const catches: CatchRow[] = [
-  {
-    glyph: '鲫',
-    tone: 'tone-primary',
-    title: '阿楠 · 鲫鱼 1.2斤',
-    meta: '今天 07:20 · 蚯蚓 · 近岸草边',
-    foot: '气压回升后开口，连中三尾',
-  },
-  {
-    glyph: '翘',
-    tone: 'tone-blue',
-    title: '阿峰路亚 · 翘嘴 0.9kg',
-    meta: '昨天 18:42 · 米诺 · 流水口',
-    foot: '傍晚窗口很短，慢收中鱼',
-  },
-  {
-    glyph: '鲤',
-    tone: 'tone-accent',
-    title: '江边老王 · 鲤鱼 3.8kg',
-    meta: '05-17 20:10 · 玉米 · 深水弯',
-    foot: '夜钓守到天黑，最后一口很稳',
-  },
-];
+const allCatches = ref<CatchRow[]>([]);
+
+const TONE_ROTATION: CatchRow['tone'][] = ['tone-primary', 'tone-blue', 'tone-accent'];
+
+function formatWeight(weightG: number | null): string {
+  if (weightG == null) return '';
+  if (weightG >= 1000) return `${(weightG / 1000).toFixed(1)}kg`;
+  return `${(weightG / 500).toFixed(1)}斤`;
+}
+
+function formatTs(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const now = new Date();
+  const dayMs = 86_400_000;
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const diffDays = Math.floor((startToday - new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) / dayMs);
+  if (diffDays === 0) return `今天 ${hh}:${mm}`;
+  if (diffDays === 1) return `昨天 ${hh}:${mm}`;
+  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${hh}:${mm}`;
+}
+
+function adaptCatch(item: CatchHistoryItem, idx: number): CatchRow {
+  const fish = item.fishSpecies[0] ?? '';
+  const weight = formatWeight(item.weight);
+  const userName = item.userName || '钓友';
+  const title = fish
+    ? (weight ? `${userName} · ${fish} ${weight}` : `${userName} · ${fish}`)
+    : userName;
+  const meta = formatTs(item.createdAt) + (item.length ? ` · ${item.length}cm` : '');
+  const foot = item.content?.trim() || '无描述';
+  return {
+    id: item.id,
+    glyph: fish ? fish.charAt(0) : '鱼',
+    tone: TONE_ROTATION[idx % TONE_ROTATION.length],
+    title,
+    meta,
+    foot,
+    fish,
+    ts: new Date(item.createdAt).getTime(),
+    hasPhoto: item.photos.length > 0,
+  };
+}
+
+const catches = computed(() => {
+  let list = allCatches.value;
+  switch (activeChip.value) {
+    case '鲫鱼':
+      list = list.filter((c) => c.fish.includes('鲫'));
+      break;
+    case '本周': {
+      const sevenAgo = Date.now() - 7 * 86_400_000;
+      list = list.filter((c) => c.ts >= sevenAgo);
+      break;
+    }
+  }
+  return list;
+});
+
+async function loadSpotMeta() {
+  try {
+    const d = await spotDetail(spotId.value);
+    spot.value.name = d.name;
+    spot.value.total = d.catchCount30Days;
+    spot.value.score = d.ratingCount > 0 ? Math.round(d.avgRating * 20) : 70;
+  } catch (_) {
+    spot.value.name = '钓点';
+  }
+}
+
+async function loadHistory() {
+  try {
+    const resp = await spotHistory(spotId.value, { days: 30, limit: 30 });
+    weekTrend.value = resp.weekTrend;
+    allCatches.value = resp.catches.map(adaptCatch);
+    spot.value.total = resp.total || spot.value.total;
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '加载历史鱼获失败', icon: 'none' });
+  }
+}
+
+onLoad(async (options) => {
+  spotId.value = String(options?.id ?? '');
+  if (!spotId.value) {
+    uni.showToast({ title: '钓点 id 缺失', icon: 'none' });
+    return;
+  }
+  loading.value = true;
+  await Promise.all([loadSpotMeta(), loadHistory()]);
+  loading.value = false;
+});
 
 /* ---------- 筛选浮层 ---------- */
 const filterOpen = ref(false);
@@ -246,7 +341,7 @@ const filter = ref({
   fish: '全部',
   time: '近30天',
   sort: '时间最新',
-  hasPhoto: true,
+  hasPhoto: false,
   hidePrivate: false,
 });
 
@@ -262,17 +357,22 @@ const onReset = () => {
   };
 };
 const onApply = () => {
+  // 把弹层里的筛选映射到 chip
+  if (filter.value.fish !== '全部') activeChip.value = filter.value.fish;
+  else if (filter.value.time === '本周') activeChip.value = '本周';
+  else activeChip.value = '全部';
   filterOpen.value = false;
   uni.showToast({ title: '已应用筛选', icon: 'success' });
 };
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onRow = (c: CatchRow) =>
-  uni.navigateTo({ url: '/subpackages/catch/detail/index' }).catch(() => {
+  uni.navigateTo({ url: `/subpackages/catch/detail/index?id=${c.id}` }).catch(() => {
     uni.showToast({ title: c.title, icon: 'none' });
   });
-const onMap = () => uni.showToast({ title: '打开地图', icon: 'none' });
-const onPublish = () => uni.navigateTo({ url: '/subpackages/catch/create/index' });
+const onMap = () => uni.navigateBack({ delta: 1 }).catch(() => {});
+const onPublish = () =>
+  uni.navigateTo({ url: `/subpackages/catch/create/index?spotId=${spotId.value}` });
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>
