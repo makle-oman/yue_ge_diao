@@ -9,7 +9,7 @@
           <view class="stats-head">
             <text class="stats-title">鱼获档案</text>
             <view class="delta-badge">
-              <text class="delta-text">本月 +{{ stats.monthAdd }}</text>
+              <text class="delta-text">本月 {{ stats.monthAdd >= 0 ? '+' : '' }}{{ stats.monthAdd }}</text>
             </view>
           </view>
           <view class="stats-row">
@@ -37,7 +37,7 @@
             :key="t.key"
             class="tab"
             :class="{ active: activeTab === t.key }"
-            @click="activeTab = t.key"
+            @click="onTabChange(t.key)"
           >
             <text>{{ t.label }}</text>
           </view>
@@ -67,33 +67,49 @@
         <!-- 鱼获列表 -->
         <view class="catch-list">
           <view
-            v-for="c in filtered"
+            v-for="(c, idx) in filtered"
             :key="c.id"
             class="catch-row"
             @click="onOpen(c)"
           >
-            <view class="catch-thumb" :class="`tone-${c.tone}`">
-              <text class="catch-thumb-text">鱼</text>
+            <view class="catch-thumb" :class="`tone-${toneFor(idx)}`">
+              <image
+                v-if="c.cover"
+                class="catch-thumb-img"
+                :src="c.cover"
+                mode="aspectFill"
+              />
+              <text v-else class="catch-thumb-text">鱼</text>
             </view>
             <view class="row-main">
               <view class="row-head">
-                <text class="row-name">{{ c.name }}</text>
-                <view class="weight-badge" :class="`badge--${c.tone}`">
-                  <text class="weight-badge-text">{{ c.weight }}</text>
+                <text class="row-name">{{ c.fishSpecies.join(' · ') || '未知鱼种' }}</text>
+                <view class="weight-badge" :class="`badge--${toneFor(idx)}`">
+                  <text class="weight-badge-text">{{ formatWeight(c.weight) }}</text>
                 </view>
               </view>
-              <text class="row-meta">{{ c.spot }} · {{ c.time }}</text>
+              <text class="row-meta">{{ c.spotName || c.city || '未关联钓点' }} · {{ formatTime(c.createdAt) }}</text>
               <view class="row-foot">
                 <view class="foot-tag">
-                  <mxy-icon name="device_thermostat" :size="22" color="#6B7B85" />
-                  <text class="foot-tag-text">{{ c.weather }}</text>
+                  <mxy-icon name="straighten" :size="22" color="#6B7B85" />
+                  <text class="foot-tag-text">{{ formatLength(c.length) }}</text>
                 </view>
                 <view class="foot-tag">
                   <mxy-icon name="favorite_border" :size="22" color="#6B7B85" />
-                  <text class="foot-tag-text">{{ c.likes }}</text>
+                  <text class="foot-tag-text">{{ c.likeCount }}</text>
                 </view>
               </view>
             </view>
+          </view>
+
+          <view v-if="!loading && filtered.length === 0" class="empty">
+            <text class="empty-text">{{ keyword ? '没有匹配的鱼获' : '还没有鱼获，去发布一条吧' }}</text>
+          </view>
+          <view v-if="hasMore && !loading" class="more" @click="loadMore">
+            <text class="more-text">加载更多</text>
+          </view>
+          <view v-if="loading" class="more">
+            <text class="more-text">加载中…</text>
           </view>
         </view>
 
@@ -110,120 +126,150 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import {
+  userCatches,
+  userCatchesStats,
+  formatWeight,
+  formatLength,
+  formatTime,
+  type CatchFeedItem,
+  type Visibility,
+} from '@/api/catches';
 
 const { safeBottom } = useSystemInfo();
 
 type TabKey = 'all' | 'week' | 'public' | 'private';
 type Tone = 'primary' | 'blue' | 'orange';
 
-interface Catch {
-  id: string;
-  name: string;
-  weight: string;
-  spot: string;
-  time: string;
-  weather: string;
-  likes: number;
-  tone: Tone;
-  isPublic: boolean;
-  weekly: boolean;
+interface Tab {
+  key: TabKey;
+  label: string;
+  /** 映射到后端 visibility 入参 */
+  visibility: Visibility;
+  /** 客户端二次过滤：是否只看本周 */
+  weekOnly?: boolean;
 }
 
 const stats = ref({
-  total: 156,
-  month: 12,
-  heaviest: '4.2kg',
-  monthAdd: 8,
+  total: 0,
+  month: 0,
+  heaviest: '—',
+  monthAdd: 0,
 });
 
 const activeTab = ref<TabKey>('all');
 const keyword = ref('');
 const sortLabel = ref('时间');
+const loading = ref(false);
+const hasMore = ref(false);
+const cursor = ref<string | null>(null);
 
-const tabs = [
-  { key: 'all'     as TabKey, label: '全部' },
-  { key: 'week'    as TabKey, label: '本周' },
-  { key: 'public'  as TabKey, label: '公开' },
-  { key: 'private' as TabKey, label: '私密' },
+const tabs: Tab[] = [
+  { key: 'all',     label: '全部', visibility: 'all' },
+  { key: 'week',    label: '本周', visibility: 'all', weekOnly: true },
+  { key: 'public',  label: '公开', visibility: 'public' },
+  { key: 'private', label: '私密', visibility: 'private' },
 ];
 
-const catches = ref<Catch[]>([
-  {
-    id: 'c1',
-    name: '燕子矶半天三条板鲫',
-    weight: '1.2kg',
-    spot: '燕子矶江边',
-    time: '今早 5:42',
-    weather: '气压回升 · 早窗连竿',
-    likes: 32,
-    tone: 'primary',
-    isPublic: true,
-    weekly: true,
-  },
-  {
-    id: 'c2',
-    name: '江心洲傍晚翘口断口',
-    weight: '0.9kg',
-    spot: '江心洲北汊',
-    time: '昨日 18:20',
-    weather: '东南风 · 翘嘴口窗',
-    likes: 18,
-    tone: 'blue',
-    isPublic: true,
-    weekly: true,
-  },
-  {
-    id: 'c3',
-    name: '老山水库守到鲤鱼',
-    weight: '3.8kg',
-    spot: '老山水库外湾',
-    time: '5月14日 16:10',
-    weather: '小雨 · 大鱼出动',
-    likes: 56,
-    tone: 'orange',
-    isPublic: false,
-    weekly: false,
-  },
-  {
-    id: 'c4',
-    name: '青龙湾连竿鲫鱼',
-    weight: '0.6kg',
-    spot: '青龙湾黑坑',
-    time: '5月12日 9:30',
-    weather: '晴 · 浮漂稳',
-    likes: 9,
-    tone: 'primary',
-    isPublic: true,
-    weekly: false,
-  },
-]);
+const catches = ref<CatchFeedItem[]>([]);
 
-const filtered = computed<Catch[]>(() => {
+function toneFor(idx: number): Tone {
+  return (['primary', 'blue', 'orange'] as const)[idx % 3];
+}
+
+// 本周筛选：以 7 天为窗口（含今天）
+function withinWeek(iso: string): boolean {
+  const t = new Date(iso).getTime();
+  if (!Number.isFinite(t)) return false;
+  return Date.now() - t <= 7 * 24 * 60 * 60 * 1000;
+}
+
+const filtered = computed<CatchFeedItem[]>(() => {
   let pool = catches.value;
-  switch (activeTab.value) {
-    case 'week':    pool = pool.filter(c => c.weekly); break;
-    case 'public':  pool = pool.filter(c => c.isPublic); break;
-    case 'private': pool = pool.filter(c => !c.isPublic); break;
-  }
+  const tab = tabs.find((x) => x.key === activeTab.value);
+  if (tab?.weekOnly) pool = pool.filter((c) => withinWeek(c.createdAt));
   const kw = keyword.value.trim();
-  if (kw) pool = pool.filter(c => c.name.includes(kw) || c.spot.includes(kw) || c.weather.includes(kw));
+  if (kw) {
+    pool = pool.filter(
+      (c) =>
+        c.fishSpecies.some((f) => f.includes(kw)) ||
+        (c.spotName && c.spotName.includes(kw)) ||
+        (c.city && c.city.includes(kw)) ||
+        (c.content && c.content.includes(kw)),
+    );
+  }
   return pool;
+});
+
+async function loadStats() {
+  try {
+    const s = await userCatchesStats();
+    stats.value.total = s.total;
+    stats.value.month = s.monthCount;
+    stats.value.monthAdd = s.monthAdd;
+    stats.value.heaviest = s.heaviest ? formatWeight(s.heaviest.weightG) : '—';
+  } catch (e) {
+    console.warn('[my-catches] loadStats failed', e);
+  }
+}
+
+async function loadList(reset = false) {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    if (reset) {
+      catches.value = [];
+      cursor.value = null;
+      hasMore.value = false;
+    }
+    const tab = tabs.find((x) => x.key === activeTab.value) ?? tabs[0];
+    const resp = await userCatches({
+      visibility: tab.visibility,
+      limit: 20,
+      cursor: cursor.value,
+    });
+    catches.value = catches.value.concat(resp.list);
+    cursor.value = resp.nextCursor;
+    hasMore.value = resp.hasMore;
+  } catch (e) {
+    console.warn('[my-catches] loadList failed', e);
+  } finally {
+    loading.value = false;
+  }
+}
+
+function onTabChange(key: TabKey) {
+  if (activeTab.value === key) return;
+  activeTab.value = key;
+  void loadList(true);
+}
+
+function loadMore() {
+  if (!hasMore.value || loading.value) return;
+  void loadList(false);
+}
+
+onMounted(() => {
+  void loadStats();
+  void loadList(true);
 });
 
 const onFilter = () => uni.showActionSheet({
   itemList: ['按时间', '按重量', '按点赞'],
   success: (r) => {
     sortLabel.value = ['时间', '重量', '点赞'][r.tapIndex];
+    // TODO(sort): 后端目前只按 createdAt DESC，按重量/点赞需要后端追加排序参数
   },
   fail: () => {},
 });
 
 const onSort = () => onFilter();
 
-const onOpen = (c: Catch) => uni.navigateTo({ url: `/subpackages/catch/detail/index?id=${c.id}` });
+const onOpen = (c: CatchFeedItem) =>
+  uni.navigateTo({ url: `/subpackages/catch/detail/index?id=${c.id}` });
 const onPublish = () => uni.navigateTo({ url: '/subpackages/catch/create/index' });
 </script>
 

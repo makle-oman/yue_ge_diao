@@ -13,6 +13,7 @@
  */
 
 const TOKEN_KEY = 'yg_token';
+const REFRESH_TOKEN_KEY = 'yg_refresh_token';
 const USER_KEY = 'yg_user';
 
 export interface AuthUser {
@@ -46,6 +47,33 @@ export function clearToken(): void {
   }
 }
 
+// ─── refresh token ────────────────────────────────────────────────────────
+// refresh token 仅在 /auth/refresh 时随 body 上送,平时不进 Authorization 头。
+// 单独 KEY 持久化:即便 access 被清(/api 401),refresh 还在,能静默续期。
+export function getRefreshToken(): string {
+  try {
+    return uni.getStorageSync(REFRESH_TOKEN_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+export function setRefreshToken(token: string): void {
+  try {
+    uni.setStorageSync(REFRESH_TOKEN_KEY, token);
+  } catch {
+    // ignore
+  }
+}
+
+export function clearRefreshToken(): void {
+  try {
+    uni.removeStorageSync(REFRESH_TOKEN_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 export function getUser(): AuthUser | null {
   try {
     const raw = uni.getStorageSync(USER_KEY);
@@ -72,13 +100,39 @@ export function clearUser(): void {
   }
 }
 
-/** 退出登录：清 token + 用户快照 */
+/** 退出登录:清 token + refresh + 用户快照 + 通知所有订阅者 */
 export function logout(): void {
   clearToken();
+  clearRefreshToken();
   clearUser();
+  logoutListeners.slice().forEach((fn) => {
+    try {
+      fn();
+    } catch (e) {
+      console.warn('[auth] logout listener threw', e);
+    }
+  });
 }
 
-/** 是否已登录（仅看 token 是否存在，不做合法性校验） */
+/** 是否已登录(仅看 token 是否存在,不做合法性校验) */
 export function isLoggedIn(): boolean {
   return !!getToken();
+}
+
+// ─── logout 事件订阅(给 Pinia store 用,避免 request.ts ↔ stores/auth 循环依赖) ───
+//
+// 设计:
+//   - request.ts 的 401 处理走 `logout()`,只 import utils/auth(底层 storage 模块,无业务依赖)
+//   - Pinia auth store 在 setup 时调 `onAuthLogout(...)` 注册一个回调,把内存 state 也清掉
+//   - store 自己的 logout action 直接清 ref + 调 clearToken/clearUser,不走本事件(避免回环)
+//
+type LogoutListener = () => void;
+const logoutListeners: LogoutListener[] = [];
+
+export function onAuthLogout(fn: LogoutListener): () => void {
+  logoutListeners.push(fn);
+  return () => {
+    const idx = logoutListeners.indexOf(fn);
+    if (idx >= 0) logoutListeners.splice(idx, 1);
+  };
 }

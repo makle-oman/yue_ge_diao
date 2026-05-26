@@ -17,7 +17,13 @@
     <scroll-view class="content" scroll-y>
       <!-- 顶部图 -->
       <view class="hero">
-        <image class="hero-img" :src="catchData.cover" mode="aspectFill" />
+        <image
+          v-if="catchData.cover"
+          class="hero-img"
+          :src="catchData.cover"
+          mode="aspectFill"
+        />
+        <view v-else class="hero-img hero-img--placeholder" />
         <view class="hero-shade" />
         <view class="hero-card-badge">
           <text class="hero-card-badge-text">朋友圈卡片</text>
@@ -30,7 +36,7 @@
           <mxy-avatar :src="author.avatar" :size="88" />
           <view class="user-text">
             <text class="user-name">{{ author.name }}</text>
-            <text class="user-meta">{{ catchData.time }} · {{ catchData.city }}</text>
+            <text class="user-meta">{{ formatTime(catchData.createdAt) }}{{ catchData.city ? ' · ' + catchData.city : '' }}</text>
           </view>
           <view
             class="follow-btn"
@@ -49,12 +55,12 @@
           </view>
           <view class="data-div" />
           <view class="data-item">
-            <text class="data-num accent">{{ catchData.weight }}</text>
+            <text class="data-num accent">{{ formatWeight(catchData.weight) }}</text>
             <text class="data-label">重量</text>
           </view>
           <view class="data-div" />
           <view class="data-item">
-            <text class="data-num primary">{{ catchData.length }}</text>
+            <text class="data-num primary">{{ formatLength(catchData.length) }}</text>
             <text class="data-label">长度</text>
           </view>
         </view>
@@ -63,26 +69,26 @@
         <view class="info-card">
           <view class="info-row" @click="onSpotTap">
             <mxy-icon name="location_on" :size="36" color="#2D8F87" />
-            <text class="info-text strong">{{ catchData.spot }} · 公开位置</text>
-            <mxy-icon name="chevron_right" :size="32" color="#99A5AD" />
+            <text class="info-text strong">{{ spotLine }}</text>
+            <mxy-icon v-if="catchData.spotId" name="chevron_right" :size="32" color="#99A5AD" />
           </view>
           <view class="info-divider" />
           <view class="info-row">
             <mxy-icon name="cloud" :size="36" color="#5BA9C4" />
-            <text class="info-text">{{ catchData.weather }}</text>
+            <text class="info-text">{{ catchData.weatherText }}</text>
           </view>
         </view>
 
         <!-- 描述 -->
         <view class="desc-card">
           <text class="desc-title">钓获记录</text>
-          <text class="desc-text">{{ catchData.desc }}</text>
+          <text class="desc-text">{{ catchData.content || '—' }}</text>
         </view>
 
         <!-- 评论 -->
         <view class="comments-card" @click="onMoreComments">
           <text class="comments-title">评论 {{ catchData.commentCount }}</text>
-          <text class="comments-text">{{ catchData.commentPreview }}</text>
+          <text class="comments-text">查看全部评论 ›</text>
         </view>
 
       </view>
@@ -125,54 +131,146 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import {
+  catchDetail,
+  likeCatch,
+  collectCatch,
+  formatWeight,
+  formatLength,
+  formatTime,
+  type CatchDetail,
+} from '@/api/catches';
 
 const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
+const catchId = ref<string>('');
+const liking = ref(false);
+const collecting = ref(false);
+
 const author = ref({
-  name: '老王钓鱼',
+  name: '钓友',
   avatar: '',
+  // TODO(follow): 需要 /users/follow 接口，本 wire 只切详情数据；关注按钮先纯前端切换
   following: false,
 });
 
 const catchData = ref({
-  cover: 'https://images.unsplash.com/photo-1766425499950-16cbd46c4cd2?w=900',
-  time: '今天 06:42',
-  city: '南京',
-  species: '鲫鱼',
-  weight: '1.2斤',
-  length: '28cm',
-  spot: '燕子矶江边',
-  weather: '多云 24℃ · 气压 1008hPa · 东风 3 级',
-  desc: '今天气压回升，鱼口很活，半天三条板鲫。这条留影，其他放流。',
-  commentCount: 8,
-  commentPreview: '阿峰：这点早上几点开口？  ·  老周：板鲫漂亮。',
+  cover: '' as string | null,
+  city: '' as string | null,
+  createdAt: '',
+  species: '—',
+  weight: null as number | null,
+  length: null as number | null,
+  spotId: null as string | null,
+  spotName: null as string | null,
+  weatherText: '天气数据待接入',
+  content: '' as string | null,
+  commentCount: 0,
   liked: false,
-  likes: 32,
+  likes: 0,
   collected: false,
+});
+
+const spotLine = computed(() => {
+  const c = catchData.value;
+  if (c.spotName) return c.spotName + (c.spotId ? ' · 详情 ›' : '');
+  if (c.city) return c.city;
+  return '未关联钓点';
+});
+
+async function loadDetail() {
+  if (!catchId.value) return;
+  try {
+    const d: CatchDetail = await catchDetail(catchId.value);
+    catchData.value.cover = d.cover;
+    catchData.value.createdAt = d.createdAt;
+    catchData.value.species = d.fishSpecies.join(' · ') || '—';
+    catchData.value.weight = d.weight;
+    catchData.value.length = d.length;
+    catchData.value.spotId = d.spot?.id ?? null;
+    catchData.value.spotName = d.spot?.name ?? null;
+    catchData.value.city = d.spot?.city ?? null;
+    catchData.value.content = d.content;
+    catchData.value.commentCount = d.commentCount;
+    catchData.value.liked = d.yourLikeStatus;
+    catchData.value.likes = d.likeCount;
+    catchData.value.collected = d.yourCollectStatus;
+    // 天气快照后端字段为 weatherSnapshot（结构待定），后续 weather 服务接入后再渲染
+    author.value.name = d.user.nickname || `钓友${d.user.id.slice(-4)}`;
+    author.value.avatar = d.user.avatar || '';
+  } catch (e) {
+    console.warn('[catch-detail] load failed', e);
+  }
+}
+
+onLoad((options) => {
+  catchId.value = String((options as { id?: string })?.id ?? '');
+  void loadDetail();
 });
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });
 const onFollow = () => {
   author.value.following = !author.value.following;
-  uni.showToast({ title: author.value.following ? '已关注' : '已取消关注', icon: 'success' });
-};
-const onSpotTap = () => uni.navigateTo({ url: '/subpackages/spot/detail/index?id=demo' });
-const onMoreComments = () => uni.navigateTo({ url: '/subpackages/catch/comments/index' });
-const onLike = () => {
-  catchData.value.liked = !catchData.value.liked;
-  catchData.value.likes += catchData.value.liked ? 1 : -1;
-};
-const onCollect = () => {
-  catchData.value.collected = !catchData.value.collected;
   uni.showToast({
-    title: catchData.value.collected ? '已收藏' : '已取消收藏',
+    title: author.value.following ? '已关注' : '已取消关注',
     icon: 'success',
   });
 };
-const onShareCard = () => uni.showToast({ title: '分享卡片 (待开发)', icon: 'none' });
+const onSpotTap = () => {
+  if (!catchData.value.spotId) return;
+  uni.navigateTo({
+    url: `/subpackages/spot/detail/index?id=${catchData.value.spotId}`,
+  });
+};
+const onMoreComments = () =>
+  uni.navigateTo({ url: '/subpackages/catch/comments/index' });
+
+async function onLike() {
+  if (!catchId.value || liking.value) return;
+  liking.value = true;
+  const next = catchData.value.liked ? 'unlike' : 'like';
+  // 乐观更新（互动失败时回滚）
+  const before = { liked: catchData.value.liked, likes: catchData.value.likes };
+  catchData.value.liked = next === 'like';
+  catchData.value.likes += next === 'like' ? 1 : -1;
+  try {
+    const resp = await likeCatch(catchId.value, next);
+    catchData.value.likes = resp.likeCount;
+  } catch (e) {
+    catchData.value.liked = before.liked;
+    catchData.value.likes = before.likes;
+    console.warn('[catch-detail] like failed', e);
+  } finally {
+    liking.value = false;
+  }
+}
+
+async function onCollect() {
+  if (!catchId.value || collecting.value) return;
+  collecting.value = true;
+  const next = catchData.value.collected ? 'uncollect' : 'collect';
+  const before = catchData.value.collected;
+  catchData.value.collected = next === 'collect';
+  try {
+    await collectCatch(catchId.value, next);
+    uni.showToast({
+      title: catchData.value.collected ? '已收藏' : '已取消收藏',
+      icon: 'success',
+    });
+  } catch (e) {
+    catchData.value.collected = before;
+    console.warn('[catch-detail] collect failed', e);
+  } finally {
+    collecting.value = false;
+  }
+}
+
+const onShareCard = () =>
+  uni.showToast({ title: '分享卡片 (待开发)', icon: 'none' });
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

@@ -58,7 +58,7 @@
           </view>
           <view class="city-text">
             <text class="city-main">常驻城市</text>
-            <text class="city-sub">{{ form.city }} · 已根据定位填写</text>
+            <text class="city-sub">{{ form.city || '未填写' }} · 点击修改</text>
           </view>
           <text class="city-edit">修改</text>
         </view>
@@ -66,14 +66,14 @@
         <view class="card">
           <view class="privacy-row">
             <text class="privacy-main">允许附近钓友看到我</text>
-            <view class="switch" :class="{ on: form.visible }" @click="form.visible = !form.visible">
+            <view class="switch" :class="{ on: form.allowNearby }" @click="form.allowNearby = !form.allowNearby">
               <view class="switch-dot" />
             </view>
           </view>
           <view class="divider" />
           <view class="privacy-row">
             <text class="privacy-main">默认公开鱼获位置</text>
-            <view class="switch" :class="{ on: form.publicSpot }" @click="form.publicSpot = !form.publicSpot">
+            <view class="switch" :class="{ on: form.allowShowLoc }" @click="form.allowShowLoc = !form.allowShowLoc">
               <view class="switch-dot" />
             </view>
           </view>
@@ -83,8 +83,8 @@
     </scroll-view>
 
     <view class="bottom-bar" :style="{ paddingBottom: 20 + safeBottom + 'px' }">
-      <view class="submit-btn" @click="onSave">
-        <text class="submit-btn-text">保存并进入约个钓</text>
+      <view class="submit-btn" :class="{ disabled: saving }" @click="onSave">
+        <text class="submit-btn-text">{{ saving ? '保存中…' : '保存并进入约个钓' }}</text>
       </view>
     </view>
   </view>
@@ -92,23 +92,36 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import {
+  updateMe,
+  FISHING_AGE_BAND_LABEL,
+  FISHING_AGE_BAND_CODE,
+  type FishingAgeBand,
+  type UpdateMePayload,
+  type MeProfile,
+} from '@/api/users';
+import { useAuthStore } from '@/stores';
 
 const { safeBottom } = useSystemInfo();
+const authStore = useAuthStore();
 
-const ageOptions = ['1年内', '1-3年', '3-5年', '5年以上'];
-const playOptions = ['野钓', '路亚', '黑坑', '海钓', '冰钓'];
+const ageOptions = ['1年内', '1-3年', '3-5年', '5年以上'] as const;
+const playOptions = ['野钓', '路亚', '黑坑', '海钓', '冰钓'] as const;
 
 const form = ref({
   avatar: '',
-  name: '老王钓鱼',
-  age: '3-5年',
-  play: ['野钓', '路亚'] as string[],
-  city: '南京',
-  visible: true,
-  publicSpot: false,
+  name: '',
+  age: '' as '' | (typeof ageOptions)[number],
+  play: [] as string[],
+  city: '',
+  allowNearby: true,
+  allowShowLoc: false,
 });
+
+const saving = ref(false);
 
 const togglePlay = (p: string) => {
   const idx = form.value.play.indexOf(p);
@@ -127,14 +140,64 @@ const filled = computed(() => {
 const remaining = computed(() => Math.max(0, totalFields - filled.value));
 const progressPct = computed(() => Math.round((filled.value / totalFields) * 100));
 
+function fillFormFromProfile(me: MeProfile) {
+  form.value.avatar = me.avatar || '';
+  form.value.name = me.nickname || `钓友${String(me.id).slice(-4)}`;
+  form.value.age = me.fishingAgeBand
+    ? (FISHING_AGE_BAND_LABEL[me.fishingAgeBand] as (typeof ageOptions)[number])
+    : '';
+  form.value.play = Array.isArray(me.playStyles) ? [...me.playStyles] : [];
+  form.value.city = me.city || '';
+  form.value.allowNearby = me.allowNearby;
+  form.value.allowShowLoc = me.allowShowLoc;
+}
+
+async function loadMe() {
+  if (!authStore.isLoggedIn) return;
+  // 优先用 store 里已有的 profile,避免重复 /users/me 请求
+  if (authStore.profile) {
+    fillFormFromProfile(authStore.profile);
+    return;
+  }
+  const me = await authStore.refreshMe();
+  if (me) fillFormFromProfile(me);
+}
+
+onLoad(() => {
+  loadMe();
+});
+
 const onPickCity = () => uni.showToast({ title: '修改城市 (待开发)', icon: 'none' });
-const onSave = () => {
+
+const onSave = async () => {
+  if (saving.value) return;
   if (remaining.value > 0) {
     uni.showToast({ title: `还有 ${remaining.value} 项必填`, icon: 'none' });
     return;
   }
-  uni.showToast({ title: '已保存', icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 600);
+  saving.value = true;
+  try {
+    const payload: UpdateMePayload = {
+      city: form.value.city,
+      playStyles: form.value.play,
+      allowNearby: form.value.allowNearby,
+      allowShowLoc: form.value.allowShowLoc,
+    };
+    if (form.value.age) {
+      const code = FISHING_AGE_BAND_CODE[form.value.age];
+      if (code) payload.fishingAgeBand = code as FishingAgeBand;
+    }
+    const updated = await updateMe(payload);
+    // store 局部更新,profile 页 computed 自动响应,不用 onShow 重拉
+    authStore.patchProfile(updated);
+    uni.showToast({ title: '已保存', icon: 'success' });
+    setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 600);
+  } catch (e) {
+    // request.ts 已弹过 Toast,这里只兜底打日志
+    console.warn('[profile-edit] updateMe failed', e);
+  } finally {
+    saving.value = false;
+  }
 };
 </script>
 

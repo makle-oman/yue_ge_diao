@@ -183,6 +183,13 @@ import { ref } from 'vue';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import {
+  createCatch,
+  parseWeightInputToG,
+  parseLengthInputToCm,
+  type Technique,
+} from '@/api/catches';
+import { uploadImages } from '@/utils/upload';
 
 const { safeBottom } = useSystemInfo();
 
@@ -198,22 +205,36 @@ const methodOptions: MethodOption[] = [
   { name: '其他钓法', isOther: true },
 ];
 
+/** 中文钓法名 → 后端 technique 枚举（hand/taiwan/lure/sea/other） */
+function methodToTechnique(m: string): Technique {
+  if (m === '台钓') return 'taiwan';
+  if (m === '路亚') return 'lure';
+  if (m === '矶钓' || m === '海竿') return 'sea';
+  if (m === '其他钓法') return 'other';
+  return 'other';
+}
+
 const form = ref({
-  photos: ['https://images.unsplash.com/photo-1770475746172-e96a7fc5d8de?w=300'],
-  fish: ['鲫鱼', '鲤鱼'],
-  weight: '1.2斤',
-  length: '28cm',
-  spot: '燕子矶江边',
+  photos: [] as string[],
+  fish: [] as string[],
+  weight: '',
+  length: '',
+  spot: '未关联钓点',
+  /** 关联钓点的 id；spot-picker 页面回填到此 */
+  spotId: '' as string,
   method: '台钓',
-  desc: '今天气压回升,鱼口明显变好,早口半小时连上三条。',
+  desc: '',
   publicSpot: true,
   allowComment: true,
 });
 
 const weather = ref({
   auto: true,
-  text: '多云 24℃ · 东风 3 级 · 气压稳定',
+  text: '自动填充（待接入天气服务）',
 });
+
+const submitting = ref(false);
+const uploading = ref(false);
 
 /* ---------- 钓法弹层 (Design 35) ---------- */
 const methodSheetOpen = ref(false);
@@ -246,13 +267,33 @@ const onMethodConfirm = () => {
 const onPickFish = () => uni.navigateTo({ url: '/subpackages/catch/fish-picker/index' });
 const onPickSpot = () => uni.navigateTo({ url: '/subpackages/catch/spot-picker/index' });
 const onAddPhoto = () => {
+  if (uploading.value) return;
   uni.chooseImage({
     count: 9 - form.value.photos.length,
-    success: (res) => { form.value.photos.push(...res.tempFilePaths); },
+    success: async (res) => {
+      // uni-app 在不同平台返回 string | string[],统一归一化
+      const paths = Array.isArray(res.tempFilePaths)
+        ? res.tempFilePaths
+        : res.tempFilePaths
+          ? [res.tempFilePaths]
+          : [];
+      if (!paths.length) return;
+      uploading.value = true;
+      uni.showLoading({ title: '上传中...' });
+      try {
+        const urls = await uploadImages(paths);
+        if (urls.length) form.value.photos.push(...urls);
+      } finally {
+        uni.hideLoading();
+        uploading.value = false;
+      }
+    },
   });
 };
 const onDelPhoto = (idx: number) => form.value.photos.splice(idx, 1);
-const onPublish = () => {
+
+async function onPublish() {
+  if (submitting.value) return;
   if (form.value.photos.length === 0) {
     uni.showToast({ title: '至少上传 1 张照片', icon: 'none' });
     return;
@@ -261,9 +302,32 @@ const onPublish = () => {
     uni.showToast({ title: '请选择鱼种', icon: 'none' });
     return;
   }
-  uni.showToast({ title: '已发布', icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 800);
-};
+
+  submitting.value = true;
+  try {
+    const resp = await createCatch({
+      photos: form.value.photos,
+      fishSpecies: form.value.fish,
+      weight: parseWeightInputToG(form.value.weight),
+      length: parseLengthInputToCm(form.value.length),
+      technique: methodToTechnique(form.value.method),
+      content: form.value.desc || undefined,
+      spotId: form.value.spotId || undefined,
+      locationVisible: form.value.publicSpot,
+      allowComments: form.value.allowComment,
+    });
+    uni.showToast({ title: '已发布', icon: 'success' });
+    setTimeout(() => {
+      uni.redirectTo({
+        url: `/subpackages/catch/detail/index?id=${resp.id}`,
+      });
+    }, 600);
+  } catch (e) {
+    console.warn('[catch-create] publish failed', e);
+  } finally {
+    submitting.value = false;
+  }
+}
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

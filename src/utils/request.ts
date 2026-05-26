@@ -7,7 +7,8 @@
  *   3. 自动注入 X-Trace-Id（前端生成短 ID，方便和后端日志对齐）
  *   4. 自动解包后端响应信封 { code, msg, data, traceId }：
  *        - code === 200     → resolve(data)（业务成功，与 HTTP 200 同义）
- *        - HTTP 401         → 清 token + 跳登录页 + reject
+ *        - HTTP 401 + 有 refresh token → 走静默刷新 + 重发(单实例 + 排队)
+ *        - HTTP 401 + 无 refresh / 刷新失败 → 清 token + 跳登录页 + reject
  *        - 其他业务码        → reject(new BizError(code, msg))
  *   5. HTTP 网络层错误（断网、超时）→ reject(new BizError(-1, errMsg))
  *
@@ -16,7 +17,13 @@
  */
 
 import { env } from '@/config/env';
-import { clearToken, clearUser, getToken } from '@/utils/auth';
+import {
+  getToken,
+  getRefreshToken,
+  setToken,
+  setRefreshToken,
+  logout as authLogout,
+} from '@/utils/auth';
 
 /** 业务成功码（与 HTTP 200 同义，所有非 200 一律视为失败） */
 export const SUCCESS_CODE = 200;
@@ -48,13 +55,17 @@ export interface RequestOptions {
   data?: object | unknown[];
   /** 额外请求头 */
   header?: Record<string, string>;
-  /** 是否跳过自动注入 token（登录接口可设 true） */
+  /** 是否跳过自动注入 token（登录/refresh 接口可设 true） */
   skipAuth?: boolean;
   /** 是否在出错时自动 Toast（默认 true） */
   showErrorToast?: boolean;
+  /** 内部:本次请求是否已经过 401 重试,防止死循环 */
+  _retried?: boolean;
 }
 
 let redirectingToLogin = false;
+// 单实例 refresh promise:并发 401 共享同一次刷新
+let refreshingPromise: Promise<string> | null = null;
 
 function genTraceId(): string {
   // 短 trace：8 位时间戳 + 4 位随机；后端会优先用 header 里的值
@@ -63,12 +74,9 @@ function genTraceId(): string {
   return `c_${t}${r}`;
 }
 
-function handleUnauthorized() {
-  clearToken();
-  clearUser();
+function redirectToLogin() {
   if (redirectingToLogin) return;
   redirectingToLogin = true;
-  // 用 setTimeout 让当前 Promise 链先 reject 完
   setTimeout(() => {
     uni.redirectTo({
       url: '/pages/login/index',
@@ -79,6 +87,33 @@ function handleUnauthorized() {
   }, 50);
 }
 
+/**
+ * 启动一次 refresh(全局单飞)。成功 resolve 新 access token,失败 reject。
+ * 不论成功失败,都把 refreshingPromise 在 finally 里清空,允许下一次重试。
+ *
+ * 用 dynamic import 加载 api/auth 避免 request.ts ↔ api/auth.ts 顶层循环。
+ */
+function doRefresh(): Promise<string> {
+  if (refreshingPromise) return refreshingPromise;
+
+  const rt = getRefreshToken();
+  if (!rt) {
+    return Promise.reject(new BizError(401, 'refresh token missing'));
+  }
+
+  refreshingPromise = (async () => {
+    const { refreshTokens } = await import('@/api/auth');
+    const pair = await refreshTokens(rt);
+    setToken(pair.token);
+    setRefreshToken(pair.refreshToken);
+    return pair.token;
+  })().finally(() => {
+    refreshingPromise = null;
+  });
+
+  return refreshingPromise;
+}
+
 export function request<T = unknown>(options: RequestOptions): Promise<T> {
   const {
     url,
@@ -87,6 +122,7 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
     header = {},
     skipAuth = false,
     showErrorToast = true,
+    _retried = false,
   } = options;
 
   const token = skipAuth ? '' : getToken();
@@ -112,9 +148,30 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
         // res.data 是后端 JSON 包装体
         const body = res.data as ApiEnvelope<T> | undefined;
 
-        // 1) HTTP 层非 2xx：401 单独处理，其它走通用错误
+        // 1) HTTP 401:尝试 refresh + 重发(单次重试,skipAuth/已重试过 直接走 logout)
         if (res.statusCode === 401) {
-          handleUnauthorized();
+          const canRefresh = !skipAuth && !_retried && !!getRefreshToken();
+          if (canRefresh) {
+            doRefresh()
+              .then(() => {
+                // 用新 token 重发原请求(标记 _retried 防死循环)
+                request<T>({ ...options, _retried: true }).then(resolve, reject);
+              })
+              .catch(() => {
+                // refresh 失败:清登录态,跳登录页
+                authLogout();
+                redirectToLogin();
+                const msg = (body && body.msg) || '登录已过期，请重新登录';
+                const err = new BizError(401, msg, body?.traceId);
+                if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });
+                reject(err);
+              });
+            return;
+          }
+
+          // skipAuth(登录/refresh 自身) 或 已重试过:不再 refresh,直接登出
+          authLogout();
+          redirectToLogin();
           const msg = (body && body.msg) || '登录已过期，请重新登录';
           const err = new BizError(401, msg, body?.traceId);
           if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });

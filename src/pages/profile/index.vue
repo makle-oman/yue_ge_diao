@@ -98,26 +98,38 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import CustomTabBar from '@/components/CustomTabBar.vue';
-import { fetchMe } from '@/api/users';
-import { getUser, isLoggedIn, logout, setUser } from '@/utils/auth';
+import { FISHING_AGE_BAND_LABEL } from '@/api/users';
+import { userCatchesStats, formatWeight } from '@/api/catches';
+import { userSpotsStats } from '@/api/spots';
+import { useAuthStore } from '@/stores';
 
 interface FishItem { name: string; bg: string; locked?: boolean }
 interface MenuItem { key: string; label: string; icon: string; color: string; path?: string; action?: 'logout' }
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
+const authStore = useAuthStore();
 
-// 钓龄 / 标签 / 签名后端暂未落库（user.fishingAgeBand / playStyles / bio 字段未在 schema 中开放），
-// 先用静态文案兜底，等后端字典补齐后再切真值。
-const user = ref({
-  name: '未登录',
-  avatar: '',
-  years: '5年钓龄',
-  styles: ['野钓', '路亚'],
-  sign: '愿者上钩，也要守规矩。',
+// 顶部资料卡:全部来自 authStore.profile / user 的响应式 computed,
+// 编辑页保存后回到本页 store 已更新 → 视图自动响应,不再依赖 onShow 重拉
+const user = computed(() => {
+  const profile = authStore.profile;
+  const u = authStore.user;
+  const name = authStore.isLoggedIn ? authStore.displayName : '未登录';
+  const avatar = authStore.avatar;
+  const years = profile?.fishingAgeBand
+    ? FISHING_AGE_BAND_LABEL[profile.fishingAgeBand]
+    : '钓龄待填';
+  const styles = profile?.playStyles ?? [];
+  const sign = profile?.city
+    ? `坐标 ${profile.city}，愿者上钩。`
+    : u?.nickname
+      ? '愿者上钩，也要守规矩。'
+      : '愿者上钩，也要守规矩。';
+  return { name, avatar, years, styles, sign };
 });
 
 const stats = ref({
@@ -144,49 +156,37 @@ const menus = ref<MenuItem[]>([
   { key: 'logout', label: '退出登录', icon: 'logout',       color: '#C0392B', action: 'logout' },
 ]);
 
-// 先把缓存里的用户快照塞进去，立刻有 UI；网络再请求最新值覆盖
-function hydrateFromCache() {
-  const cached = getUser();
-  if (cached) {
-    user.value.name = cached.nickname || user.value.name;
-    user.value.avatar = cached.avatar || '';
+// 「我的」Tab 顶部 stats 卡:鱼获 total + 最大记录由 /users/catches/stats 拉,
+// 钓点数由 /users/spots/stats 拉。两个统计并发,互不阻塞。
+async function loadStats() {
+  if (!authStore.isLoggedIn) return;
+  const [cs, ss] = await Promise.allSettled([userCatchesStats(), userSpotsStats()]);
+  if (cs.status === 'fulfilled') {
+    stats.value.catches = cs.value.total;
+    stats.value.max = cs.value.heaviest ? formatWeight(cs.value.heaviest.weightG) : '—';
+  } else {
+    console.warn('[profile] userCatchesStats failed', cs.reason);
   }
-}
-
-async function loadMe() {
-  if (!isLoggedIn()) {
-    user.value.name = '未登录';
-    user.value.avatar = '';
-    return;
-  }
-  try {
-    const me = await fetchMe();
-    user.value.name = me.nickname || `钓友${String(me.id).slice(-4)}`;
-    user.value.avatar = me.avatar || '';
-    if (me.city) {
-      user.value.sign = `坐标 ${me.city}，愿者上钩。`;
-    }
-    // 同步缓存，下次进入页面 hydrate 更新
-    setUser({
-      id: me.id,
-      openid: me.openid,
-      nickname: me.nickname,
-      avatar: me.avatar,
-    });
-  } catch (e) {
-    // request.ts 已经统一处理 401 / Toast；这里只兜底
-    console.warn('[profile] fetchMe failed', e);
+  if (ss.status === 'fulfilled') {
+    stats.value.spots = ss.value.total;
+  } else {
+    console.warn('[profile] userSpotsStats failed', ss.reason);
   }
 }
 
 onMounted(() => {
-  hydrateFromCache();
-  loadMe();
+  // store 初始已 hydrate token/user;profile 若未拉过(冷启动)就拉一次
+  if (authStore.isLoggedIn && !authStore.profile) {
+    authStore.refreshMe();
+  }
+  loadStats();
 });
 
-// 从其它页面（如编辑资料）返回时，重新拉一次
+// 从其它页面(如编辑资料)返回时,store.profile 已被 patchProfile 更新,这里只刷 stats
 onShow(() => {
-  if (isLoggedIn()) loadMe();
+  if (authStore.isLoggedIn) {
+    loadStats();
+  }
 });
 
 const onSetting = () => uni.navigateTo({ url: '/subpackages/profile/setting/index' });
@@ -199,7 +199,7 @@ const onMenuTap = (m: MenuItem) => {
       content: '确认退出登录？',
       success: ({ confirm }) => {
         if (!confirm) return;
-        logout();
+        authStore.logout();
         uni.showToast({ title: '已退出', icon: 'success' });
         setTimeout(() => uni.redirectTo({ url: '/pages/login/index' }), 400);
       },

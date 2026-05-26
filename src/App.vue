@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
-import { fetchAppConfig } from "@/api/common";
+import { useAppStore, useAuthStore } from "@/stores";
 
-onLaunch(async () => {
+const appStore = useAppStore();
+const authStore = useAuthStore();
+
+onLaunch(() => {
   console.log("[约个钓] App Launch");
-  // 启动即拉一次 /common/config：拉到当前服务端版本、特性开关、上传约束、字典等
-  // 失败不阻塞 UI（showErrorToast: false），让用户在弱网下仍能进入应用
-  try {
-    const cfg = await fetchAppConfig();
-    console.log("[约个钓] config loaded:", cfg);
-    // 后续可挂到 pinia store / globalProperties
-  } catch (e) {
-    console.warn("[约个钓] config load failed", e);
+  // 启动即拉一次 /common/config:版本/特性开关/上传约束/字典
+  // fire-and-forget — 失败不阻塞 UI,弱网下仍可进入应用;成功后写到 appStore
+  appStore.fetchConfig();
+
+  // 如果本地有 token,顺手拉一次 /users/me 把内存 profile 灌满。
+  // 失败/401 由 request.ts 兜底(401 会自动跳登录页 + clear token)
+  if (authStore.isLoggedIn) {
+    authStore.refreshMe();
   }
 });
 

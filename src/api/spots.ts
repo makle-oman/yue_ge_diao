@@ -167,6 +167,63 @@ export function spotHistory(
   return http.post('/spots/history', { spotId, ...opts });
 }
 
+// ─── /users/spots 聚合 ──────────────────────────────────────────────
+
+export type UserSpotTab = 'all' | 'published' | 'review';
+
+/**
+ * 我的（或他人的）钓点列表 item
+ *
+ * 与 SpotListItem 的差异:
+ *   - 不含 distance(没有 lat/lng 上下文)
+ *   - 多 status(自看含 'pending' | 'rejected'),便于"审核中" tab 角标
+ */
+export interface UserSpotItem {
+  id: string;
+  name: string;
+  type: SpotType;
+  waterType: WaterType | null;
+  lat: number;
+  lng: number;
+  address: string | null;
+  city: string | null;
+  status: 'pending' | 'approved' | 'rejected' | string;
+  photos: string[];
+  fishSpecies: string[];
+  avgRating: number;
+  ratingCount: number;
+  wantCount: number;
+  createdAt: string;
+}
+
+export interface UserSpotsStats {
+  total: number;
+  reviewing: number;
+  monthAdd: number;
+  hottest: {
+    id: string;
+    name: string;
+    wantCount: number;
+    ratingCount: number;
+  } | null;
+}
+
+export function userSpots(params: {
+  userId?: string;
+  tab?: UserSpotTab;
+  keyword?: string;
+  limit?: number;
+  cursor?: string | null;
+}): Promise<ListResp<UserSpotItem>> {
+  return http.post('/users/spots', params);
+}
+
+export function userSpotsStats(params: {
+  userId?: string;
+} = {}): Promise<UserSpotsStats> {
+  return http.post('/users/spots/stats', params);
+}
+
 // ─── UI 辅助 ─────────────────────────────────────────────────────────
 
 export const SPOT_TYPE_LABEL: Record<SpotType, string> = {

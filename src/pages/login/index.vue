@@ -71,10 +71,11 @@
 import { ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import { devLogin } from '@/api/auth';
-import { setToken, setUser } from '@/utils/auth';
+import { useAuthStore } from '@/stores';
 import { env } from '@/config/env';
 
 const { statusBarHeight } = useSystemInfo();
+const authStore = useAuthStore();
 
 const agreed = ref(false);
 const enableDevLogin = env.enableDevLogin;
@@ -114,9 +115,10 @@ const onDevQuickLogin = async () => {
 async function runDevLogin(openid: string) {
   uni.showLoading({ title: '登录中...' });
   try {
-    const { token, user } = await devLogin({ openid });
-    setToken(token);
-    setUser(user);
+    const { token, refreshToken, user } = await devLogin({ openid });
+    authStore.login(token, refreshToken, user);
+    // 异步 fire-and-forget 把完整 profile 也拉一份(供 profile 页直接消费)
+    authStore.refreshMe();
     uni.hideLoading();
     uni.showToast({ title: '登录成功', icon: 'success' });
     setTimeout(() => {
@@ -127,7 +129,7 @@ async function runDevLogin(openid: string) {
     }, 600);
   } catch (e) {
     uni.hideLoading();
-    // request.ts 已经统一 Toast，这里仅打日志
+    // request.ts 已经统一 Toast,这里仅打日志
     console.warn('[login] dev-login failed', e);
   }
 }

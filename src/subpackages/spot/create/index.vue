@@ -210,6 +210,7 @@ import {
   type SpotType,
   type WaterType,
 } from '@/api/spots';
+import { uploadImages } from '@/utils/upload';
 
 const { safeBottom } = useSystemInfo();
 
@@ -366,11 +367,29 @@ const onAddFish = () => {
 };
 const onRemoveFish = (idx: number) => form.value.fish.splice(idx, 1);
 
+const uploading = ref(false);
+
 const onAddPhoto = () => {
+  if (uploading.value) return;
   uni.chooseImage({
     count: 9 - form.value.photos.length,
-    success: (res) => {
-      form.value.photos.push(...res.tempFilePaths);
+    success: async (res) => {
+      // uni-app 在不同平台返回 string | string[],统一归一化
+      const paths = Array.isArray(res.tempFilePaths)
+        ? res.tempFilePaths
+        : res.tempFilePaths
+          ? [res.tempFilePaths]
+          : [];
+      if (!paths.length) return;
+      uploading.value = true;
+      uni.showLoading({ title: '上传中...' });
+      try {
+        const urls = await uploadImages(paths);
+        if (urls.length) form.value.photos.push(...urls);
+      } finally {
+        uni.hideLoading();
+        uploading.value = false;
+      }
     },
   });
 };
@@ -400,8 +419,6 @@ const onSubmit = async () => {
   submitting.value = true;
   uni.showLoading({ title: '提交中...' });
   try {
-    // TODO(upload): 等 uni.uploadFile 封装好后把 form.photos 上传换成 OSS key 再传给后端。
-    // 当前 chooseImage 拿到的是本地 temp 路径，后端没法解析，先剥掉。
     const resp = await createSpot({
       name,
       type: form.value.typeCode,
@@ -413,7 +430,7 @@ const onSubmit = async () => {
       description: form.value.desc.trim() || undefined,
       fishSpecies: form.value.fish.length ? form.value.fish : undefined,
       facilities: Object.keys(facilities).length ? facilities : undefined,
-      // photos: form.value.photos,  // 待接上传后再启用
+      photos: form.value.photos.length ? form.value.photos : undefined,
     });
     uni.hideLoading();
     uni.showToast({ title: '已提交', icon: 'success' });
