@@ -190,6 +190,7 @@ import {
   type Technique,
 } from '@/api/catches';
 import { uploadImages } from '@/utils/upload';
+import { BizError } from '@/utils/request';
 
 const { safeBottom } = useSystemInfo();
 
@@ -264,8 +265,43 @@ const onMethodConfirm = () => {
   methodSheetOpen.value = false;
 };
 
-const onPickFish = () => uni.navigateTo({ url: '/subpackages/catch/fish-picker/index' });
-const onPickSpot = () => uni.navigateTo({ url: '/subpackages/catch/spot-picker/index' });
+const onPickFish = () => {
+  uni.navigateTo({
+    url: '/subpackages/catch/fish-picker/index',
+    events: {
+      fishSelected(data: unknown) {
+        if (Array.isArray(data)) {
+          form.value.fish = data.filter((x): x is string => typeof x === 'string');
+        }
+      },
+    },
+    success: (res) => {
+      // 把当前已选鱼种带过去做回显
+      res.eventChannel?.emit?.('initFish', [...form.value.fish]);
+    },
+  });
+};
+const onPickSpot = () => {
+  uni.navigateTo({
+    url: '/subpackages/catch/spot-picker/index',
+    events: {
+      spotSelected(data: unknown) {
+        if (data && typeof data === 'object') {
+          const d = data as { id?: unknown; name?: unknown };
+          if (typeof d.id === 'string' && typeof d.name === 'string') {
+            form.value.spotId = d.id;
+            form.value.spot = d.name;
+          }
+        }
+      },
+    },
+    success: (res) => {
+      if (form.value.spotId) {
+        res.eventChannel?.emit?.('initSpot', { id: form.value.spotId, name: form.value.spot });
+      }
+    },
+  });
+};
 const onAddPhoto = () => {
   if (uploading.value) return;
   uni.chooseImage({
@@ -324,6 +360,8 @@ async function onPublish() {
     }, 600);
   } catch (e) {
     console.warn('[catch-create] publish failed', e);
+    const msg = e instanceof BizError ? e.msg : '发布失败,请稍后重试';
+    uni.showToast({ title: msg, icon: 'none', duration: 2500 });
   } finally {
     submitting.value = false;
   }

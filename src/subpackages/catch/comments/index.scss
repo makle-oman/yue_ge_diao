@@ -487,3 +487,55 @@
     line-height: 1.35;
   }
 }
+
+/* ---------- 接真后新增 ---------- */
+.empty {
+  margin: 80rpx 32rpx;
+  padding: 56rpx 0;
+  text-align: center;
+  background: $bg-card;
+  border-radius: 24rpx;
+  .empty-text {
+    color: $text-secondary;
+    font-size: 28rpx;
+  }
+}
+.load-more {
+  text-align: center;
+  padding: 24rpx 0;
+  color: $text-secondary;
+  font-size: 24rpx;
+}
+.comment-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.comment-reply-item {
+  padding: 4rpx 0;
+  .comment-reply-name {
+    color: $text-primary;
+    font-size: 24rpx;
+    margin-right: 8rpx;
+  }
+  .comment-reply-text {
+    color: $text-primary;
+    font-size: 24rpx;
+  }
+}
+.comment-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .comment-del {
+    color: #FF6B6B;
+    font-size: 22rpx;
+    padding: 0 12rpx;
+  }
+}
+.comment-input.disabled {
+  justify-content: center;
+  .input-placeholder {
+    color: $text-secondary;
+  }
+}

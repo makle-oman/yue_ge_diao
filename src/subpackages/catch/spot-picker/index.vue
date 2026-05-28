@@ -83,6 +83,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 
@@ -91,7 +92,7 @@ const { statusBarHeight } = useSystemInfo();
 const keyword = ref('');
 const filter = ref('附近');
 const filters = ['附近', '常去', '已收藏'];
-const selected = ref('s1');
+const selected = ref<string>('');
 
 const spots = ref([
   {
@@ -120,6 +121,16 @@ const spots = ref([
   },
 ]);
 
+onLoad(() => {
+  const ch = (uni as any).getOpenerEventChannel?.();
+  ch?.on?.('initSpot', (data: unknown) => {
+    if (data && typeof data === 'object' && 'id' in (data as Record<string, unknown>)) {
+      const id = (data as { id?: unknown }).id;
+      if (typeof id === 'string') selected.value = id;
+    }
+  });
+});
+
 const onSelect = (id: string) => {
   selected.value = id;
 };
@@ -130,8 +141,13 @@ const onDone = () => {
     return;
   }
   const spot = spots.value.find(s => s.id === selected.value);
-  uni.showToast({ title: '已关联 ' + spot?.name, icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }), 600);
+  if (!spot) {
+    uni.showToast({ title: '所选钓点已失效', icon: 'none' });
+    return;
+  }
+  const ch = (uni as any).getOpenerEventChannel?.();
+  ch?.emit?.('spotSelected', { id: spot.id, name: spot.name });
+  uni.navigateBack({ delta: 1 });
 };
 const onCreate = () => {
   uni.navigateTo({ url: '/subpackages/spot/create/index' });

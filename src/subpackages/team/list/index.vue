@@ -18,7 +18,7 @@
           :key="c.key"
           class="chip"
           :class="{ active: activeFilter === c.key }"
-          @click="activeFilter = c.key"
+          @click="onPickFilter(c.key)"
         >
           <text>{{ c.label }}</text>
         </view>
@@ -26,8 +26,12 @@
     </view>
 
     <!-- 列表 -->
-    <scroll-view class="content" scroll-y>
-      <view class="cards">
+    <scroll-view class="content" scroll-y @scrolltolower="onReachBottom">
+      <view v-if="!loading && teams.length === 0" class="empty">
+        <text class="empty-text">{{ emptyHint }}</text>
+      </view>
+
+      <view v-else class="cards">
         <view
           v-for="t in teams"
           :key="t.id"
@@ -36,115 +40,267 @@
         >
           <view class="card-head">
             <text class="card-title">{{ t.title }}</text>
-            <view class="status-tag" :class="`tag--${t.statusTone}`">
-              <text>{{ t.statusText }}</text>
+            <view class="status-tag" :class="`tag--${statusTone(t)}`">
+              <text>{{ statusText(t) }}</text>
             </view>
           </view>
-          <text class="card-meta">{{ t.meta }}</text>
+          <text class="card-meta">{{ metaLine(t) }}</text>
           <view class="card-people">
             <view
-              v-for="(tone, idx) in t.avatars"
+              v-for="(tone, idx) in avatarsFor(t)"
               :key="idx"
               class="avatar-dot"
               :class="`tone-${tone}`"
             />
-            <text class="card-people-text">{{ t.peopleSummary }}</text>
+            <text class="card-people-text">{{ peopleSummary(t) }}</text>
           </view>
           <view class="card-foot">
-            <text class="owner-text">发起人：{{ t.owner }}</text>
+            <text class="owner-text">发起人:{{ t.owner.name || ('钓友' + t.owner.id.slice(-4)) }}</text>
             <view
               class="join-btn"
-              :class="t.btnTone === 'ghost' ? 'ghost' : 'primary'"
+              :class="btnTone(t)"
               @click.stop="onJoin(t)"
             >
-              <text>{{ t.btnText }}</text>
+              <text>{{ btnText(t) }}</text>
             </view>
           </view>
         </view>
       </view>
 
+      <view v-if="loadingMore" class="load-more">
+        <text>加载中...</text>
+      </view>
+      <view v-else-if="!nextCursor && teams.length > 0" class="load-more">
+        <text>—— 没有更多了 ——</text>
+      </view>
     </scroll-view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
+import {
+  applyTeam,
+  COST_MODE_LABEL,
+  formatTeamWhen,
+  listTeams,
+  TEAM_STATUS_LABEL,
+  type TeamFilter,
+  type TeamListItem,
+} from '@/api/teams';
+import { BizError } from '@/utils/request';
 
 const { statusBarHeight } = useSystemInfo();
 
-const filters = [
+const filters: { key: TeamFilter; label: string }[] = [
+  { key: 'all', label: '全部' },
   { key: 'nearby', label: '附近' },
   { key: 'weekend', label: '本周末' },
   { key: 'carpool', label: '可拼车' },
 ];
-const activeFilter = ref('nearby');
+const activeFilter = ref<TeamFilter>('all');
 
-type Tone = 'primary' | 'blue' | 'orange';
-type StatusTone = 'primary' | 'accent' | 'muted';
+const teams = ref<TeamListItem[]>([]);
+const nextCursor = ref<string | null>(null);
+const loading = ref(false);
+const loadingMore = ref(false);
+const myLocation = ref<{ lat: number; lng: number } | null>(null);
 
-interface Team {
-  id: string;
-  title: string;
-  meta: string;
-  statusText: string;
-  statusTone: StatusTone;
-  avatars: Tone[];
-  peopleSummary: string;
-  owner: string;
-  btnText: string;
-  btnTone: 'primary' | 'ghost';
+const emptyHint = computed(() => {
+  switch (activeFilter.value) {
+    case 'nearby':
+      return '附近暂无组队,试试切换"全部"看看';
+    case 'weekend':
+      return '本周末还没有组队 🐟';
+    case 'carpool':
+      return '当前没有需要拼车的组队';
+    default:
+      return '暂无组队,来发起一个吧';
+  }
+});
+
+function statusTone(t: TeamListItem): 'primary' | 'accent' | 'muted' {
+  if (t.status === 'recruiting') {
+    if (t.maxPeople - t.joinedCount <= 1) return 'accent';
+    return 'primary';
+  }
+  return 'muted';
+}
+function statusText(t: TeamListItem): string {
+  if (t.status === 'recruiting' && t.maxPeople - t.joinedCount === 1) return '剩1位';
+  return TEAM_STATUS_LABEL[t.status] || t.status;
+}
+function metaLine(t: TeamListItem): string {
+  const parts: string[] = [formatTeamWhen(t.startTime, t.endTime)];
+  if (typeof t.distance === 'number') {
+    parts.push((t.distance / 1000).toFixed(1) + 'km');
+  } else if (t.spotCity) {
+    parts.push(t.spotCity);
+  }
+  if (t.targetFish.length > 0) parts.push('目标 ' + t.targetFish.join('/'));
+  return parts.join(' · ');
+}
+function avatarsFor(t: TeamListItem): ('primary' | 'blue' | 'orange')[] {
+  const palette: ('primary' | 'blue' | 'orange')[] = ['primary', 'blue', 'orange'];
+  const n = Math.min(3, Math.max(1, t.joinedCount));
+  return palette.slice(0, n);
+}
+function peopleSummary(t: TeamListItem): string {
+  const parts: string[] = [
+    `已报名 ${t.joinedCount}/${t.maxPeople}`,
+    COST_MODE_LABEL[t.costMode] || t.costMode,
+    t.needCarpool ? '需要拼车' : '不拼车',
+  ];
+  return parts.join(' · ');
+}
+function btnTone(t: TeamListItem): 'primary' | 'ghost' {
+  if (t.status === 'recruiting' && !t.yourMemberStatus) return 'primary';
+  return 'ghost';
+}
+function btnText(t: TeamListItem): string {
+  if (t.status !== 'recruiting') return '查看';
+  if (t.yourMemberStatus === 'pending') return '待审核';
+  if (t.yourMemberStatus === 'approved') return '已加入';
+  return '报名';
 }
 
-const teams = ref<Team[]>([
-  {
-    id: 't1',
-    title: '周六清晨 · 燕子矶江边',
-    meta: '05月25日 05:30-11:00 · 2.3km · 目标鲫鱼/鲤鱼',
-    statusText: '招募中',
-    statusTone: 'primary',
-    avatars: ['primary', 'blue', 'orange'],
-    peopleSummary: '已报名 3/6 · AA · 需要拼车',
-    owner: '老周野钓',
-    btnText: '报名',
-    btnTone: 'primary',
-  },
-  {
-    id: 't2',
-    title: '今晚夜钓 · 秦淮河外湾',
-    meta: '今天 20:00-02:00 · 6.8km · 主攻鲤鱼',
-    statusText: '剩1位',
-    statusTone: 'accent',
-    avatars: ['primary', 'blue', 'orange'],
-    peopleSummary: '已报名 5/6 · 各自承担 · 不拼车',
-    owner: '钓鱼阿强',
-    btnText: '报名',
-    btnTone: 'primary',
-  },
-  {
-    id: 't3',
-    title: '路亚晨口 · 江心洲北汊',
-    meta: '05月26日 05:00-09:00 · 4.5km · 翘嘴/鲈鱼',
-    statusText: '已满员',
-    statusTone: 'muted',
-    avatars: ['blue', 'primary', 'orange'],
-    peopleSummary: '已报名 4/4 · AA · 可旁观',
-    owner: '阿峰路亚',
-    btnText: '查看',
-    btnTone: 'ghost',
-  },
-]);
+onLoad(() => {
+  void tryFetchLocation();
+  void reload();
+});
 
-const onCreate = () => uni.navigateTo({ url: '/subpackages/team/create/index' });
-const onOpen = (t: Team) => uni.navigateTo({ url: `/subpackages/team/detail/index?id=${t.id}` });
+onShow(() => {
+  if (teams.value.length > 0) {
+    // 从详情/发布页 navigateBack 时刷新一次（不阻塞首屏）
+    void reload();
+  }
+});
+
+async function tryFetchLocation() {
+  try {
+    const res = await new Promise<UniApp.GetLocationSuccess>((resolve, reject) => {
+      uni.getLocation({
+        type: 'wgs84',
+        success: resolve,
+        fail: reject,
+      });
+    });
+    myLocation.value = { lat: res.latitude, lng: res.longitude };
+  } catch {
+    // 没授权也无所谓，nearby 时再提示
+  }
+}
+
+async function reload() {
+  loading.value = true;
+  teams.value = [];
+  nextCursor.value = null;
+  try {
+    const payload: Parameters<typeof listTeams>[0] = {
+      filter: activeFilter.value,
+      limit: 20,
+    };
+    if (activeFilter.value === 'nearby') {
+      if (!myLocation.value) {
+        await tryFetchLocation();
+      }
+      if (myLocation.value) {
+        payload.lat = myLocation.value.lat;
+        payload.lng = myLocation.value.lng;
+        payload.radius = 50_000;
+      } else {
+        uni.showToast({ title: '需要定位权限才能筛选附近', icon: 'none' });
+      }
+    }
+    const resp = await listTeams(payload);
+    teams.value = resp.list;
+    nextCursor.value = resp.nextCursor;
+  } catch (e) {
+    const msg = e instanceof BizError ? e.msg : '加载失败';
+    uni.showToast({ title: msg, icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function loadMore() {
+  if (loadingMore.value || !nextCursor.value) return;
+  loadingMore.value = true;
+  try {
+    const payload: Parameters<typeof listTeams>[0] = {
+      filter: activeFilter.value,
+      limit: 20,
+      cursor: nextCursor.value,
+    };
+    if (activeFilter.value === 'nearby' && myLocation.value) {
+      payload.lat = myLocation.value.lat;
+      payload.lng = myLocation.value.lng;
+      payload.radius = 50_000;
+    }
+    const resp = await listTeams(payload);
+    teams.value.push(...resp.list);
+    nextCursor.value = resp.nextCursor;
+  } catch (e) {
+    console.warn('[team-list] loadMore failed', e);
+  } finally {
+    loadingMore.value = false;
+  }
+}
+
+const onReachBottom = () => {
+  void loadMore();
+};
+
+const onPickFilter = (key: TeamFilter) => {
+  if (activeFilter.value === key) return;
+  activeFilter.value = key;
+  void reload();
+};
+
+const onCreate = () =>
+  uni.navigateTo({ url: '/subpackages/team/create/index' });
+const onOpen = (t: TeamListItem) =>
+  uni.navigateTo({ url: `/subpackages/team/detail/index?id=${t.id}` });
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
-const onJoin = (t: Team) => {
-  if (t.btnTone === 'ghost') {
+
+async function onJoin(t: TeamListItem) {
+  if (t.status !== 'recruiting' || t.yourMemberStatus) {
     onOpen(t);
     return;
   }
-  uni.showToast({ title: `已申请加入「${t.title}」`, icon: 'success' });
-};
+  try {
+    await applyTeam(t.id);
+    t.yourMemberStatus = 'pending';
+    uni.showToast({ title: '已提交报名,等待审核', icon: 'success' });
+  } catch (e) {
+    const msg = e instanceof BizError ? e.msg : '报名失败';
+    uni.showToast({ title: msg, icon: 'none' });
+  }
+}
 </script>
 
-<style lang="scss" scoped src="./index.scss"></style>
+<style lang="scss" scoped>
+@import './index.scss';
+
+.empty {
+  padding: 200rpx 32rpx;
+  text-align: center;
+
+  .empty-text {
+    font-size: 26rpx;
+    color: $text-secondary;
+  }
+}
+.load-more {
+  padding: 24rpx 0 32rpx;
+  text-align: center;
+
+  text {
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+}
+</style>

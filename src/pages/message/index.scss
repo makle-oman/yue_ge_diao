@@ -99,11 +99,19 @@
 /* ---------- Section Title ---------- */
 .msg-section-title {
   padding: 36rpx 32rpx 16rpx;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 
   text {
     font-size: $font-lg;
     font-weight: 900;
     color: $text-primary;
+  }
+  .msg-section-clear {
+    font-size: $font-sm;
+    font-weight: 700;
+    color: $primary;
   }
 }
 
@@ -191,4 +199,53 @@
   bottom: 0;
   height: 1rpx;
   background: $border-light;
+}
+
+/* ---------- 未读小圆点 / 列表底部 / 空态 ---------- */
+.msg-row-dot {
+  color: $warning-strong;
+  font-size: 18rpx;
+  margin-left: 8rpx;
+  vertical-align: middle;
+}
+
+.msg-foot {
+  padding: 32rpx 0;
+  display: flex;
+  justify-content: center;
+
+  .msg-foot-text {
+    font-size: $font-sm;
+    color: $text-secondary;
+  }
+}
+
+.msg-empty {
+  margin: 80rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+
+  .msg-empty-text {
+    font-size: $font-base;
+    color: $text-secondary;
+  }
+  .msg-empty-btn {
+    height: 64rpx;
+    padding: 0 36rpx;
+    border-radius: 32rpx;
+    background: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:active { transform: scale(.96); }
+
+    .msg-empty-btn-text {
+      font-size: $font-sm;
+      color: #fff;
+      font-weight: 800;
+    }
+  }
 }

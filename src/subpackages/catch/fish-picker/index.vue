@@ -56,7 +56,7 @@
           v-for="f in filteredFishes"
           :key="f.name"
           class="fish-card"
-          :class="{ selected: selected === f.name }"
+          :class="{ selected: selected.includes(f.name) }"
           @click="pick(f.name)"
         >
           <view class="fish-icon" :style="{ background: f.iconBg }">
@@ -77,20 +77,21 @@
 
     <!-- 底部已选 -->
     <view class="picker-foot" :style="{ paddingBottom: safeBottom + 'px' }">
-      <text class="foot-text">{{ selected ? '已选择:' + selected : '未选择鱼种' }}</text>
+      <text class="foot-text">{{ selected.length ? '已选择:' + selected.join('、') : '未选择鱼种' }}</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 
 const { statusBarHeight, safeBottom } = useSystemInfo();
 
 const keyword = ref('');
-const selected = ref('鲫鱼');
+const selected = ref<string[]>([]);
 const segment = ref<'淡水' | '海水'>('淡水');
 const segments = ['淡水', '海水'] as const;
 
@@ -129,12 +130,29 @@ const filteredFishes = computed(() => {
 });
 
 const pick = (name: string) => {
-  selected.value = name;
+  const idx = selected.value.indexOf(name);
+  if (idx >= 0) selected.value.splice(idx, 1);
+  else selected.value.push(name);
 };
+
+// 接收发布页传入的已选鱼种，用于回显（编辑模式或返回再选）
+onLoad(() => {
+  const ch = (uni as any).getOpenerEventChannel?.();
+  ch?.on?.('initFish', (data: unknown) => {
+    if (Array.isArray(data)) selected.value = data.filter(x => typeof x === 'string');
+  });
+});
+onMounted(() => {});
+
 const onCancel = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onDone = () => {
-  uni.showToast({ title: '已选择 ' + selected.value, icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }), 600);
+  if (selected.value.length === 0) {
+    uni.showToast({ title: '请至少选择 1 种鱼', icon: 'none' });
+    return;
+  }
+  const ch = (uni as any).getOpenerEventChannel?.();
+  ch?.emit?.('fishSelected', [...selected.value]);
+  uni.navigateBack({ delta: 1 });
 };
 const onCustom = () => {
   uni.navigateTo({ url: '/subpackages/catch/custom-fish/index' });

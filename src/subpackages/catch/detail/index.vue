@@ -86,9 +86,27 @@
         </view>
 
         <!-- 评论 -->
-        <view class="comments-card" @click="onMoreComments">
-          <text class="comments-title">评论 {{ catchData.commentCount }}</text>
-          <text class="comments-text">查看全部评论 ›</text>
+        <view class="comments-card">
+          <view class="comments-card-head" @click="onMoreComments">
+            <text class="comments-title">评论 {{ catchData.commentCount }}</text>
+            <text class="comments-text">{{ catchData.commentCount > previewComments.length ? '查看全部 ›' : '' }}</text>
+          </view>
+          <view
+            v-for="c in previewComments"
+            :key="c.id"
+            class="comments-preview-item"
+            @click="onMoreComments"
+          >
+            <text class="comments-preview-name">{{ c.userName || ('钓友' + c.userId.slice(-4)) }}:</text>
+            <text class="comments-preview-text">{{ c.content }}</text>
+          </view>
+          <view
+            v-if="previewComments.length === 0 && catchData.commentCount === 0"
+            class="comments-preview-empty"
+            @click="onMoreComments"
+          >
+            <text>暂无评论,点击参与讨论 ›</text>
+          </view>
         </view>
 
       </view>
@@ -132,7 +150,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import {
   catchDetail,
@@ -143,6 +161,7 @@ import {
   formatTime,
   type CatchDetail,
 } from '@/api/catches';
+import { previewLatestComments, type CommentItem } from '@/api/comments';
 
 const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
@@ -173,6 +192,8 @@ const catchData = ref({
   likes: 0,
   collected: false,
 });
+
+const previewComments = ref<CommentItem[]>([]);
 
 const spotLine = computed(() => {
   const c = catchData.value;
@@ -206,9 +227,29 @@ async function loadDetail() {
   }
 }
 
+async function loadCommentsPreview() {
+  if (!catchId.value) return;
+  try {
+    const resp = await previewLatestComments(catchId.value);
+    previewComments.value = resp.list;
+    // commentCount 以最新返回为准（异步成楼用户也能看到最新数）
+    catchData.value.commentCount = resp.total;
+  } catch (e) {
+    console.warn('[catch-detail] preview comments failed', e);
+  }
+}
+
 onLoad((options) => {
   catchId.value = String((options as { id?: string })?.id ?? '');
   void loadDetail();
+  void loadCommentsPreview();
+});
+
+// 从评论页 navigateBack 回来时刷新摘要 + 计数
+onShow(() => {
+  if (catchId.value) {
+    void loadCommentsPreview();
+  }
 });
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
@@ -226,8 +267,12 @@ const onSpotTap = () => {
     url: `/subpackages/spot/detail/index?id=${catchData.value.spotId}`,
   });
 };
-const onMoreComments = () =>
-  uni.navigateTo({ url: '/subpackages/catch/comments/index' });
+const onMoreComments = () => {
+  if (!catchId.value) return;
+  uni.navigateTo({
+    url: `/subpackages/catch/comments/index?catchId=${catchId.value}`,
+  });
+};
 
 async function onLike() {
   if (!catchId.value || liking.value) return;
