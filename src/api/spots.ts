@@ -125,7 +125,7 @@ export function listSpots(params: {
   city?: string;
   type?: SpotType;
 }): Promise<ListResp<SpotListItem>> {
-  return http.post('/spots/list', params);
+  return http.post('/spots/list', params, { dedupe: true });
 }
 
 export function nearbySpots(params: {
@@ -136,7 +136,7 @@ export function nearbySpots(params: {
   type?: SpotType;
   waterType?: WaterType;
 }): Promise<{ list: SpotListItem[] }> {
-  return http.post('/spots/nearby', params);
+  return http.post('/spots/nearby', params, { dedupe: true });
 }
 
 export function searchSpots(params: {
@@ -153,7 +153,7 @@ export function searchSpots(params: {
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<SpotListItem>> {
-  return http.post('/spots/search', params);
+  return http.post('/spots/search', params, { dedupe: true });
 }
 
 export function spotDetail(spotId: string): Promise<SpotDetail> {
@@ -261,13 +261,13 @@ export function userSpots(params: {
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<UserSpotItem>> {
-  return http.post('/users/spots', params);
+  return http.post('/users/spots', params, { dedupe: true });
 }
 
 export function userSpotsStats(params: {
   userId?: string;
 } = {}): Promise<UserSpotsStats> {
-  return http.post('/users/spots/stats', params);
+  return http.post('/users/spots/stats', params, { dedupe: true });
 }
 
 // ─── UI 辅助 ─────────────────────────────────────────────────────────

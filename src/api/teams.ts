@@ -75,7 +75,7 @@ export function listTeams(payload: {
   cursor?: string;
   limit?: number;
 }): Promise<PagedTeams> {
-  return http.post('/teams/list', payload);
+  return http.post('/teams/list', payload, { dedupe: true });
 }
 
 export function teamDetail(teamId: string): Promise<TeamDetail> {
@@ -122,7 +122,7 @@ export function listUserTeams(payload: {
   cursor?: string;
   limit?: number;
 }): Promise<PagedTeams> {
-  return http.post('/users/teams', payload);
+  return http.post('/users/teams', payload, { dedupe: true });
 }
 
 // ──────────────────────────────────────────────────────────────

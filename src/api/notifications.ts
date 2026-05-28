@@ -57,11 +57,11 @@ export function listNotifications(payload: {
   cursor?: string;
   limit?: number;
 } = {}): Promise<PagedNotifications> {
-  return http.post('/notifications/list', payload);
+  return http.post('/notifications/list', payload, { dedupe: true });
 }
 
 export function getUnreadCount(): Promise<UnreadCount> {
-  return http.post('/notifications/unread-count', {});
+  return http.post('/notifications/unread-count', {}, { dedupe: true });
 }
 
 export function markNotificationsRead(

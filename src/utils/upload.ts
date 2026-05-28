@@ -17,6 +17,7 @@
 
 import { env } from '@/config/env';
 import { getToken } from '@/utils/auth';
+import { resolveErrorMessage } from '@/utils/error';
 import { BizError } from '@/utils/request';
 
 export interface UploadResp {
@@ -24,6 +25,8 @@ export interface UploadResp {
   url: string;
   mime: string;
   sizeBytes: number;
+  width: number;
+  height: number;
 }
 
 interface UploadOptions {
@@ -78,7 +81,7 @@ export function uploadImage(
 
         // HTTP 非 2xx
         if (res.statusCode < 200 || res.statusCode >= 300) {
-          const msg = (body && body.msg) || `上传失败 (${res.statusCode})`;
+          const msg = resolveErrorMessage(res.statusCode, body?.msg);
           const err = new BizError(res.statusCode, msg, body?.traceId);
           if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });
           reject(err);
@@ -87,9 +90,11 @@ export function uploadImage(
 
         // 业务码非 200
         if (!body || body.code !== 200) {
+          const code = body?.code ?? -1;
+          const msg = resolveErrorMessage(code, body?.msg || '上传失败');
           const err = new BizError(
-            body?.code ?? -1,
-            body?.msg || '上传失败',
+            code,
+            msg,
             body?.traceId,
           );
           if (showErrorToast) uni.showToast({ title: err.msg, icon: 'none' });
@@ -100,7 +105,7 @@ export function uploadImage(
         resolve(body.data);
       },
       fail: (err) => {
-        const msg = (err && (err as { errMsg?: string }).errMsg) || '网络异常';
+        const msg = resolveErrorMessage(-1, (err as { errMsg?: string } | undefined)?.errMsg);
         const bizErr = new BizError(-1, msg);
         if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });
         reject(bizErr);

@@ -101,7 +101,7 @@ export function fetchNearbyUsers(params: {
   playStyle?: string;
   limit?: number;
 }): Promise<{ list: NearbyUserItem[] }> {
-  return http.post('/users/nearby', params);
+  return http.post('/users/nearby', params, { dedupe: true });
 }
 
 export function followUser(

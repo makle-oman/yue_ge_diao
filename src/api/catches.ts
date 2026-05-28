@@ -112,7 +112,7 @@ export function listCatches(params: {
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<CatchFeedItem>> {
-  return http.post('/catches/list', params);
+  return http.post('/catches/list', params, { dedupe: true });
 }
 
 export function createCatch(payload: {
@@ -161,13 +161,13 @@ export function userCatches(params: {
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<CatchFeedItem>> {
-  return http.post('/users/catches', params);
+  return http.post('/users/catches', params, { dedupe: true });
 }
 
 export function userCatchesStats(params: {
   userId?: string;
 } = {}): Promise<UserCatchesStats> {
-  return http.post('/users/catches/stats', params);
+  return http.post('/users/catches/stats', params, { dedupe: true });
 }
 
 // ─── UI 辅助 ─────────────────────────────────────────────────────────

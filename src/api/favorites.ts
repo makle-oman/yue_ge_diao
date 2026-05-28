@@ -28,7 +28,7 @@ export function listFavorites(params: {
   nextCursor: string | null;
   hasMore: boolean;
 }> {
-  return http.post('/favorites/list', params);
+  return http.post('/favorites/list', params, { dedupe: true });
 }
 
 export function removeFavorite(payload: {

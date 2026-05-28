@@ -29,7 +29,7 @@ export interface MessageThread {
 export function fetchMessageThreads(payload: {
   limit?: number;
 } = {}): Promise<{ list: MessageThread[] }> {
-  return http.post('/messages/threads', payload);
+  return http.post('/messages/threads', payload, { dedupe: true });
 }
 
 export function fetchMessageHistory(payload: {
@@ -37,7 +37,7 @@ export function fetchMessageHistory(payload: {
   cursor?: string;
   limit?: number;
 }): Promise<PagedMessages> {
-  return http.post('/messages/history', payload);
+  return http.post('/messages/history', payload, { dedupe: true });
 }
 
 export function sendMessage(payload: {

@@ -32,7 +32,7 @@ export function fetchFishingIndex(params: {
   lng: number;
   date?: string;
 }): Promise<FishingIndex> {
-  return http.post('/weather/index', params, { skipAuth: true, showErrorToast: false });
+  return http.post('/weather/index', params, { skipAuth: true, showErrorToast: false, dedupe: true });
 }
 
 export function fetchCurrentWeather(params: {
@@ -40,7 +40,7 @@ export function fetchCurrentWeather(params: {
   lng: number;
   date?: string;
 }): Promise<WeatherCurrent> {
-  return http.post('/weather/current', params, { skipAuth: true, showErrorToast: false });
+  return http.post('/weather/current', params, { skipAuth: true, showErrorToast: false, dedupe: true });
 }
 
 export function formatWeatherLine(index: FishingIndex): string {

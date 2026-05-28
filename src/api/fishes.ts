@@ -19,9 +19,9 @@ export interface FishStats {
 export function fetchFishLibrary(params: {
   category?: FishCategory;
 } = {}): Promise<{ list: FishItem[]; stats: FishStats }> {
-  return http.post('/fishes/library', params);
+  return http.post('/fishes/library', params, { dedupe: true });
 }
 
 export function fetchFishProgress(): Promise<FishStats> {
-  return http.post('/fishes/library-progress', {});
+  return http.post('/fishes/library-progress', {}, { dedupe: true });
 }
