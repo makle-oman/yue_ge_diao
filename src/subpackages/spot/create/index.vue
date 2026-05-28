@@ -1,6 +1,6 @@
 <template>
   <view class="spot-create">
-    <mxy-form-nav title="上报新钓点" action-text="提交" @action="onSubmit" />
+    <mxy-form-nav :title="isEdit ? '编辑钓点' : '上报新钓点'" :action-text="isEdit ? '保存' : '提交'" @action="onSubmit" />
 
     <scroll-view class="content" scroll-y>
       <view class="form">
@@ -124,7 +124,7 @@
 
     <view class="bottom-bar" :style="{ paddingBottom: 20 + safeBottom + 'px' }">
       <view class="submit-btn" @click="onSubmit">
-        <text class="submit-btn-text">提交钓点,等待审核</text>
+        <text class="submit-btn-text">{{ isEdit ? '保存钓点修改' : '提交钓点,等待审核' }}</text>
       </view>
     </view>
 
@@ -205,8 +205,11 @@ import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import {
   createSpot,
+  editableSpotDetail,
   SPOT_TYPE_LABEL,
+  updateSpot,
   WATER_TYPE_LABEL,
+  type EditableSpotDetail,
   type SpotType,
   type WaterType,
 } from '@/api/spots';
@@ -220,9 +223,12 @@ const accuracy = ref<number>(0);
 const lat = ref<number>(0);
 const lng = ref<number>(0);
 const submitting = ref(false);
+const editId = ref('');
+const isEdit = computed(() => !!editId.value);
 
 const locOk = computed(() => accuracy.value > 0 && accuracy.value <= ACCURACY_LIMIT);
 const locTitle = computed(() => {
+  if (isEdit.value && accuracy.value > 0) return '原定位已加载';
   if (accuracy.value === 0) return '正在获取定位…';
   if (locOk.value) return '现场定位已通过';
   return '当前精度偏低';
@@ -256,6 +262,19 @@ const WATER_LABEL_TO_CODE: Record<WaterTypeKey, WaterType> = {
   '水库': 'reservoir',
   '池塘': 'pond',
   '海域': 'sea',
+};
+const TYPE_CODE_TO_LABEL: Record<SpotType, SpotTypeKey> = {
+  wild: '野钓点',
+  black: '黑坑',
+  paid: '收费塘',
+  sea: '海钓',
+};
+const WATER_CODE_TO_LABEL: Record<WaterType, WaterTypeKey> = {
+  river: '江河',
+  lake: '湖泊',
+  reservoir: '水库',
+  pond: '池塘',
+  sea: '海域',
 };
 
 const form = ref({
@@ -308,7 +327,40 @@ async function fetchLocation(silent = false) {
   }
 }
 
-onLoad(() => { fetchLocation(true); });
+function applyEditableSpot(d: EditableSpotDetail) {
+  const typeCode = d.type;
+  const waterCode = d.waterType ?? 'river';
+  form.value.name = d.name;
+  form.value.typeCode = typeCode;
+  form.value.type = TYPE_CODE_TO_LABEL[typeCode] ?? '野钓点';
+  form.value.waterCode = waterCode;
+  form.value.water = WATER_CODE_TO_LABEL[waterCode] ?? '江河';
+  form.value.fish = d.fishSpecies;
+  form.value.photos = d.photos;
+  form.value.desc = d.description ?? '';
+  form.value.conditions = Object.keys(d.facilities).filter(
+    (k) => d.facilities[k] === true,
+  );
+  lat.value = d.lat;
+  lng.value = d.lng;
+  accuracy.value = 1;
+}
+
+async function loadEditSpot() {
+  try {
+    const d = await editableSpotDetail(editId.value);
+    applyEditableSpot(d);
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '钓点加载失败', icon: 'none' });
+    setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 600);
+  }
+}
+
+onLoad((options) => {
+  editId.value = String((options as { id?: string })?.id ?? '');
+  if (editId.value) void loadEditSpot();
+  else void fetchLocation(true);
+});
 
 const onRelocate = () => fetchLocation(false);
 const onPickType = () => {
@@ -419,7 +471,7 @@ const onSubmit = async () => {
   submitting.value = true;
   uni.showLoading({ title: '提交中...' });
   try {
-    const resp = await createSpot({
+    const payload = {
       name,
       type: form.value.typeCode,
       waterType: form.value.waterCode,
@@ -431,14 +483,20 @@ const onSubmit = async () => {
       fishSpecies: form.value.fish.length ? form.value.fish : undefined,
       facilities: Object.keys(facilities).length ? facilities : undefined,
       photos: form.value.photos.length ? form.value.photos : undefined,
-    });
+    };
+    const resp = isEdit.value
+      ? await updateSpot({ spotId: editId.value, ...payload })
+      : await createSpot(payload);
     uni.hideLoading();
-    uni.showToast({ title: '已提交', icon: 'success' });
-    uni.$emit('profile:spots:changed', { id: resp.id, status: resp.status });
+    uni.showToast({ title: isEdit.value ? '已保存' : '已提交', icon: 'success' });
     setTimeout(() => {
-      uni.redirectTo({ url: `/subpackages/spot/detail/index?id=${resp.id}` }).catch(() => {
+      if (isEdit.value) {
         uni.navigateBack({ delta: 1 }).catch(() => {});
-      });
+      } else {
+        uni.redirectTo({ url: `/subpackages/spot/detail/index?id=${resp.id}` }).catch(() => {
+          uni.navigateBack({ delta: 1 }).catch(() => {});
+        });
+      }
     }, 600);
   } catch (e: any) {
     uni.hideLoading();

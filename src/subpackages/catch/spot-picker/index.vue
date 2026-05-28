@@ -82,134 +82,76 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
-import {
-  nearbySpots,
-  searchSpots,
-  formatDistance,
-  SPOT_TYPE_LABEL,
-  type SpotListItem,
-} from '@/api/spots';
-
-const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
 
 const { statusBarHeight } = useSystemInfo();
-
-interface SpotOption {
-  id: string;
-  name: string;
-  meta: string;
-  thumbBg: string;
-  thumbColor: string;
-  thumbIcon: string;
-}
 
 const keyword = ref('');
 const filter = ref('附近');
 const filters = ['附近', '常去', '已收藏'];
-const selected = ref('');
-const target = ref('catch:create');
-const loading = ref(false);
+const selected = ref<string>('');
 
-const fallbackSpots: SpotOption[] = [
+const spots = ref([
   {
-    id: '',
-    name: '未关联钓点',
-    meta: '只记录鱼获,暂不绑定具体钓点',
-    thumbBg: '#EAEEF1',
-    thumbColor: '#6B7B85',
-    thumbIcon: 'location_off',
+    id: 's1',
+    name: '燕子矶江边',
+    meta: '2.1km · 今日宜钓 86 · 近期鱼获 24',
+    thumbBg: '#D7EEF4',
+    thumbColor: '#5BA9C4',
+    thumbIcon: 'waves',
   },
-];
+  {
+    id: 's2',
+    name: '幕府山下游口',
+    meta: '3.4km · 车位少 · 鲫鱼/翘嘴',
+    thumbBg: '#EAF5F4',
+    thumbColor: '#2D8F87',
+    thumbIcon: 'park',
+  },
+  {
+    id: 's3',
+    name: '滨江公园外河',
+    meta: '4.8km · 夜钓友好 · 水深 1.8m',
+    thumbBg: '#FFF4E1',
+    thumbColor: '#F5A623',
+    thumbIcon: 'phishing',
+  },
+]);
 
-const spots = ref<SpotOption[]>(fallbackSpots);
-const selectedSpot = computed(() => spots.value.find((s) => s.id === selected.value));
-
-function adaptSpot(s: SpotListItem, index: number): SpotOption {
-  const colors = [
-    ['#D7EEF4', '#5BA9C4', 'waves'],
-    ['#EAF5F4', '#2D8F87', 'park'],
-    ['#FFF4E1', '#F5A623', 'phishing'],
-  ] as const;
-  const [thumbBg, thumbColor, thumbIcon] = colors[index % colors.length];
-  const distance = formatDistance(s.distance);
-  const fish = s.fishSpecies.slice(0, 2).join('/');
-  return {
-    id: s.id,
-    name: s.name,
-    meta: [distance, SPOT_TYPE_LABEL[s.type], fish].filter(Boolean).join(' · '),
-    thumbBg,
-    thumbColor,
-    thumbIcon,
-  };
-}
-
-async function loadSpots() {
-  if (loading.value) return;
-  loading.value = true;
-  try {
-    const kw = keyword.value.trim();
-    const resp = kw
-      ? await searchSpots({ keyword: kw, limit: 20 })
-      : await nearbySpots({
-          lat: DEFAULT_CENTER.latitude,
-          lng: DEFAULT_CENTER.longitude,
-          radius: 50_000,
-          limit: 20,
-        });
-    const source = !kw && resp.list.length === 0
-      ? (await searchSpots({ limit: 20 })).list
-      : resp.list;
-    const list = source.map(adaptSpot);
-    spots.value = list.length ? list : fallbackSpots;
-    if (selected.value && !spots.value.some((s) => s.id === selected.value)) {
-      selected.value = '';
+onLoad(() => {
+  const ch = (uni as any).getOpenerEventChannel?.();
+  ch?.on?.('initSpot', (data: unknown) => {
+    if (data && typeof data === 'object' && 'id' in (data as Record<string, unknown>)) {
+      const id = (data as { id?: unknown }).id;
+      if (typeof id === 'string') selected.value = id;
     }
-  } catch (e) {
-    console.warn('[spot-picker] load spots failed', e);
-    spots.value = fallbackSpots;
-  } finally {
-    loading.value = false;
-  }
-}
+  });
+});
 
 const onSelect = (id: string) => {
   selected.value = id;
 };
 const onCancel = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onDone = () => {
-  const spot = selectedSpot.value;
-  if (!spot) {
+  if (!selected.value) {
     uni.showToast({ title: '请先选择钓点', icon: 'none' });
     return;
   }
-  uni.$emit(`${target.value}:spot-selected`, {
-    id: spot.id,
-    name: spot.name,
-  });
-  uni.showToast({ title: '已关联 ' + spot.name, icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }), 300);
+  const spot = spots.value.find(s => s.id === selected.value);
+  if (!spot) {
+    uni.showToast({ title: '所选钓点已失效', icon: 'none' });
+    return;
+  }
+  const ch = (uni as any).getOpenerEventChannel?.();
+  ch?.emit?.('spotSelected', { id: spot.id, name: spot.name });
+  uni.navigateBack({ delta: 1 });
 };
 const onCreate = () => {
   uni.navigateTo({ url: '/subpackages/spot/create/index' });
 };
-
-let searchTimer: ReturnType<typeof setTimeout> | undefined;
-watch(keyword, () => {
-  if (searchTimer) clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => loadSpots(), 300);
-});
-
-onLoad((options) => {
-  selected.value = decodeURIComponent(String(options?.selected || ''));
-  const currentTarget = decodeURIComponent(String(options?.target || ''));
-  if (currentTarget) target.value = currentTarget;
-});
-
-onMounted(loadSpots);
 </script>
 
 <style lang="scss" scoped>

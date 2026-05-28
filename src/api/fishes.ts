@@ -1,17 +1,8 @@
-/**
- * Fish library APIs.
- *
- * Backend:
- *   POST /fishes/list
- *   POST /fishes/library
- *   POST /fishes/library-progress
- */
-
 import { http } from '@/utils/request';
 
 export type FishCategory = 'fresh' | 'sea';
 
-export interface FishLibraryItem {
+export interface FishItem {
   name: string;
   category: FishCategory;
   common: boolean;
@@ -20,24 +11,17 @@ export interface FishLibraryItem {
   maxWeightG: number | null;
 }
 
-export interface FishLibraryStats {
+export interface FishStats {
   fresh: { done: number; total: number };
   sea: { done: number; total: number };
 }
 
-export interface FishLibraryResp {
-  list: FishLibraryItem[];
-  stats: FishLibraryStats;
+export function fetchFishLibrary(params: {
+  category?: FishCategory;
+} = {}): Promise<{ list: FishItem[]; stats: FishStats }> {
+  return http.post('/fishes/library', params, { dedupe: true });
 }
 
-export function fishLibrary(params: { category?: FishCategory } = {}): Promise<FishLibraryResp> {
-  return http.post('/fishes/library', params);
-}
-
-export function fishLibraryProgress(): Promise<FishLibraryStats> {
-  return http.post('/fishes/library-progress');
-}
-
-export function fishCatalog(params: { category?: FishCategory } = {}): Promise<{ list: Omit<FishLibraryItem, 'unlocked' | 'firstCatchAt' | 'maxWeightG'>[] }> {
-  return http.post('/fishes/list', params, { skipAuth: true });
+export function fetchFishProgress(): Promise<FishStats> {
+  return http.post('/fishes/library-progress', {}, { dedupe: true });
 }

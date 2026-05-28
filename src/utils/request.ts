@@ -11,6 +11,7 @@
  *        - HTTP 401 + 无 refresh / 刷新失败 → 清 token + 跳登录页 + reject
  *        - 其他业务码        → reject(new BizError(code, msg))
  *   5. HTTP 网络层错误（断网、超时）→ reject(new BizError(-1, errMsg))
+ *   6. 可选 dedupe：同 key 请求进行中时复用同一个 Promise，避免列表重复拉取
  *
  * 为什么不用 axios：
  *   小程序端没有 XMLHttpRequest，axios 跑不起来；uni.request 是跨端唯一通用方案。
@@ -24,6 +25,7 @@ import {
   setRefreshToken,
   logout as authLogout,
 } from '@/utils/auth';
+import { resolveErrorMessage } from '@/utils/error';
 
 /** 业务成功码（与 HTTP 200 同义，所有非 200 一律视为失败） */
 export const SUCCESS_CODE = 200;
@@ -59,6 +61,10 @@ export interface RequestOptions {
   skipAuth?: boolean;
   /** 是否在出错时自动 Toast（默认 true） */
   showErrorToast?: boolean;
+  /** 是否去重同一个进行中的请求；列表/统计类接口可开启 */
+  dedupe?: boolean;
+  /** 去重 key；不传时按 method + url + data 自动生成 */
+  dedupeKey?: string;
   /** 内部:本次请求是否已经过 401 重试,防止死循环 */
   _retried?: boolean;
 }
@@ -66,12 +72,24 @@ export interface RequestOptions {
 let redirectingToLogin = false;
 // 单实例 refresh promise:并发 401 共享同一次刷新
 let refreshingPromise: Promise<string> | null = null;
+const pendingRequests = new Map<string, Promise<unknown>>();
 
 function genTraceId(): string {
   // 短 trace：8 位时间戳 + 4 位随机；后端会优先用 header 里的值
   const t = Date.now().toString(36).slice(-6);
   const r = Math.random().toString(36).slice(2, 6);
   return `c_${t}${r}`;
+}
+
+function stableStringify(v: unknown): string {
+  if (v == null || typeof v !== 'object') return JSON.stringify(v) ?? 'undefined';
+  if (Array.isArray(v)) return `[${v.map(stableStringify).join(',')}]`;
+  const obj = v as Record<string, unknown>;
+  return `{${Object.keys(obj)
+    .sort()
+    .filter((key) => obj[key] !== undefined)
+    .map((key) => `${JSON.stringify(key)}:${stableStringify(obj[key])}`)
+    .join(',')}}`;
 }
 
 function redirectToLogin() {
@@ -98,7 +116,7 @@ function doRefresh(): Promise<string> {
 
   const rt = getRefreshToken();
   if (!rt) {
-    return Promise.reject(new BizError(401, 'refresh token missing'));
+    return Promise.reject(new BizError(401, resolveErrorMessage(401)));
   }
 
   refreshingPromise = (async () => {
@@ -122,8 +140,19 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
     header = {},
     skipAuth = false,
     showErrorToast = true,
+    dedupe = false,
+    dedupeKey,
     _retried = false,
   } = options;
+
+  const requestKey =
+    dedupe && !_retried
+      ? dedupeKey ?? `${method}:${url}:${stableStringify(data)}`
+      : '';
+  if (dedupe && !_retried) {
+    const pending = pendingRequests.get(requestKey) as Promise<T> | undefined;
+    if (pending) return pending;
+  }
 
   const token = skipAuth ? '' : getToken();
   const traceId = genTraceId();
@@ -137,7 +166,7 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
     fullHeader.Authorization = `Bearer ${token}`;
   }
 
-  return new Promise<T>((resolve, reject) => {
+  const promise = new Promise<T>((resolve, reject) => {
     uni.request({
       url: env.apiBaseUrl + url,
       method,
@@ -161,7 +190,7 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
                 // refresh 失败:清登录态,跳登录页
                 authLogout();
                 redirectToLogin();
-                const msg = (body && body.msg) || '登录已过期，请重新登录';
+                const msg = resolveErrorMessage(401, body?.msg);
                 const err = new BizError(401, msg, body?.traceId);
                 if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });
                 reject(err);
@@ -172,14 +201,14 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
           // skipAuth(登录/refresh 自身) 或 已重试过:不再 refresh,直接登出
           authLogout();
           redirectToLogin();
-          const msg = (body && body.msg) || '登录已过期，请重新登录';
+          const msg = resolveErrorMessage(401, body?.msg);
           const err = new BizError(401, msg, body?.traceId);
           if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });
           reject(err);
           return;
         }
         if (res.statusCode < 200 || res.statusCode >= 300) {
-          const msg = (body && body.msg) || `请求失败 (${res.statusCode})`;
+          const msg = resolveErrorMessage(res.statusCode, body?.msg);
           const err = new BizError(res.statusCode, msg, body?.traceId);
           if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });
           reject(err);
@@ -194,7 +223,11 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
           return;
         }
         if (body.code !== SUCCESS_CODE) {
-          const err = new BizError(body.code, body.msg || '业务异常', body.traceId);
+          const err = new BizError(
+            body.code,
+            resolveErrorMessage(body.code, body.msg),
+            body.traceId,
+          );
           if (showErrorToast) uni.showToast({ title: err.msg, icon: 'none' });
           reject(err);
           return;
@@ -204,13 +237,24 @@ export function request<T = unknown>(options: RequestOptions): Promise<T> {
         resolve(body.data);
       },
       fail: (err) => {
-        const msg = (err && (err as { errMsg?: string }).errMsg) || '网络异常';
+        const msg = resolveErrorMessage(-1, (err as { errMsg?: string } | undefined)?.errMsg);
         const bizErr = new BizError(-1, msg);
         if (showErrorToast) uni.showToast({ title: msg, icon: 'none' });
         reject(bizErr);
       },
     });
   });
+
+  if (dedupe && !_retried) {
+    pendingRequests.set(requestKey, promise);
+    promise.then(() => {
+      if (pendingRequests.get(requestKey) === promise) pendingRequests.delete(requestKey);
+    }, () => {
+      if (pendingRequests.get(requestKey) === promise) pendingRequests.delete(requestKey);
+    });
+  }
+
+  return promise;
 }
 
 /** 语义化快捷方法（约定都是 POST，但保留扩展位） */

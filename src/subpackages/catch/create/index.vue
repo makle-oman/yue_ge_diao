@@ -179,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
@@ -189,7 +189,9 @@ import {
   parseLengthInputToCm,
   type Technique,
 } from '@/api/catches';
+import { fetchFishingIndex, formatWeatherLine, type FishingIndex } from '@/api/weather';
 import { uploadImages } from '@/utils/upload';
+import { BizError } from '@/utils/request';
 
 const { safeBottom } = useSystemInfo();
 
@@ -230,11 +232,13 @@ const form = ref({
 
 const weather = ref({
   auto: true,
-  text: '自动填充（待接入天气服务）',
+  text: '正在获取天气...',
 });
 
 const submitting = ref(false);
 const uploading = ref(false);
+const currentLocation = ref<{ lat: number; lng: number } | null>(null);
+const weatherSnapshot = ref<FishingIndex | null>(null);
 
 /* ---------- 钓法弹层 (Design 35) ---------- */
 const methodSheetOpen = ref(false);
@@ -264,32 +268,42 @@ const onMethodConfirm = () => {
   methodSheetOpen.value = false;
 };
 
-function onFishSelected(payload: unknown) {
-  const data = payload as { name?: string; names?: string[] };
-  const names = Array.isArray(data.names) && data.names.length
-    ? data.names
-    : data.name
-      ? [data.name]
-      : [];
-  if (names.length) form.value.fish = names;
-}
-
-function onSpotSelected(payload: unknown) {
-  const data = payload as { id?: string; name?: string };
-  if (!data.name) return;
-  form.value.spotId = data.id || '';
-  form.value.spot = data.name;
-}
-
 const onPickFish = () => {
-  const selected = encodeURIComponent(form.value.fish[0] || '');
-  const target = encodeURIComponent('catch:create');
-  uni.navigateTo({ url: `/subpackages/catch/fish-picker/index?selected=${selected}&target=${target}` });
+  uni.navigateTo({
+    url: '/subpackages/catch/fish-picker/index',
+    events: {
+      fishSelected(data: unknown) {
+        if (Array.isArray(data)) {
+          form.value.fish = data.filter((x): x is string => typeof x === 'string');
+        }
+      },
+    },
+    success: (res) => {
+      // 把当前已选鱼种带过去做回显
+      res.eventChannel?.emit?.('initFish', [...form.value.fish]);
+    },
+  });
 };
 const onPickSpot = () => {
-  const selected = encodeURIComponent(form.value.spotId || '');
-  const target = encodeURIComponent('catch:create');
-  uni.navigateTo({ url: `/subpackages/catch/spot-picker/index?selected=${selected}&target=${target}` });
+  uni.navigateTo({
+    url: '/subpackages/catch/spot-picker/index',
+    events: {
+      spotSelected(data: unknown) {
+        if (data && typeof data === 'object') {
+          const d = data as { id?: unknown; name?: unknown };
+          if (typeof d.id === 'string' && typeof d.name === 'string') {
+            form.value.spotId = d.id;
+            form.value.spot = d.name;
+          }
+        }
+      },
+    },
+    success: (res) => {
+      if (form.value.spotId) {
+        res.eventChannel?.emit?.('initSpot', { id: form.value.spotId, name: form.value.spot });
+      }
+    },
+  });
 };
 const onAddPhoto = () => {
   if (uploading.value) return;
@@ -317,6 +331,27 @@ const onAddPhoto = () => {
 };
 const onDelPhoto = (idx: number) => form.value.photos.splice(idx, 1);
 
+async function loadWeather() {
+  try {
+    const loc: any = await new Promise((resolve, reject) =>
+      uni.getLocation({ type: 'gcj02', isHighAccuracy: true, success: resolve, fail: reject }),
+    );
+    currentLocation.value = { lat: loc.latitude, lng: loc.longitude };
+    const data = await fetchFishingIndex({
+      lat: loc.latitude,
+      lng: loc.longitude,
+    });
+    weatherSnapshot.value = data;
+    weather.value.text = formatWeatherLine(data);
+  } catch (_) {
+    weather.value.text = '未获取天气';
+  }
+}
+
+onMounted(() => {
+  void loadWeather();
+});
+
 async function onPublish() {
   if (submitting.value) return;
   if (form.value.photos.length === 0) {
@@ -338,8 +373,11 @@ async function onPublish() {
       technique: methodToTechnique(form.value.method),
       content: form.value.desc || undefined,
       spotId: form.value.spotId || undefined,
+      lat: currentLocation.value?.lat,
+      lng: currentLocation.value?.lng,
       locationVisible: form.value.publicSpot,
       allowComments: form.value.allowComment,
+      weatherSnapshot: weather.value.auto ? (weatherSnapshot.value as unknown as Record<string, unknown> | null) ?? undefined : undefined,
     });
     uni.showToast({ title: '已发布', icon: 'success' });
     setTimeout(() => {
@@ -349,20 +387,12 @@ async function onPublish() {
     }, 600);
   } catch (e) {
     console.warn('[catch-create] publish failed', e);
+    const msg = e instanceof BizError ? e.msg : '发布失败,请稍后重试';
+    uni.showToast({ title: msg, icon: 'none', duration: 2500 });
   } finally {
     submitting.value = false;
   }
 }
-
-onMounted(() => {
-  uni.$on('catch:create:fish-selected', onFishSelected);
-  uni.$on('catch:create:spot-selected', onSpotSelected);
-});
-
-onUnmounted(() => {
-  uni.$off('catch:create:fish-selected', onFishSelected);
-  uni.$off('catch:create:spot-selected', onSpotSelected);
-});
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

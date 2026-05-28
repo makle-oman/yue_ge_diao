@@ -20,6 +20,7 @@ import { http } from '@/utils/request';
 export type FeedTab = 'recommend' | 'nearby' | 'follow';
 export type Technique = 'hand' | 'taiwan' | 'lure' | 'sea' | 'other';
 export type Visibility = 'all' | 'public' | 'private';
+export type WeatherSnapshot = Record<string, unknown>;
 
 /** feed 列表 item（list 返回的 shape） */
 export interface CatchFeedItem {
@@ -111,7 +112,7 @@ export function listCatches(params: {
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<CatchFeedItem>> {
-  return http.post('/catches/list', params);
+  return http.post('/catches/list', params, { dedupe: true });
 }
 
 export function createCatch(payload: {
@@ -127,6 +128,7 @@ export function createCatch(payload: {
   lng?: number;
   locationVisible?: boolean;
   allowComments?: boolean;
+  weatherSnapshot?: WeatherSnapshot;
 }): Promise<{ id: string; reviewStatus: string; createdAt: string }> {
   return http.post('/catches/create', payload);
 }
@@ -159,13 +161,13 @@ export function userCatches(params: {
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<CatchFeedItem>> {
-  return http.post('/users/catches', params);
+  return http.post('/users/catches', params, { dedupe: true });
 }
 
 export function userCatchesStats(params: {
   userId?: string;
 } = {}): Promise<UserCatchesStats> {
-  return http.post('/users/catches/stats', params);
+  return http.post('/users/catches/stats', params, { dedupe: true });
 }
 
 // ─── UI 辅助 ─────────────────────────────────────────────────────────

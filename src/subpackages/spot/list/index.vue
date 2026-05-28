@@ -12,9 +12,19 @@
         </view>
       </view>
 
-      <view class="search-box" @click="onSearch">
+      <view class="search-box">
         <mxy-icon name="search" :size="32" color="#6B7B85" />
-        <text class="search-placeholder">搜索钓点 / 地址 / 鱼种</text>
+        <input
+          class="search-input"
+          v-model="keyword"
+          confirm-type="search"
+          placeholder="搜索钓点 / 地址 / 鱼种"
+          placeholder-style="color:#99A5AD"
+          @confirm="onSearch"
+        />
+        <view v-if="keyword" class="search-clear" @click="onClearSearch">
+          <mxy-icon name="close" :size="28" color="#6B7B85" />
+        </view>
       </view>
 
       <scroll-view class="chip-scroll" scroll-x show-scrollbar="false">
@@ -33,7 +43,7 @@
     <!-- 列表 -->
     <scroll-view class="content" scroll-y @scrolltolower="loadMore">
       <view class="summary">
-        <text class="summary-title">南京附近 · {{ filteredSpots.length }} 个钓点</text>
+        <text class="summary-title">{{ summaryTitle }}</text>
         <view class="sort-pill">
           <text>距离</text>
           <mxy-icon name="keyboard_arrow_down" :size="24" color="#2D8F87" />
@@ -79,6 +89,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import {
   listSpots,
+  searchSpots,
   formatDistance,
   SPOT_TYPE_LABEL,
   type SpotListItem,
@@ -120,6 +131,7 @@ const spots = ref<SpotItem[]>([]);
 const cursor = ref<string | null>(null);
 const hasMore = ref(true);
 const loading = ref(false);
+const keyword = ref('');
 
 /** 后端 type → 列表卡片 tone（icon 背景）。 */
 const TYPE_TONE: Record<SpotType, { tone: Tone; iconColor: string }> = {
@@ -174,6 +186,29 @@ function paramsForChip(chip: ChipKey, cur: string | null) {
   }
 }
 
+function searchParamsForChip(chip: ChipKey, cur: string | null) {
+  const base = {
+    keyword: keyword.value.trim(),
+    lat: center.value.latitude,
+    lng: center.value.longitude,
+    radius: chip === 'near' ? NEAR_RADIUS : NORMAL_RADIUS,
+    limit: PAGE_LIMIT,
+    cursor: cur,
+  };
+  switch (chip) {
+    case 'wild': return { ...base, type: 'wild' as SpotType };
+    case 'pond': return { ...base, type: 'black' as SpotType };
+    default:     return base;
+  }
+}
+
+function fetchSpotPage(cur: string | null) {
+  if (keyword.value.trim()) {
+    return searchSpots(searchParamsForChip(activeChip.value, cur));
+  }
+  return listSpots(paramsForChip(activeChip.value, cur));
+}
+
 async function loadFirstPage() {
   if (loading.value) return;
   loading.value = true;
@@ -181,7 +216,7 @@ async function loadFirstPage() {
   hasMore.value = true;
   spots.value = [];
   try {
-    const resp = await listSpots(paramsForChip(activeChip.value, null));
+    const resp = await fetchSpotPage(null);
     spots.value = resp.list.map(adapt);
     cursor.value = resp.nextCursor;
     hasMore.value = resp.hasMore;
@@ -196,7 +231,7 @@ async function loadMore() {
   if (loading.value || !hasMore.value) return;
   loading.value = true;
   try {
-    const resp = await listSpots(paramsForChip(activeChip.value, cursor.value));
+    const resp = await fetchSpotPage(cursor.value);
     spots.value = spots.value.concat(resp.list.map(adapt));
     cursor.value = resp.nextCursor;
     hasMore.value = resp.hasMore;
@@ -228,10 +263,19 @@ function onChip(key: ChipKey) {
 }
 
 const filteredSpots = computed(() => spots.value);
+const summaryTitle = computed(() => {
+  const kw = keyword.value.trim();
+  if (kw) return `搜索「${kw}」 · ${filteredSpots.value.length} 个钓点`;
+  return `南京附近 · ${filteredSpots.value.length} 个钓点`;
+});
 
 const onOpenMap = () => uni.switchTab({ url: '/pages/index/index' }).catch(() => uni.navigateBack({ delta: 1 }));
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => uni.switchTab({ url: '/pages/index/index' }));
-const onSearch = () => uni.showToast({ title: '搜索功能开发中', icon: 'none' });
+const onSearch = () => loadFirstPage();
+const onClearSearch = () => {
+  keyword.value = '';
+  loadFirstPage();
+};
 const onOpen = (s: SpotItem) => uni.navigateTo({ url: `/subpackages/spot/detail/index?id=${s.id}` });
 </script>
 

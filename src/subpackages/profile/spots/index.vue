@@ -261,7 +261,7 @@ const onManage = () => uni.showToast({ title: '批量管理 (待开发)', icon: 
 const onOpen = (s: UserSpotItem) =>
   uni.navigateTo({ url: `/subpackages/spot/detail/index?id=${s.id}` });
 const onEdit = (s: UserSpotItem) =>
-  uni.showToast({ title: `编辑 ${s.name} (待开发)`, icon: 'none' });
+  uni.navigateTo({ url: `/subpackages/spot/create/index?id=${s.id}` });
 const onReport = () => uni.navigateTo({ url: '/subpackages/spot/create/index' });
 </script>
 

@@ -2,7 +2,7 @@
   <view class="fish-lib">
     <!-- 渐变 Hero -->
     <view class="hero" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="hero-top" :style="heroTopStyle">
+      <view class="hero-top" :style="{ paddingRight: capsuleRightWidth + 'px' }">
         <view class="hero-back" @click="onBack">
           <mxy-icon name="arrow_back" :size="40" color="#fff" />
         </view>
@@ -25,7 +25,7 @@
         <view class="progress-card">
           <view class="progress-head">
             <text class="progress-title">总进度</text>
-            <text class="progress-side">{{ rewardText }}</text>
+            <text class="progress-side">解锁 80% 奖励</text>
           </view>
           <view class="progress-bar">
             <view class="progress-fill" :style="{ width: barPct + '%' }" />
@@ -105,28 +105,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { onShow } from '@dcloudio/uni-app';
+import { onMounted, ref, computed } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
-import {
-  fishLibrary,
-  type FishCategory,
-  type FishLibraryItem,
-  type FishLibraryStats,
-} from '@/api/fishes';
+import { fetchFishLibrary, type FishCategory, type FishItem, type FishStats } from '@/api/fishes';
 import { formatWeight } from '@/api/catches';
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
-const heroTopStyle = computed<Record<string, string>>(() => {
-  const s: Record<string, string> = {};
-  // #ifdef MP-WEIXIN
-  s.paddingRight = capsuleRightWidth.value + 'px';
-  // #endif
-  return s;
-});
-
-type SegKey = FishCategory;
+type SegKey = 'fresh' | 'sea';
 type ChipKey = 'unlocked' | 'common' | 'locked';
 type Tone = 'primary' | 'blue' | 'orange' | 'ghost';
 
@@ -141,44 +127,42 @@ interface Fish {
 
 const activeSeg = ref<SegKey>('fresh');
 const activeChip = ref<ChipKey>('unlocked');
-const loading = ref(false);
 
 const segments = [
   { key: 'fresh' as SegKey, label: '淡水鱼' },
-  { key: 'sea' as SegKey, label: '海鱼' },
+  { key: 'sea'   as SegKey, label: '海鱼' },
 ];
 const chips = [
   { key: 'unlocked' as ChipKey, label: '已点亮' },
-  { key: 'common' as ChipKey, label: '常见鱼' },
-  { key: 'locked' as ChipKey, label: '未点亮' },
+  { key: 'common'   as ChipKey, label: '常见鱼' },
+  { key: 'locked'   as ChipKey, label: '未点亮' },
 ];
 
-const stats = ref<FishLibraryStats>({
+const stats = ref<FishStats>({
   fresh: { done: 0, total: 0 },
-  sea: { done: 0, total: 0 },
+  sea:   { done: 0, total: 0 },
 });
 const fishList = ref<Fish[]>([]);
+const loading = ref(false);
 
-function fishTone(f: FishLibraryItem, index: number): Tone {
+const totalUnlocked = computed(() => stats.value.fresh.done + stats.value.sea.done);
+const totalCount = computed(() => stats.value.fresh.total + stats.value.sea.total);
+const progressPct = computed(() => totalCount.value ? Math.round(totalUnlocked.value / totalCount.value * 100) : 0);
+const barPct = progressPct;
+
+function toneOf(f: FishItem): Tone {
   if (!f.unlocked) return 'ghost';
-  const tones: Tone[] = f.category === 'sea'
-    ? ['blue', 'primary', 'orange']
-    : ['primary', 'orange', 'blue'];
-  return tones[index % tones.length];
+  if (f.category === 'sea') return 'blue';
+  if (f.common) return 'primary';
+  return 'orange';
 }
 
-function fishRecord(f: FishLibraryItem): string {
-  if (!f.unlocked) return '未点亮';
-  if (f.maxWeightG != null) return `记录 ${formatWeight(f.maxWeightG)}`;
-  return '已点亮';
-}
-
-function adaptFish(f: FishLibraryItem, index: number): Fish {
+function adaptFish(f: FishItem): Fish {
   return {
     name: f.name,
     category: f.category,
-    tone: fishTone(f, index),
-    record: fishRecord(f),
+    tone: toneOf(f),
+    record: f.unlocked ? `记录 ${formatWeight(f.maxWeightG)}` : '未点亮',
     unlocked: f.unlocked,
     common: f.common,
   };
@@ -188,39 +172,27 @@ async function loadLibrary() {
   if (loading.value) return;
   loading.value = true;
   try {
-    const resp = await fishLibrary();
+    const resp = await fetchFishLibrary();
     stats.value = resp.stats;
     fishList.value = resp.list.map(adaptFish);
-  } catch (e) {
-    console.warn('[fish-library] load failed', e);
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '鱼库加载失败', icon: 'none' });
   } finally {
     loading.value = false;
   }
 }
 
-const totalUnlocked = computed(() => stats.value.fresh.done + stats.value.sea.done);
-const totalCount = computed(() => stats.value.fresh.total + stats.value.sea.total);
-const progressPct = computed(() => {
-  if (!totalCount.value) return 0;
-  return Math.round((totalUnlocked.value / totalCount.value) * 100);
-});
-const barPct = progressPct;
-const rewardText = computed(() => {
-  if (!totalCount.value) return '鱼库加载中';
-  const need = Math.ceil(totalCount.value * 0.8);
-  if (totalUnlocked.value >= need) return '已解锁 80% 奖励';
-  return `距 80% 还差 ${need - totalUnlocked.value} 种`;
-});
-
 const displayFish = computed<Fish[]>(() => {
   const pool = fishList.value.filter((f) => f.category === activeSeg.value);
   switch (activeChip.value) {
-    case 'unlocked': return pool.filter((f) => f.unlocked);
-    case 'locked': return pool.filter((f) => !f.unlocked);
-    case 'common': return pool.filter((f) => f.common);
-    default: return pool;
+    case 'unlocked': return pool.filter(f => f.unlocked);
+    case 'locked':   return pool.filter(f => !f.unlocked);
+    case 'common':   return pool.filter(f => f.common);
+    default:         return pool;
   }
 });
+
+onMounted(loadLibrary);
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });
@@ -230,9 +202,6 @@ const onTap = (f: Fish) => {
     icon: 'none',
   });
 };
-
-onMounted(loadLibrary);
-onShow(loadLibrary);
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

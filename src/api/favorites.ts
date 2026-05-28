@@ -1,6 +1,6 @@
 import { http } from '@/utils/request';
 
-export type FavoriteListType = 'spot' | 'user';
+export type FavoriteTab = 'spot' | 'user';
 export type FavoriteKind = 'spot' | 'catch' | 'user';
 
 export interface FavoriteItem {
@@ -18,19 +18,17 @@ export interface FavoriteCounts {
   user: number;
 }
 
-export interface FavoriteListResp {
+export function listFavorites(params: {
+  type?: FavoriteTab;
+  limit?: number;
+  cursor?: string | null;
+}): Promise<{
   list: FavoriteItem[];
   counts: FavoriteCounts;
   nextCursor: string | null;
   hasMore: boolean;
-}
-
-export function listFavorites(params: {
-  type?: FavoriteListType;
-  limit?: number;
-  cursor?: string | null;
-}): Promise<FavoriteListResp> {
-  return http.post('/favorites/list', params);
+}> {
+  return http.post('/favorites/list', params, { dedupe: true });
 }
 
 export function removeFavorite(payload: {

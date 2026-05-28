@@ -46,7 +46,6 @@
   &:active { transform: scale(.94); }
 }
 
-/* 搜索框 */
 .search-box {
   margin: 8rpx 32rpx 0;
   height: 84rpx;
@@ -58,9 +57,19 @@
   gap: 14rpx;
   box-shadow: $shadow-sm;
 }
-.search-placeholder {
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 84rpx;
   font-size: $font-base;
-  color: $text-placeholder;
+  color: $text-primary;
+}
+.search-clear {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 横向 chip 行 */

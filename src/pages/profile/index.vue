@@ -105,7 +105,7 @@ import CustomTabBar from '@/components/CustomTabBar.vue';
 import { FISHING_AGE_BAND_LABEL } from '@/api/users';
 import { userCatchesStats, formatWeight } from '@/api/catches';
 import { userSpotsStats } from '@/api/spots';
-import { fishLibrary, type FishLibraryItem } from '@/api/fishes';
+import { fetchFishLibrary, type FishItem as FishLibraryItem } from '@/api/fishes';
 import { useAuthStore } from '@/stores';
 
 interface FishItem { name: string; bg: string; locked?: boolean }
@@ -188,7 +188,7 @@ function fishBg(f: FishLibraryItem): string {
 async function loadFishLibrarySummary() {
   if (!authStore.isLoggedIn) return;
   try {
-    const resp = await fishLibrary();
+    const resp = await fetchFishLibrary();
     fishCollected.value = resp.stats.fresh.done + resp.stats.sea.done;
     fishTotal.value = resp.stats.fresh.total + resp.stats.sea.total;
     fishLib.value = resp.list

@@ -3,7 +3,7 @@
     <!-- 固定在顶部的返回/分享按钮（不随内容滚动） -->
     <view
       class="hero-top"
-      :style="heroTopStyle"
+      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
     >
       <view class="hero-icon-btn" @click="onBack">
         <mxy-icon name="arrow_back" :size="40" color="#fff" />
@@ -86,9 +86,27 @@
         </view>
 
         <!-- 评论 -->
-        <view class="comments-card" @click="onMoreComments">
-          <text class="comments-title">评论 {{ catchData.commentCount }}</text>
-          <text class="comments-text">查看全部评论 ›</text>
+        <view class="comments-card">
+          <view class="comments-card-head" @click="onMoreComments">
+            <text class="comments-title">评论 {{ catchData.commentCount }}</text>
+            <text class="comments-text">{{ catchData.commentCount > previewComments.length ? '查看全部 ›' : '' }}</text>
+          </view>
+          <view
+            v-for="c in previewComments"
+            :key="c.id"
+            class="comments-preview-item"
+            @click="onMoreComments"
+          >
+            <text class="comments-preview-name">{{ c.userName || ('钓友' + c.userId.slice(-4)) }}:</text>
+            <text class="comments-preview-text">{{ c.content }}</text>
+          </view>
+          <view
+            v-if="previewComments.length === 0 && catchData.commentCount === 0"
+            class="comments-preview-empty"
+            @click="onMoreComments"
+          >
+            <text>暂无评论,点击参与讨论 ›</text>
+          </view>
         </view>
 
       </view>
@@ -132,7 +150,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import {
   catchDetail,
@@ -143,27 +161,20 @@ import {
   formatTime,
   type CatchDetail,
 } from '@/api/catches';
+import { previewLatestComments, type CommentItem } from '@/api/comments';
+import { fetchUserDetail, followUser } from '@/api/users';
 
 const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
-
-const heroTopStyle = computed<Record<string, string>>(() => {
-  const s: Record<string, string> = {
-    paddingTop: statusBarHeight.value + 'px',
-  };
-  // #ifdef MP-WEIXIN
-  s.paddingRight = capsuleRightWidth.value + 'px';
-  // #endif
-  return s;
-});
 
 const catchId = ref<string>('');
 const liking = ref(false);
 const collecting = ref(false);
+const followPending = ref(false);
 
 const author = ref({
+  id: '',
   name: '钓友',
   avatar: '',
-  // TODO(follow): 需要 /users/follow 接口，本 wire 只切详情数据；关注按钮先纯前端切换
   following: false,
 });
 
@@ -183,6 +194,25 @@ const catchData = ref({
   likes: 0,
   collected: false,
 });
+
+const previewComments = ref<CommentItem[]>([]);
+
+function formatWeatherSnapshot(raw: Record<string, unknown> | null): string {
+  const current = raw?.current;
+  if (!current || typeof current !== 'object') return '未记录天气';
+  const c = current as {
+    weather?: unknown;
+    temperature?: unknown;
+    pressure?: unknown;
+    windScale?: unknown;
+  };
+  const score = typeof raw?.score === 'number' ? ` · 宜钓 ${raw.score}` : '';
+  const weather = typeof c.weather === 'string' ? c.weather : '天气';
+  const temp = typeof c.temperature === 'number' ? `${c.temperature}°C` : '';
+  const pressure = typeof c.pressure === 'number' ? `气压 ${c.pressure}hPa` : '';
+  const wind = typeof c.windScale === 'number' ? `${c.windScale}级风` : '';
+  return [weather, temp, pressure, wind].filter(Boolean).join(' · ') + score;
+}
 
 const spotLine = computed(() => {
   const c = catchData.value;
@@ -209,26 +239,63 @@ async function loadDetail() {
     catchData.value.likes = d.likeCount;
     catchData.value.collected = d.yourCollectStatus;
     // 天气快照后端字段为 weatherSnapshot（结构待定），后续 weather 服务接入后再渲染
+    catchData.value.weatherText = formatWeatherSnapshot(d.weatherSnapshot);
+    author.value.id = d.user.id;
     author.value.name = d.user.nickname || `钓友${d.user.id.slice(-4)}`;
     author.value.avatar = d.user.avatar || '';
+    fetchUserDetail(d.user.id)
+      .then((profile) => {
+        author.value.following = profile.following;
+      })
+      .catch(() => {});
   } catch (e) {
     console.warn('[catch-detail] load failed', e);
+  }
+}
+
+async function loadCommentsPreview() {
+  if (!catchId.value) return;
+  try {
+    const resp = await previewLatestComments(catchId.value);
+    previewComments.value = resp.list;
+    // commentCount 以最新返回为准（异步成楼用户也能看到最新数）
+    catchData.value.commentCount = resp.total;
+  } catch (e) {
+    console.warn('[catch-detail] preview comments failed', e);
   }
 }
 
 onLoad((options) => {
   catchId.value = String((options as { id?: string })?.id ?? '');
   void loadDetail();
+  void loadCommentsPreview();
+});
+
+// 从评论页 navigateBack 回来时刷新摘要 + 计数
+onShow(() => {
+  if (catchId.value) {
+    void loadCommentsPreview();
+  }
 });
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });
-const onFollow = () => {
-  author.value.following = !author.value.following;
-  uni.showToast({
-    title: author.value.following ? '已关注' : '已取消关注',
-    icon: 'success',
-  });
+const onFollow = async () => {
+  if (!author.value.id || followPending.value) return;
+  followPending.value = true;
+  const next = author.value.following ? 'unfollow' : 'follow';
+  try {
+    const resp = await followUser(author.value.id, next);
+    author.value.following = resp.following;
+    uni.showToast({
+      title: resp.following ? '已关注' : '已取消关注',
+      icon: 'success',
+    });
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '操作失败', icon: 'none' });
+  } finally {
+    followPending.value = false;
+  }
 };
 const onSpotTap = () => {
   if (!catchData.value.spotId) return;
@@ -236,8 +303,12 @@ const onSpotTap = () => {
     url: `/subpackages/spot/detail/index?id=${catchData.value.spotId}`,
   });
 };
-const onMoreComments = () =>
-  uni.navigateTo({ url: `/subpackages/catch/comments/index?id=${catchId.value}` });
+const onMoreComments = () => {
+  if (!catchId.value) return;
+  uni.navigateTo({
+    url: `/subpackages/catch/comments/index?catchId=${catchId.value}`,
+  });
+};
 
 async function onLike() {
   if (!catchId.value || liking.value) return;

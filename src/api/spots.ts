@@ -6,7 +6,9 @@
  *   POST /spots/nearby    扁平 list，不分页（用于"发鱼获"前选钓点）
  *   POST /spots/search    关键词+多筛选，按 评分>热度>新鲜 排序、cursor 分页
  *   POST /spots/detail    详情 + 7/30 天鱼获数 + yourWantStatus（需登录）
+ *   POST /spots/mine-detail 我的钓点编辑详情（需登录）
  *   POST /spots/create    上报新钓点（需登录，accuracy<50m 防作弊）
+ *   POST /spots/update    更新自己上报的钓点（需登录）
  *   POST /spots/want      标记/取消想去（需登录，幂等）
  *   POST /spots/history   历史鱼获 + 7 天趋势
  *
@@ -66,6 +68,23 @@ export interface SpotDetail {
   yourWantStatus: boolean;
 }
 
+export interface EditableSpotDetail {
+  id: string;
+  name: string;
+  type: SpotType;
+  waterType: WaterType | null;
+  lat: number;
+  lng: number;
+  address: string | null;
+  city: string | null;
+  description: string | null;
+  photos: string[];
+  fishSpecies: string[];
+  facilities: Record<string, boolean | string | number>;
+  status: string;
+  updatedAt: string;
+}
+
 export interface CatchHistoryItem {
   id: string;
   userId: string;
@@ -106,7 +125,7 @@ export function listSpots(params: {
   city?: string;
   type?: SpotType;
 }): Promise<ListResp<SpotListItem>> {
-  return http.post('/spots/list', params);
+  return http.post('/spots/list', params, { dedupe: true });
 }
 
 export function nearbySpots(params: {
@@ -114,8 +133,10 @@ export function nearbySpots(params: {
   lng: number;
   radius?: number;
   limit?: number;
+  type?: SpotType;
+  waterType?: WaterType;
 }): Promise<{ list: SpotListItem[] }> {
-  return http.post('/spots/nearby', params);
+  return http.post('/spots/nearby', params, { dedupe: true });
 }
 
 export function searchSpots(params: {
@@ -123,13 +144,16 @@ export function searchSpots(params: {
   type?: SpotType;
   waterType?: WaterType;
   city?: string;
+  lat?: number;
+  lng?: number;
+  radius?: number;
   minRating?: number;
   hasParking?: boolean;
   hasToilet?: boolean;
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<SpotListItem>> {
-  return http.post('/spots/search', params);
+  return http.post('/spots/search', params, { dedupe: true });
 }
 
 export function spotDetail(spotId: string): Promise<SpotDetail> {
@@ -151,6 +175,28 @@ export function createSpot(payload: {
   photos?: string[];
 }): Promise<{ id: string; status: string; createdAt: string }> {
   return http.post('/spots/create', payload);
+}
+
+export function editableSpotDetail(spotId: string): Promise<EditableSpotDetail> {
+  return http.post('/spots/mine-detail', { spotId });
+}
+
+export function updateSpot(payload: {
+  spotId: string;
+  name?: string;
+  type?: SpotType;
+  waterType?: WaterType;
+  lat?: number;
+  lng?: number;
+  accuracy?: number;
+  address?: string;
+  city?: string;
+  description?: string;
+  fishSpecies?: string[];
+  facilities?: Record<string, boolean>;
+  photos?: string[];
+}): Promise<{ id: string; status: string; updatedAt: string }> {
+  return http.post('/spots/update', payload);
 }
 
 export function wantSpot(
@@ -215,13 +261,13 @@ export function userSpots(params: {
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<UserSpotItem>> {
-  return http.post('/users/spots', params);
+  return http.post('/users/spots', params, { dedupe: true });
 }
 
 export function userSpotsStats(params: {
   userId?: string;
 } = {}): Promise<UserSpotsStats> {
-  return http.post('/users/spots/stats', params);
+  return http.post('/users/spots/stats', params, { dedupe: true });
 }
 
 // ─── UI 辅助 ─────────────────────────────────────────────────────────

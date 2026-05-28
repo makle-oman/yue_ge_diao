@@ -21,5 +21,5 @@ export interface AppConfig {
 }
 
 export function fetchAppConfig(): Promise<AppConfig> {
-  return http.post<AppConfig>('/common/config', undefined, { skipAuth: true, showErrorToast: false });
+  return http.post<AppConfig>('/common/config', undefined, { skipAuth: true, showErrorToast: false, dedupe: true });
 }

@@ -75,8 +75,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import {
+  fetchNearbyUsers,
+  formatFishingAge,
+  type NearbyUserItem,
+} from '@/api/users';
+import { formatDistance } from '@/api/spots';
 
 const { statusBarHeight } = useSystemInfo();
 
@@ -104,48 +110,71 @@ interface Angler {
   tags: AnglerTag[];
 }
 
-const users = ref<Angler[]>([
-  {
-    id: 'u1',
-    name: '老周钓鱼',
-    tone: 'primary',
-    meta: '1.2km · 常去燕子矶江边 · 5年钓龄',
-    tags: [
-      { text: '野钓', tone: 'primary' },
-      { text: '鲫鱼', tone: 'orange' },
-    ],
-  },
-  {
-    id: 'u2',
-    name: '路亚小陈',
-    tone: 'blue',
-    meta: '2.4km · 江心洲北汊 · 晚口活跃',
-    tags: [
-      { text: '路亚', tone: 'blue' },
-      { text: '江河', tone: 'ghost' },
-    ],
-  },
-  {
-    id: 'u3',
-    name: '阿强守水库',
-    tone: 'orange',
-    meta: '4.8km · 老山水库 · 10年钓龄',
-    tags: [
-      { text: '水库', tone: 'blue' },
-      { text: '鲤鱼', tone: 'orange' },
-    ],
-  },
-  {
-    id: 'u4',
-    name: '老王黑坑',
-    tone: 'primary',
-    meta: '6.3km · 青龙湾黑坑 · 今日放鱼',
-    tags: [
-      { text: '鲤鱼', tone: 'primary' },
-      { text: '早晨', tone: 'ghost' },
-    ],
-  },
-]);
+const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
+const users = ref<Angler[]>([]);
+const center = ref({ ...DEFAULT_CENTER });
+const loading = ref(false);
+
+function toneOf(id: string): AvatarTone {
+  const tones: AvatarTone[] = ['primary', 'blue', 'orange'];
+  return tones[Number(id.slice(-1)) % tones.length] ?? 'primary';
+}
+
+function adaptUser(u: NearbyUserItem): Angler {
+  const tags = u.playStyles.slice(0, 2).map<AnglerTag>((text, idx) => ({
+    text,
+    tone: idx === 0 ? 'primary' : 'blue',
+  }));
+  if (tags.length === 0 && u.city) tags.push({ text: u.city, tone: 'ghost' });
+  return {
+    id: u.id,
+    name: u.nickname || `钓友${u.id.slice(-4)}`,
+    tone: toneOf(u.id),
+    meta: `${formatDistance(u.distance)} · ${u.city || '附近'} · ${formatFishingAge(u.fishingAgeBand)}`,
+    tags,
+  };
+}
+
+async function locate() {
+  try {
+    const loc: any = await new Promise((resolve, reject) =>
+      uni.getLocation({ type: 'gcj02', success: resolve, fail: reject }),
+    );
+    center.value = { latitude: loc.latitude, longitude: loc.longitude };
+  } catch (_) {
+    // 拿不到定位就用 DEFAULT_CENTER
+  }
+}
+
+async function loadUsers() {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    const playStyle = activeSort.value === 'wild' ? '野钓' : undefined;
+    const radius = activeSort.value === 'near' ? 3000 : 50_000;
+    const resp = await fetchNearbyUsers({
+      lat: center.value.latitude,
+      lng: center.value.longitude,
+      radius,
+      playStyle,
+      limit: 30,
+    });
+    users.value = resp.list.map(adaptUser);
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '附近钓友加载失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(async () => {
+  await locate();
+  await loadUsers();
+});
+
+watch(activeSort, () => {
+  void loadUsers();
+});
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onMap = () => uni.showToast({ title: '地图视图 (待开发)', icon: 'none' });

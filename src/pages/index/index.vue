@@ -59,7 +59,7 @@
             :key="chip.key"
             :label="chip.label"
             :active="activeChip === chip.key"
-            @click="activeChip = chip.key"
+            @click="onChipTap(chip.key)"
           />
         </view>
       </scroll-view>
@@ -233,8 +233,9 @@ import {
   type SpotType,
   type WaterType,
 } from '@/api/spots';
+import { fetchFishingIndex } from '@/api/weather';
 
-interface FilterChip { key: string; label: string }
+interface FilterChip { key: ChipKey; label: string }
 interface SpotItem {
   id: string;
   markerId: number;
@@ -270,7 +271,7 @@ const TYPE_EMOJI: Record<SpotType, string> = {
 };
 
 /** chip → (item) => boolean。多维度过滤（type + waterType）。 */
-const CHIP_PREDICATE: Record<string, (s: SpotItem) => boolean> = {
+const CHIP_PREDICATE = {
   all:   () => true,
   wild:  (s) => s.type === 'wild',
   pond:  (s) => s.type === 'black',
@@ -278,6 +279,18 @@ const CHIP_PREDICATE: Record<string, (s: SpotItem) => boolean> = {
   river: (s) => s.waterType === 'river',
   sea:   (s) => s.type === 'sea' || s.waterType === 'sea',
   rent:  (s) => s.type === 'paid',
+} satisfies Record<string, (s: SpotItem) => boolean>;
+
+type ChipKey = keyof typeof CHIP_PREDICATE;
+
+const CHIP_QUERY: Record<ChipKey, { type?: SpotType; waterType?: WaterType }> = {
+  all: {},
+  wild: { type: 'wild' },
+  pond: { type: 'black' },
+  reser: { waterType: 'reservoir' },
+  river: { waterType: 'river' },
+  sea: { type: 'sea' },
+  rent: { type: 'paid' },
 };
 
 const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
@@ -330,7 +343,7 @@ const topRowStyle = computed<Record<string, string>>(() => {
 
 const city = ref('南京');
 const hasUnread = ref(true);
-const activeChip = ref('all');
+const activeChip = ref<ChipKey>('all');
 const showCitySheet = ref(false);
 const showNotifyPopover = ref(false);
 const nearbyAnglersOnline = ref(12);
@@ -348,9 +361,9 @@ const filterChips = ref<FilterChip[]>([
 ]);
 
 const fishingIndex = ref({
-  score: 86,
-  weather: '多云',
-  temp: 22,
+  score: 70,
+  weather: '加载中',
+  temp: 0,
 });
 
 const hotCities = ref<CityOption[]>([
@@ -395,11 +408,9 @@ const notificationPreview = ref<NotificationItem[]>([
 const center = ref({ ...DEFAULT_CENTER });
 const spots = ref<SpotItem[]>([]);
 const loadingSpots = ref(false);
+let spotRequestSeq = 0;
 
-const filteredSpots = computed(() => {
-  const pred = CHIP_PREDICATE[activeChip.value] ?? CHIP_PREDICATE.all;
-  return spots.value.filter(pred);
-});
+const filteredSpots = computed(() => spots.value);
 
 const markers = computed(() =>
   filteredSpots.value.map((s) => ({
@@ -453,7 +464,7 @@ async function locateUser(silent = false) {
  * - 失败 toast 一下但不抛，避免首页空白；spots 保持上一次的值。
  */
 async function loadSpots(silent = false) {
-  if (loadingSpots.value) return;
+  const seq = ++spotRequestSeq;
   loadingSpots.value = true;
   try {
     const { list } = await nearbySpots({
@@ -461,19 +472,41 @@ async function loadSpots(silent = false) {
       lng: center.value.longitude,
       radius: NEARBY_RADIUS_M,
       limit: NEARBY_LIMIT,
+      ...(CHIP_QUERY[activeChip.value] ?? {}),
     });
+    if (seq !== spotRequestSeq) return;
     spots.value = list.map(adaptSpot);
     activeSpotId.value = '';
   } catch (e: any) {
-    if (!silent) uni.showToast({ title: e?.msg || '附近钓点拉取失败', icon: 'none' });
+    if (seq === spotRequestSeq && !silent) uni.showToast({ title: e?.msg || '附近钓点拉取失败', icon: 'none' });
   } finally {
-    loadingSpots.value = false;
+    if (seq === spotRequestSeq) loadingSpots.value = false;
+  }
+}
+
+async function loadFishingIndex() {
+  try {
+    const data = await fetchFishingIndex({
+      lat: center.value.latitude,
+      lng: center.value.longitude,
+    });
+    fishingIndex.value = {
+      score: data.score,
+      weather: data.current.weather,
+      temp: data.current.temperature,
+    };
+  } catch (_) {
+    fishingIndex.value = {
+      score: 70,
+      weather: '暂无',
+      temp: 0,
+    };
   }
 }
 
 onMounted(async () => {
   await locateUser(true);
-  await loadSpots(true);
+  await Promise.all([loadSpots(true), loadFishingIndex()]);
 });
 
 const onCityTap = () => {
@@ -495,6 +528,11 @@ const onNotifyTap = () => {
   showNotifyPopover.value = !showNotifyPopover.value;
   showCitySheet.value = false;
 };
+const onChipTap = (key: ChipKey) => {
+  if (activeChip.value === key) return;
+  activeChip.value = key;
+  void loadSpots(false);
+};
 const closeNotifyPopover = () => {
   showNotifyPopover.value = false;
 };
@@ -507,7 +545,7 @@ const onNotificationTap = (item: NotificationItem) => {
 };
 const onLocate = async () => {
   await locateUser(false);
-  await loadSpots(true);
+  await Promise.all([loadSpots(true), loadFishingIndex()]);
 };
 const onReportSpot = () => uni.navigateTo({ url: '/subpackages/spot/create/index' });
 const onViewAllSpots = () => uni.navigateTo({ url: '/subpackages/spot/list/index' });

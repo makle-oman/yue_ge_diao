@@ -150,16 +150,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
+import { fetchMessageHistory, sendMessage, type MessageItem } from '@/api/messages';
+import { fetchUserDetail } from '@/api/users';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 
 const { statusBarHeight, safeBottom } = useSystemInfo();
 
+const peerId = ref('');
 const peer = ref({
-  name: '阿峰路亚',
-  avText: '阿',
+  name: '钓友',
+  avText: '钓',
   avBg: '#EAF5F4',
-  statusLine: '刚刚在线 · 来自组队约钓',
+  statusLine: '私信会话',
 });
 
 interface Message {
@@ -169,36 +173,62 @@ interface Message {
   quote?: { title: string; meta: string };
 }
 
-const messages = ref<Message[]>([
-  {
-    id: 'm1',
-    from: 'other',
-    text: '周六那场还有 1 个名额,你如果能 5 点半到,我给你留位。',
-  },
-  {
-    id: 'm2',
-    from: 'other',
-    quote: {
-      title: '周六清晨一起出钓',
-      meta: '燕子矶江边 · 05月25日 05:30 · 还差1人',
-    },
-  },
-  {
-    id: 'm3',
-    from: 'me',
-    text: '可以,我带路亚竿和抄网,到了给你发定位。',
-  },
-  {
-    id: 'm4',
-    from: 'other',
-    text: '好,报名后我把集合点和停车位置发你。',
-  },
-]);
+const messages = ref<Message[]>([]);
 
-const lastMsgId = computed(() => `msg-${messages.value.length - 1}`);
+const lastMsgId = computed(() =>
+  messages.value.length > 0 ? `msg-${messages.value.length - 1}` : '',
+);
 
 const quickReplies = ref(['发定位', '确认时间', '我已报名']);
 const draft = ref('');
+const loading = ref(false);
+const sending = ref(false);
+
+function peerName(id: string, nickname: string | null): string {
+  return nickname || `钓友${id.slice(-4)}`;
+}
+
+function toUiMessage(m: MessageItem): Message {
+  return {
+    id: m.id,
+    from: m.fromId === peerId.value ? 'other' : 'me',
+    text: m.content,
+  };
+}
+
+async function loadConversation() {
+  if (!peerId.value || loading.value) return;
+  loading.value = true;
+  try {
+    const [profile, history] = await Promise.all([
+      fetchUserDetail(peerId.value),
+      fetchMessageHistory({ peerId: peerId.value, limit: 50 }),
+    ]);
+    const name = peerName(profile.id, profile.nickname);
+    peer.value = {
+      name,
+      avText: name.slice(0, 1) || '钓',
+      avBg: '#EAF5F4',
+      statusLine: profile.city ? `${profile.city} · 私信会话` : '私信会话',
+    };
+    messages.value = history.list.map(toUiMessage);
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '会话加载失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+onLoad((options) => {
+  const o = options as { id?: string; peerId?: string };
+  peerId.value = String(o.id || o.peerId || '');
+  if (!peerId.value) {
+    uni.showToast({ title: '缺少会话用户', icon: 'none' });
+    setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 600);
+    return;
+  }
+  void loadConversation();
+});
 
 const onBack = () => {
   uni.navigateBack({ delta: 1 }).catch(() => {});
@@ -213,7 +243,8 @@ const muted = ref(false);
 
 const onChatViewProfile = () => {
   moreOpen.value = false;
-  uni.navigateTo({ url: `/subpackages/social/user-detail/index?name=${peer.value.name}` })
+  if (!peerId.value) return;
+  uni.navigateTo({ url: `/subpackages/social/user-detail/index?id=${peerId.value}` })
     .catch(() => {});
 };
 const onChatReport = () => {
@@ -250,15 +281,19 @@ const onPlus = () => {
   });
 };
 
-const onSend = () => {
+const onSend = async () => {
   const text = draft.value.trim();
-  if (!text) return;
-  messages.value.push({
-    id: `m${messages.value.length + 1}`,
-    from: 'me',
-    text,
-  });
-  draft.value = '';
+  if (!text || sending.value || !peerId.value) return;
+  sending.value = true;
+  try {
+    const sent = await sendMessage({ toUserId: peerId.value, content: text });
+    messages.value.push(toUiMessage(sent));
+    draft.value = '';
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '发送失败', icon: 'none' });
+  } finally {
+    sending.value = false;
+  }
 };
 </script>
 

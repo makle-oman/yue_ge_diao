@@ -18,7 +18,7 @@
           :key="c.key"
           class="chip"
           :class="{ active: activeFilter === c.key }"
-          @click="onFilter(c.key)"
+          @click="onPickFilter(c.key)"
         >
           <text>{{ c.label }}</text>
         </view>
@@ -26,8 +26,12 @@
     </view>
 
     <!-- 列表 -->
-    <scroll-view class="content" scroll-y @scrolltolower="loadMore">
-      <view class="cards">
+    <scroll-view class="content" scroll-y @scrolltolower="onReachBottom">
+      <view v-if="!loading && teams.length === 0" class="empty">
+        <text class="empty-text">{{ emptyHint }}</text>
+      </view>
+
+      <view v-else class="cards">
         <view
           v-for="t in teams"
           :key="t.id"
@@ -36,59 +40,58 @@
         >
           <view class="card-head">
             <text class="card-title">{{ t.title }}</text>
-            <view class="status-tag" :class="`tag--${t.statusTone}`">
-              <text>{{ t.statusText }}</text>
+            <view class="status-tag" :class="`tag--${statusTone(t)}`">
+              <text>{{ statusText(t) }}</text>
             </view>
           </view>
-          <text class="card-meta">{{ t.meta }}</text>
+          <text class="card-meta">{{ metaLine(t) }}</text>
           <view class="card-people">
             <view
-              v-for="(tone, idx) in t.avatars"
+              v-for="(tone, idx) in avatarsFor(t)"
               :key="idx"
               class="avatar-dot"
               :class="`tone-${tone}`"
             />
-            <text class="card-people-text">{{ t.peopleSummary }}</text>
+            <text class="card-people-text">{{ peopleSummary(t) }}</text>
           </view>
           <view class="card-foot">
-            <text class="owner-text">发起人：{{ t.owner }}</text>
+            <text class="owner-text">发起人:{{ t.owner.name || ('钓友' + t.owner.id.slice(-4)) }}</text>
             <view
               class="join-btn"
-              :class="t.btnTone === 'ghost' ? 'ghost' : 'primary'"
+              :class="btnTone(t)"
               @click.stop="onJoin(t)"
             >
-              <text>{{ t.btnText }}</text>
+              <text>{{ btnText(t) }}</text>
             </view>
           </view>
         </view>
-
-        <view v-if="!loading && teams.length === 0" class="list-state">
-          <text class="list-state-text">暂无组队，发起一个试试</text>
-        </view>
-        <view v-if="loading" class="list-state">
-          <text class="list-state-text">加载中…</text>
-        </view>
-        <view v-else-if="!hasMore && teams.length > 0" class="list-state">
-          <text class="list-state-text">没有更多了</text>
-        </view>
       </view>
 
+      <view v-if="loadingMore" class="load-more">
+        <text>加载中...</text>
+      </view>
+      <view v-else-if="!nextCursor && teams.length > 0" class="load-more">
+        <text>—— 没有更多了 ——</text>
+      </view>
     </scroll-view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { onShow } from '@dcloudio/uni-app';
+import { computed, ref } from 'vue';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 import {
   applyTeam,
   COST_MODE_LABEL,
-  formatTeamDistance,
+  formatTeamWhen,
   listTeams,
+  TEAM_STATUS_LABEL,
   type TeamFilter,
   type TeamListItem,
 } from '@/api/teams';
+import { BizError } from '@/utils/request';
 
 const { statusBarHeight } = useSystemInfo();
 
@@ -100,168 +103,204 @@ const filters: { key: TeamFilter; label: string }[] = [
 ];
 const activeFilter = ref<TeamFilter>('all');
 
-type Tone = 'primary' | 'blue' | 'orange';
-type StatusTone = 'primary' | 'accent' | 'muted';
-
-interface Team {
-  id: string;
-  title: string;
-  meta: string;
-  statusText: string;
-  statusTone: StatusTone;
-  avatars: Tone[];
-  peopleSummary: string;
-  owner: string;
-  btnText: string;
-  btnTone: 'primary' | 'ghost';
-  source: TeamListItem;
-}
-
-const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
-const PAGE_LIMIT = 20;
-
-const teams = ref<Team[]>([]);
+const teams = ref<TeamListItem[]>([]);
+const nextCursor = ref<string | null>(null);
 const loading = ref(false);
-const hasMore = ref(false);
-const cursor = ref<string | null>(null);
-const center = ref({ ...DEFAULT_CENTER });
-const located = ref(false);
+const loadingMore = ref(false);
+const myLocation = ref<{ lat: number; lng: number } | null>(null);
 
-function pad(n: number): string {
-  return n.toString().padStart(2, '0');
+const emptyHint = computed(() => {
+  switch (activeFilter.value) {
+    case 'nearby':
+      return '附近暂无组队,试试切换"全部"看看';
+    case 'weekend':
+      return '本周末还没有组队 🐟';
+    case 'carpool':
+      return '当前没有需要拼车的组队';
+    default:
+      return '暂无组队,来发起一个吧';
+  }
+});
+
+function statusTone(t: TeamListItem): 'primary' | 'accent' | 'muted' {
+  if (t.status === 'recruiting') {
+    if (t.maxPeople - t.joinedCount <= 1) return 'accent';
+    return 'primary';
+  }
+  return 'muted';
+}
+function statusText(t: TeamListItem): string {
+  if (t.status === 'recruiting' && t.maxPeople - t.joinedCount === 1) return '剩1位';
+  return TEAM_STATUS_LABEL[t.status] || t.status;
+}
+function metaLine(t: TeamListItem): string {
+  const parts: string[] = [formatTeamWhen(t.startTime, t.endTime)];
+  if (typeof t.distance === 'number') {
+    parts.push((t.distance / 1000).toFixed(1) + 'km');
+  } else if (t.spotCity) {
+    parts.push(t.spotCity);
+  }
+  if (t.targetFish.length > 0) parts.push('目标 ' + t.targetFish.join('/'));
+  return parts.join(' · ');
+}
+function avatarsFor(t: TeamListItem): ('primary' | 'blue' | 'orange')[] {
+  const palette: ('primary' | 'blue' | 'orange')[] = ['primary', 'blue', 'orange'];
+  const n = Math.min(3, Math.max(1, t.joinedCount));
+  return palette.slice(0, n);
+}
+function peopleSummary(t: TeamListItem): string {
+  const parts: string[] = [
+    `已报名 ${t.joinedCount}/${t.maxPeople}`,
+    COST_MODE_LABEL[t.costMode] || t.costMode,
+    t.needCarpool ? '需要拼车' : '不拼车',
+  ];
+  return parts.join(' · ');
+}
+function btnTone(t: TeamListItem): 'primary' | 'ghost' {
+  if (t.status === 'recruiting' && !t.yourMemberStatus) return 'primary';
+  return 'ghost';
+}
+function btnText(t: TeamListItem): string {
+  if (t.status !== 'recruiting') return '查看';
+  if (t.yourMemberStatus === 'pending') return '待审核';
+  if (t.yourMemberStatus === 'approved') return '已加入';
+  return '报名';
 }
 
-function formatDateTime(startIso: string, endIso: string): string {
-  const start = new Date(startIso);
-  const end = new Date(endIso);
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return '';
-  return `${pad(start.getMonth() + 1)}月${pad(start.getDate())}日 ${pad(start.getHours())}:${pad(start.getMinutes())}-${pad(end.getHours())}:${pad(end.getMinutes())}`;
-}
+onLoad(() => {
+  void tryFetchLocation();
+  void reload();
+});
 
-function statusText(item: TeamListItem): string {
-  if (item.status === 'full') return '已满员';
-  if (item.status !== 'recruiting') return item.status;
-  const left = item.maxPeople - item.joinedCount;
-  return left <= 1 ? '剩1位' : '招募中';
-}
+onShow(() => {
+  if (teams.value.length > 0) {
+    // 从详情/发布页 navigateBack 时刷新一次（不阻塞首屏）
+    void reload();
+  }
+});
 
-function statusTone(item: TeamListItem): StatusTone {
-  if (item.status === 'full') return 'muted';
-  if (item.maxPeople - item.joinedCount <= 1) return 'accent';
-  return 'primary';
-}
-
-function btnState(item: TeamListItem): { text: string; tone: Team['btnTone'] } {
-  const member = item.yourMemberStatus;
-  if (item.status === 'full') return { text: '查看', tone: 'ghost' };
-  if (member === 'approved') return { text: '已加入', tone: 'ghost' };
-  if (member === 'pending') return { text: '待审核', tone: 'ghost' };
-  return { text: '报名', tone: 'primary' };
-}
-
-function avatarTones(count: number): Tone[] {
-  const tones: Tone[] = ['primary', 'blue', 'orange'];
-  return Array.from({ length: Math.min(Math.max(count, 1), 3) }, (_, i) => tones[i % tones.length]);
-}
-
-function adaptTeam(item: TeamListItem): Team {
-  const distance = formatTeamDistance(item.distance);
-  const fish = item.targetFish.length ? `目标${item.targetFish.join('/')}` : '';
-  const meta = [formatDateTime(item.startTime, item.endTime), distance, fish].filter(Boolean).join(' · ');
-  const carpool = item.needCarpool ? '需要拼车' : '不拼车';
-  const btn = btnState(item);
-  return {
-    id: item.id,
-    title: item.title || item.spotName || '组队约钓',
-    meta,
-    statusText: statusText(item),
-    statusTone: statusTone(item),
-    avatars: avatarTones(item.joinedCount),
-    peopleSummary: `已报名 ${item.joinedCount}/${item.maxPeople} · ${COST_MODE_LABEL[item.costMode]} · ${carpool}`,
-    owner: item.owner.name || `钓友${item.owner.id.slice(-4)}`,
-    btnText: btn.text,
-    btnTone: btn.tone,
-    source: item,
-  };
-}
-
-async function ensureLocation() {
-  if (located.value) return;
-  located.value = true;
+async function tryFetchLocation() {
   try {
-    const loc = await new Promise<UniNamespace.GetLocationSuccess>((resolve, reject) =>
-      uni.getLocation({ type: 'gcj02', success: resolve, fail: reject }),
-    );
-    center.value = { latitude: loc.latitude, longitude: loc.longitude };
-  } catch (_) {
-    center.value = { ...DEFAULT_CENTER };
+    const res = await new Promise<UniApp.GetLocationSuccess>((resolve, reject) => {
+      uni.getLocation({
+        type: 'wgs84',
+        success: resolve,
+        fail: reject,
+      });
+    });
+    myLocation.value = { lat: res.latitude, lng: res.longitude };
+  } catch {
+    // 没授权也无所谓，nearby 时再提示
   }
 }
 
-async function loadList(reset = false) {
-  if (loading.value) return;
+async function reload() {
   loading.value = true;
+  teams.value = [];
+  nextCursor.value = null;
   try {
-    if (reset) {
-      teams.value = [];
-      cursor.value = null;
-      hasMore.value = false;
-    }
-    const params: Parameters<typeof listTeams>[0] = {
+    const payload: Parameters<typeof listTeams>[0] = {
       filter: activeFilter.value,
-      limit: PAGE_LIMIT,
-      cursor: cursor.value,
+      limit: 20,
     };
     if (activeFilter.value === 'nearby') {
-      await ensureLocation();
-      params.lat = center.value.latitude;
-      params.lng = center.value.longitude;
-      params.radius = 50000;
+      if (!myLocation.value) {
+        await tryFetchLocation();
+      }
+      if (myLocation.value) {
+        payload.lat = myLocation.value.lat;
+        payload.lng = myLocation.value.lng;
+        payload.radius = 50_000;
+      } else {
+        uni.showToast({ title: '需要定位权限才能筛选附近', icon: 'none' });
+      }
     }
-    const resp = await listTeams(params);
-    const next = resp.list.map(adaptTeam);
-    teams.value = reset ? next : teams.value.concat(next);
-    cursor.value = resp.nextCursor;
-    hasMore.value = resp.hasMore;
-  } catch (e: any) {
-    console.warn('[team-list] load failed', e);
-    uni.showToast({ title: e?.msg || '加载组队失败', icon: 'none' });
+    const resp = await listTeams(payload);
+    teams.value = resp.list;
+    nextCursor.value = resp.nextCursor;
+  } catch (e) {
+    const msg = e instanceof BizError ? e.msg : '加载失败';
+    uni.showToast({ title: msg, icon: 'none' });
   } finally {
     loading.value = false;
   }
 }
 
-function onFilter(key: TeamFilter) {
+async function loadMore() {
+  if (loadingMore.value || !nextCursor.value) return;
+  loadingMore.value = true;
+  try {
+    const payload: Parameters<typeof listTeams>[0] = {
+      filter: activeFilter.value,
+      limit: 20,
+      cursor: nextCursor.value,
+    };
+    if (activeFilter.value === 'nearby' && myLocation.value) {
+      payload.lat = myLocation.value.lat;
+      payload.lng = myLocation.value.lng;
+      payload.radius = 50_000;
+    }
+    const resp = await listTeams(payload);
+    teams.value.push(...resp.list);
+    nextCursor.value = resp.nextCursor;
+  } catch (e) {
+    console.warn('[team-list] loadMore failed', e);
+  } finally {
+    loadingMore.value = false;
+  }
+}
+
+const onReachBottom = () => {
+  void loadMore();
+};
+
+const onPickFilter = (key: TeamFilter) => {
   if (activeFilter.value === key) return;
   activeFilter.value = key;
-  void loadList(true);
-}
+  void reload();
+};
 
-function loadMore() {
-  if (!hasMore.value || loading.value) return;
-  void loadList(false);
-}
+const onCreate = () =>
+  uni.navigateTo({ url: '/subpackages/team/create/index' });
+const onOpen = (t: TeamListItem) =>
+  uni.navigateTo({ url: `/subpackages/team/detail/index?id=${t.id}` });
+const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 
-onShow(() => {
-  void loadList(true);
-});
-
-const onCreate = () => uni.navigateTo({ url: '/subpackages/team/create/index' });
-const onOpen = (t: Team) => uni.navigateTo({ url: `/subpackages/team/detail/index?id=${t.id}` });
-const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => uni.switchTab({ url: '/pages/profile/index' }));
-const onJoin = async (t: Team) => {
-  if (t.btnTone === 'ghost') {
+async function onJoin(t: TeamListItem) {
+  if (t.status !== 'recruiting' || t.yourMemberStatus) {
     onOpen(t);
     return;
   }
   try {
     await applyTeam(t.id);
-    uni.showToast({ title: '已提交报名，等待审核', icon: 'success' });
-    void loadList(true);
+    t.yourMemberStatus = 'pending';
+    uni.showToast({ title: '已提交报名,等待审核', icon: 'success' });
   } catch (e) {
-    console.warn('[team-list] apply failed', e);
+    const msg = e instanceof BizError ? e.msg : '报名失败';
+    uni.showToast({ title: msg, icon: 'none' });
   }
-};
+}
 </script>
 
-<style lang="scss" scoped src="./index.scss"></style>
+<style lang="scss" scoped>
+@import './index.scss';
+
+.empty {
+  padding: 200rpx 32rpx;
+  text-align: center;
+
+  .empty-text {
+    font-size: 26rpx;
+    color: $text-secondary;
+  }
+}
+.load-more {
+  padding: 24rpx 0 32rpx;
+  text-align: center;
+
+  text {
+    font-size: 22rpx;
+    color: $text-secondary;
+  }
+}
+</style>
