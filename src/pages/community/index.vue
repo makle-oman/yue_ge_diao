@@ -3,7 +3,7 @@
     <!-- 顶部 Tab + 搜索 -->
     <view
       class="feed-header"
-      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+      :style="feedHeaderStyle"
     >
       <view class="feed-tabs">
         <view
@@ -111,6 +111,16 @@ interface FeedItem {
 }
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
+
+const feedHeaderStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {
+    paddingTop: statusBarHeight.value + 'px',
+  };
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 const tabs: { key: FeedTab; label: string }[] = [
   { key: 'recommend', label: '推荐' },

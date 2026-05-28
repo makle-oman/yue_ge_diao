@@ -93,6 +93,7 @@ const keyword = ref('');
 const filter = ref('附近');
 const filters = ['附近', '常去', '已收藏'];
 const selected = ref<string>('');
+const target = ref('catch:create');
 
 const spots = ref([
   {
@@ -121,13 +122,20 @@ const spots = ref([
   },
 ]);
 
-onLoad(() => {
+function applyInitialSpot(data: unknown) {
+  if (data && typeof data === 'object' && 'id' in (data as Record<string, unknown>)) {
+    const id = (data as { id?: unknown }).id;
+    if (typeof id === 'string') selected.value = id;
+  }
+}
+
+onLoad((options) => {
+  selected.value = decodeURIComponent(String(options?.selected || ''));
+  const currentTarget = decodeURIComponent(String(options?.target || ''));
+  if (currentTarget) target.value = currentTarget;
   const ch = (uni as any).getOpenerEventChannel?.();
   ch?.on?.('initSpot', (data: unknown) => {
-    if (data && typeof data === 'object' && 'id' in (data as Record<string, unknown>)) {
-      const id = (data as { id?: unknown }).id;
-      if (typeof id === 'string') selected.value = id;
-    }
+    applyInitialSpot(data);
   });
 });
 
@@ -147,6 +155,7 @@ const onDone = () => {
   }
   const ch = (uni as any).getOpenerEventChannel?.();
   ch?.emit?.('spotSelected', { id: spot.id, name: spot.name });
+  uni.$emit(`${target.value}:spot-selected`, { id: spot.id, name: spot.name });
   uni.navigateBack({ delta: 1 });
 };
 const onCreate = () => {

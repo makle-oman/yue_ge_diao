@@ -3,7 +3,7 @@
     <!-- 顶部悬浮（脱离滚动流） -->
     <view
       class="hero-top"
-      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+      :style="heroTopStyle"
     >
       <view class="icon-btn" @click="onBack">
         <mxy-icon name="arrow_back" :size="40" color="#fff" />
@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import {
@@ -113,6 +113,16 @@ import {
 import { userCatches, formatWeight, type CatchFeedItem } from '@/api/catches';
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
+
+const heroTopStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {
+    paddingTop: statusBarHeight.value + 'px',
+  };
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 const userId = ref('');
 const user = ref({

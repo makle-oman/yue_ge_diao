@@ -93,6 +93,7 @@ const { statusBarHeight, safeBottom } = useSystemInfo();
 const keyword = ref('');
 const selected = ref<string[]>([]);
 const segment = ref<'淡水' | '海水'>('淡水');
+const target = ref('catch:create');
 const segments = ['淡水', '海水'] as const;
 
 const recents = ref([
@@ -135,11 +136,34 @@ const pick = (name: string) => {
   else selected.value.push(name);
 };
 
+function applyInitialFish(data: unknown) {
+  if (Array.isArray(data)) {
+    selected.value = data.filter((x): x is string => typeof x === 'string');
+  }
+}
+
+function parseSelectedParam(raw: unknown): string[] {
+  const text = decodeURIComponent(String(raw || ''));
+  if (!text) return [];
+  try {
+    const parsed = JSON.parse(text);
+    return Array.isArray(parsed)
+      ? parsed.filter((x): x is string => typeof x === 'string')
+      : [];
+  } catch {
+    return [text];
+  }
+}
+
 // 接收发布页传入的已选鱼种，用于回显（编辑模式或返回再选）
-onLoad(() => {
+onLoad((options) => {
+  const currentTarget = decodeURIComponent(String(options?.target || ''));
+  if (currentTarget) target.value = currentTarget;
+  const fromQuery = parseSelectedParam(options?.selected);
+  if (fromQuery.length) selected.value = fromQuery;
   const ch = (uni as any).getOpenerEventChannel?.();
   ch?.on?.('initFish', (data: unknown) => {
-    if (Array.isArray(data)) selected.value = data.filter(x => typeof x === 'string');
+    applyInitialFish(data);
   });
 });
 onMounted(() => {});
@@ -152,6 +176,9 @@ const onDone = () => {
   }
   const ch = (uni as any).getOpenerEventChannel?.();
   ch?.emit?.('fishSelected', [...selected.value]);
+  uni.$emit(`${target.value}:fish-selected`, {
+    names: [...selected.value],
+  });
   uni.navigateBack({ delta: 1 });
 };
 const onCustom = () => {

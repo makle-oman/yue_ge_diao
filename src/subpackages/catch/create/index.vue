@@ -179,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
@@ -268,14 +268,36 @@ const onMethodConfirm = () => {
   methodSheetOpen.value = false;
 };
 
+function applyFishSelected(payload: unknown) {
+  if (Array.isArray(payload)) {
+    form.value.fish = payload.filter((x): x is string => typeof x === 'string');
+    return;
+  }
+  if (!payload || typeof payload !== 'object') return;
+  const data = payload as { name?: unknown; names?: unknown };
+  if (Array.isArray(data.names)) {
+    form.value.fish = data.names.filter((x): x is string => typeof x === 'string');
+  } else if (typeof data.name === 'string') {
+    form.value.fish = [data.name];
+  }
+}
+
+function applySpotSelected(payload: unknown) {
+  if (!payload || typeof payload !== 'object') return;
+  const data = payload as { id?: unknown; name?: unknown };
+  if (typeof data.name !== 'string') return;
+  form.value.spotId = typeof data.id === 'string' ? data.id : '';
+  form.value.spot = data.name;
+}
+
 const onPickFish = () => {
+  const selected = encodeURIComponent(JSON.stringify(form.value.fish));
+  const target = encodeURIComponent('catch:create');
   uni.navigateTo({
-    url: '/subpackages/catch/fish-picker/index',
+    url: `/subpackages/catch/fish-picker/index?selected=${selected}&target=${target}`,
     events: {
       fishSelected(data: unknown) {
-        if (Array.isArray(data)) {
-          form.value.fish = data.filter((x): x is string => typeof x === 'string');
-        }
+        applyFishSelected(data);
       },
     },
     success: (res) => {
@@ -285,17 +307,13 @@ const onPickFish = () => {
   });
 };
 const onPickSpot = () => {
+  const selected = encodeURIComponent(form.value.spotId || '');
+  const target = encodeURIComponent('catch:create');
   uni.navigateTo({
-    url: '/subpackages/catch/spot-picker/index',
+    url: `/subpackages/catch/spot-picker/index?selected=${selected}&target=${target}`,
     events: {
       spotSelected(data: unknown) {
-        if (data && typeof data === 'object') {
-          const d = data as { id?: unknown; name?: unknown };
-          if (typeof d.id === 'string' && typeof d.name === 'string') {
-            form.value.spotId = d.id;
-            form.value.spot = d.name;
-          }
-        }
+        applySpotSelected(data);
       },
     },
     success: (res) => {
@@ -349,7 +367,14 @@ async function loadWeather() {
 }
 
 onMounted(() => {
+  uni.$on('catch:create:fish-selected', applyFishSelected);
+  uni.$on('catch:create:spot-selected', applySpotSelected);
   void loadWeather();
+});
+
+onUnmounted(() => {
+  uni.$off('catch:create:fish-selected', applyFishSelected);
+  uni.$off('catch:create:spot-selected', applySpotSelected);
 });
 
 async function onPublish() {

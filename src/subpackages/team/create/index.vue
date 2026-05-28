@@ -164,7 +164,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import { createTeam, type CostMode } from '@/api/teams';
@@ -229,29 +229,46 @@ const costOptions: { value: CostMode; label: string; icon: string }[] = [
   { value: 'self', label: '各自承担', icon: 'account_balance_wallet' },
 ];
 
+function applySpotSelected(payload: unknown) {
+  if (!payload || typeof payload !== 'object') return;
+  const data = payload as { id?: unknown; name?: unknown };
+  if (typeof data.id !== 'string' || typeof data.name !== 'string') return;
+  form.value.spotId = data.id;
+  form.value.spotName = data.name;
+}
+
+function applyFishSelected(payload: unknown) {
+  if (Array.isArray(payload)) {
+    form.value.fish = payload.filter((x): x is string => typeof x === 'string');
+    return;
+  }
+  if (!payload || typeof payload !== 'object') return;
+  const data = payload as { name?: unknown; names?: unknown };
+  if (Array.isArray(data.names)) {
+    form.value.fish = data.names.filter((x): x is string => typeof x === 'string');
+  } else if (typeof data.name === 'string') {
+    form.value.fish = [data.name];
+  }
+}
+
 const onPickSpot = () =>
   uni.navigateTo({
-    url: '/subpackages/catch/spot-picker/index',
+    url: `/subpackages/catch/spot-picker/index?selected=${encodeURIComponent(form.value.spotId)}&target=${encodeURIComponent('team:create')}`,
     events: {
-      spotSelected: (data: { id: string; name: string }) => {
-        form.value.spotId = data.id;
-        form.value.spotName = data.name;
-      },
+      spotSelected: applySpotSelected,
     },
     success: (res) => {
       if (form.value.spotId) {
-        res.eventChannel?.emit?.('initSpot', { id: form.value.spotId });
+        res.eventChannel?.emit?.('initSpot', { id: form.value.spotId, name: form.value.spotName });
       }
     },
   });
 
 const onPickFish = () =>
   uni.navigateTo({
-    url: '/subpackages/catch/fish-picker/index',
+    url: `/subpackages/catch/fish-picker/index?selected=${encodeURIComponent(JSON.stringify(form.value.fish))}&target=${encodeURIComponent('team:create')}`,
     events: {
-      fishSelected: (data: string[]) => {
-        form.value.fish = Array.isArray(data) ? data : [];
-      },
+      fishSelected: applyFishSelected,
     },
     success: (res) => {
       res.eventChannel?.emit?.('initFish', [...form.value.fish]);
@@ -332,6 +349,16 @@ const onSubmit = async () => {
     submitting.value = false;
   }
 };
+
+onMounted(() => {
+  uni.$on('team:create:spot-selected', applySpotSelected);
+  uni.$on('team:create:fish-selected', applyFishSelected);
+});
+
+onUnmounted(() => {
+  uni.$off('team:create:spot-selected', applySpotSelected);
+  uni.$off('team:create:fish-selected', applyFishSelected);
+});
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

@@ -3,7 +3,7 @@
     <!-- 顶部悬浮 -->
     <view
       class="hero-top"
-      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+      :style="heroTopStyle"
     >
       <view class="icon-btn" @click="onBack">
         <mxy-icon name="arrow_back" :size="40" color="#fff" />
@@ -143,6 +143,16 @@ import { BizError } from '@/utils/request';
 
 const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 const authStore = useAuthStore();
+
+const heroTopStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {
+    paddingTop: statusBarHeight.value + 'px',
+  };
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 const teamId = ref<string>('');
 const team = ref<TeamDetail | null>(null);

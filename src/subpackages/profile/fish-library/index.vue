@@ -2,7 +2,7 @@
   <view class="fish-lib">
     <!-- 渐变 Hero -->
     <view class="hero" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="hero-top" :style="{ paddingRight: capsuleRightWidth + 'px' }">
+      <view class="hero-top" :style="heroTopStyle">
         <view class="hero-back" @click="onBack">
           <mxy-icon name="arrow_back" :size="40" color="#fff" />
         </view>
@@ -111,6 +111,14 @@ import { fetchFishLibrary, type FishCategory, type FishItem, type FishStats } fr
 import { formatWeight } from '@/api/catches';
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
+
+const heroTopStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {};
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 type SegKey = 'fresh' | 'sea';
 type ChipKey = 'unlocked' | 'common' | 'locked';

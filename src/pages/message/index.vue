@@ -2,7 +2,7 @@
   <view class="message-page">
     <!-- 顶部状态栏占位 + 标题栏 -->
     <view class="msg-header" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="msg-nav" :style="{ paddingRight: capsuleRightWidth + 'px' }">
+      <view class="msg-nav" :style="msgNavStyle">
         <text class="msg-title">消息</text>
         <text class="msg-read-all" @click="onReadAll">全部已读</text>
       </view>
@@ -210,6 +210,14 @@ interface ThreadRow {
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 const GROUP_LABEL = NOTIFICATION_GROUP_LABEL;
+
+const msgNavStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {};
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 const loggedIn = ref(isLoggedIn());
 const loading = ref(false);
