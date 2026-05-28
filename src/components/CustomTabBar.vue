@@ -116,8 +116,8 @@ const onPublishClick = () => {
   width: $tabbar-fab-size;
   height: $tabbar-fab-size;
   border-radius: 50%;
-  background: $accent;
-  box-shadow: 0 6rpx 20rpx rgba(245, 166, 35, 0.42);
+  background: $primary;
+  box-shadow: 0 6rpx 20rpx rgba(45, 143, 135, 0.42);
   display: flex;
   align-items: center;
   justify-content: center;

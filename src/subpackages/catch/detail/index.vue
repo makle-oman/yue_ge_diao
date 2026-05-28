@@ -3,7 +3,7 @@
     <!-- 固定在顶部的返回/分享按钮（不随内容滚动） -->
     <view
       class="hero-top"
-      :style="{ paddingTop: statusBarHeight + 'px', paddingRight: capsuleRightWidth + 'px' }"
+      :style="heroTopStyle"
     >
       <view class="hero-icon-btn" @click="onBack">
         <mxy-icon name="arrow_back" :size="40" color="#fff" />
@@ -146,6 +146,16 @@ import {
 
 const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
+const heroTopStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {
+    paddingTop: statusBarHeight.value + 'px',
+  };
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
+
 const catchId = ref<string>('');
 const liking = ref(false);
 const collecting = ref(false);
@@ -227,7 +237,7 @@ const onSpotTap = () => {
   });
 };
 const onMoreComments = () =>
-  uni.navigateTo({ url: '/subpackages/catch/comments/index' });
+  uni.navigateTo({ url: `/subpackages/catch/comments/index?id=${catchId.value}` });
 
 async function onLike() {
   if (!catchId.value || liking.value) return;

@@ -107,6 +107,7 @@ export function listCatches(params: {
   lat?: number;
   lng?: number;
   radius?: number;
+  keyword?: string;
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<CatchFeedItem>> {

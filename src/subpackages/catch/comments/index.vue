@@ -1,6 +1,5 @@
 <template>
   <view class="comments-page">
-    <!-- 顶部状态栏+导航 -->
     <view class="comments-header" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view class="comments-nav">
         <view class="nav-back" @click="onBack">
@@ -14,32 +13,30 @@
       </view>
     </view>
 
-    <scroll-view class="comments-scroll" scroll-y>
-      <!-- 帖子摘要卡 -->
+    <scroll-view class="comments-scroll" scroll-y @scrolltolower="loadMore">
       <view class="post-summary">
         <view class="post-thumb">
-          <mxy-icon name="image" :size="48" color="#5BA9C4" />
+          <image v-if="post.cover" class="post-thumb-img" :src="post.cover" mode="aspectFill" />
+          <mxy-icon v-else name="image" :size="48" color="#5BA9C4" />
         </view>
         <view class="post-info">
-          <text class="post-title">今天燕子矶口还不错,鲫鱼开口很稳</text>
-          <text class="post-meta">阿楠 · 2小时前 · 128赞</text>
+          <text class="post-title">{{ post.title }}</text>
+          <text class="post-meta">{{ post.meta }}</text>
         </view>
       </view>
 
-      <!-- 排序 tabs -->
       <view class="sort-tabs">
         <view
           v-for="t in tabs"
-          :key="t"
+          :key="t.key"
           class="sort-tab"
-          :class="{ active: tab === t }"
-          @click="tab = t"
+          :class="{ active: tab === t.key }"
+          @click="onTab(t.key)"
         >
-          <text>{{ t }}</text>
+          <text>{{ t.label }}</text>
         </view>
       </view>
 
-      <!-- 评论列表卡 -->
       <view class="comment-card">
         <view
           v-for="(c, idx) in comments"
@@ -48,16 +45,17 @@
         >
           <view class="comment-row">
             <view class="comment-avatar" :style="{ background: c.avBg }">
-              <text class="comment-avatar-text">{{ c.author.charAt(0) }}</text>
+              <image v-if="c.avatar" class="comment-avatar-img" :src="c.avatar" mode="aspectFill" />
+              <text v-else class="comment-avatar-text">{{ c.author.charAt(0) }}</text>
             </view>
             <view class="comment-body">
               <view class="comment-head">
                 <text class="comment-name">{{ c.author }}</text>
-                <text class="comment-like" :class="{ active: c.likedByMe }">👍 {{ c.likes }}</text>
+                <text class="comment-like" :class="{ active: c.likedByMe }" @click.stop="onLike(c)">赞 {{ c.likes }}</text>
               </view>
               <text class="comment-text">{{ c.text }}</text>
               <view v-if="c.authorReply" class="comment-reply">
-                <text>作者回复:{{ c.authorReply }}</text>
+                <text>{{ c.authorReply }}</text>
               </view>
               <view class="comment-foot" @click="openReply(c)">
                 <text>{{ c.time }} · 回复</text>
@@ -66,15 +64,23 @@
           </view>
           <view v-if="idx !== comments.length - 1" class="comment-divider" />
         </view>
+        <view v-if="!loading && comments.length === 0" class="comment-empty">
+          <text>{{ catchId ? '还没有评论，来坐第一排' : '缺少鱼获 id，无法加载评论' }}</text>
+        </view>
+        <view v-if="loading" class="comment-empty">
+          <text>加载中...</text>
+        </view>
+        <view v-else-if="hasMore" class="comment-empty" @click="loadMore">
+          <text>加载更多</text>
+        </view>
       </view>
 
       <view class="scroll-pad" />
     </scroll-view>
 
-    <!-- 底部评论输入栏 -->
     <view class="comment-input" :style="{ paddingBottom: 'calc(20rpx + ' + safeBottom + 'px)' }">
       <view class="input-field" @click="openReply()">
-        <text class="input-placeholder">写评论...</text>
+        <text class="input-placeholder">{{ allowComments ? '写评论...' : '该鱼获已关闭评论' }}</text>
       </view>
       <view class="input-emoji">
         <mxy-icon name="sentiment_satisfied" :size="44" color="#6B7B85" />
@@ -84,13 +90,11 @@
       </view>
     </view>
 
-    <!-- 回复浮层 (Design 31) -->
     <view v-if="replyOpen" class="reply-modal" @click.self="closeReply">
       <view class="reply-scrim" />
       <view class="reply-sheet" @click.stop>
         <view class="sheet-handle" />
 
-        <!-- 头部 -->
         <view class="sheet-header">
           <view class="sheet-cancel" @click="closeReply"><text>取消</text></view>
           <text class="sheet-title">{{ replyTitle }}</text>
@@ -99,13 +103,11 @@
           </view>
         </view>
 
-        <!-- 引用评论 -->
         <view v-if="replyTarget" class="quoted-comment">
           <view class="quoted-bar" />
           <text class="quoted-text">{{ replyTarget.text }}</text>
         </view>
 
-        <!-- 文本输入 -->
         <view class="text-area-wrap">
           <textarea
             v-model="draft"
@@ -118,7 +120,6 @@
           />
         </view>
 
-        <!-- 工具行 -->
         <view class="sheet-tools">
           <view class="tools-left">
             <mxy-icon name="sentiment_satisfied" :size="44" color="#6B7B85" />
@@ -128,7 +129,6 @@
           <text class="tools-count">{{ draft.length }}/200</text>
         </view>
 
-        <!-- 举报入口 -->
         <view v-if="replyTarget" class="more-actions" @click="onReport">
           <mxy-icon name="report" :size="44" color="#F5A623" />
           <view class="action-info">
@@ -139,7 +139,6 @@
       </view>
     </view>
 
-    <!-- 评论排序 Sheet (Design 38) -->
     <mxy-bottom-sheet
       v-model:visible="sortOpen"
       title="评论排序"
@@ -172,75 +171,183 @@
 
       <view class="sort-tip">
         <mxy-icon name="tune" :size="36" color="#5BA9C4" />
-        <text class="sort-tip-text">排序会保留在当前评论列表，下次进入该鱼获详情仍使用最近选择。</text>
+        <text class="sort-tip-text">排序只作用于当前鱼获的评论列表。</text>
       </view>
     </mxy-bottom-sheet>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
+import {
+  createComment,
+  likeComment,
+  listComments,
+  type CommentItem,
+  type CommentSort,
+} from '@/api/comments';
+import { catchDetail, formatTime, type CatchDetail } from '@/api/catches';
 
 const { statusBarHeight, safeBottom } = useSystemInfo();
 
-const totalCount = ref(32);
-const sortLabel = ref('最热');
-const tab = ref('全部');
-const tabs = ['全部', '只看楼主', '最新'];
+type TabKey = 'all' | 'author' | 'new';
+type SortKey = 'hot' | 'new';
 
 interface Comment {
   id: string;
   author: string;
+  avatar: string;
   avBg: string;
   text: string;
   likes: number;
-  likedByMe?: boolean;
-  authorReply?: string;
+  likedByMe: boolean;
+  authorReply: string;
   time: string;
+  isAuthor: boolean;
+  source: CommentItem;
 }
 
-const comments = ref<Comment[]>([
-  {
-    id: 'c1',
-    author: '小周台钓',
-    avBg: '#EAF5F4',
-    text: '这个位置今天水流怎么样?上次去有点走水。',
-    likes: 18,
-    likedByMe: true,
-    authorReply: '早上还好,8点以后走水明显。',
-    time: '12分钟前',
-  },
-  {
-    id: 'c2',
-    author: '阿峰路亚',
-    avBg: '#EAF6FA',
-    text: '翘嘴有口吗?晚上想去试下。',
-    likes: 7,
-    time: '32分钟前',
-  },
-  {
-    id: 'c3',
-    author: '江边老王',
-    avBg: '#FFF4E1',
-    text: '停车注意别压线,昨天有人被贴单。',
-    likes: 3,
-    time: '1小时前',
-  },
-]);
+const catchId = ref('');
+const totalCount = ref(0);
+const allowComments = ref(true);
+const loading = ref(false);
+const hasMore = ref(false);
+const cursor = ref<string | null>(null);
+const rawComments = ref<CommentItem[]>([]);
 
-/* ---------- 回复浮层 (Design 31) ---------- */
+const tab = ref<TabKey>('all');
+const tabs: { key: TabKey; label: string }[] = [
+  { key: 'all', label: '全部' },
+  { key: 'author', label: '只看楼主' },
+  { key: 'new', label: '最新' },
+];
+
+const sort = ref<CommentSort>('hot');
+const sortLabel = computed(() => (sort.value === 'hot' ? '最热' : '最新'));
+
+const post = ref({
+  cover: '',
+  title: '鱼获评论',
+  meta: '',
+});
+
+const comments = computed<Comment[]>(() => {
+  const list = tab.value === 'author'
+    ? rawComments.value.filter((item) => item.isAuthor || (item.replies || []).some((reply) => reply.isAuthor))
+    : rawComments.value;
+  return list.map(adaptComment);
+});
+
+function adaptComment(item: CommentItem): Comment {
+  const authorReply = (item.replies || [])
+    .map((reply) => `${reply.isAuthor ? '作者' : reply.userName || '钓友'}：${reply.content}`)
+    .join('\n');
+  return {
+    id: item.id,
+    author: item.userName || `钓友${item.userId.slice(-4)}`,
+    avatar: item.userAvatar || '',
+    avBg: item.isAuthor ? '#EAF5F4' : '#EAF6FA',
+    text: item.content,
+    likes: item.likeCount,
+    likedByMe: item.likedByMe,
+    authorReply,
+    time: formatTime(item.createdAt),
+    isAuthor: item.isAuthor,
+    source: item,
+  };
+}
+
+function applyPostDetail(detail: CatchDetail) {
+  post.value = {
+    cover: detail.cover || detail.photos[0] || '',
+    title: detail.content || detail.fishSpecies.join(' / ') || '鱼获详情',
+    meta: [
+      detail.user.nickname || `钓友${detail.user.id.slice(-4)}`,
+      formatTime(detail.createdAt),
+      `${detail.likeCount} 赞`,
+    ].join(' · '),
+  };
+  totalCount.value = detail.commentCount;
+  allowComments.value = detail.allowComments;
+}
+
+async function loadPostDetail() {
+  if (!catchId.value) return;
+  try {
+    applyPostDetail(await catchDetail(catchId.value));
+  } catch (e) {
+    console.warn('[comments] load post detail failed', e);
+  }
+}
+
+async function loadList(reset = false) {
+  if (!catchId.value || loading.value) return;
+  loading.value = true;
+  try {
+    if (reset) {
+      rawComments.value = [];
+      cursor.value = null;
+      hasMore.value = false;
+    }
+    const resp = await listComments({
+      catchId: catchId.value,
+      sort: sort.value,
+      limit: 20,
+      cursor: cursor.value,
+    });
+    rawComments.value = reset ? resp.list : rawComments.value.concat(resp.list);
+    totalCount.value = resp.total;
+    allowComments.value = resp.allowComments ?? allowComments.value;
+    cursor.value = resp.nextCursor;
+    hasMore.value = !!resp.nextCursor;
+  } catch (e: any) {
+    console.warn('[comments] load failed', e);
+    uni.showToast({ title: e?.msg || '加载评论失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+function loadMore() {
+  if (!hasMore.value || loading.value) return;
+  void loadList(false);
+}
+
+function onTab(next: TabKey) {
+  if (tab.value === next) return;
+  tab.value = next;
+  const nextSort: CommentSort = next === 'new' ? 'new' : 'hot';
+  if (sort.value !== nextSort) {
+    sort.value = nextSort;
+    void loadList(true);
+  }
+}
+
+onLoad((options) => {
+  catchId.value = String((options as { id?: string; catchId?: string })?.id || (options as { catchId?: string })?.catchId || '');
+  if (!catchId.value) {
+    uni.showToast({ title: '缺少鱼获 id', icon: 'none' });
+    return;
+  }
+  void loadPostDetail();
+  void loadList(true);
+});
+
 const replyOpen = ref(false);
 const replyTarget = ref<Comment | null>(null);
 const draft = ref('');
 
-const replyTitle = computed(() => {
-  return replyTarget.value ? `回复${replyTarget.value.author}` : '写评论';
-});
-const canSend = computed(() => draft.value.trim().length > 0);
+const replyTitle = computed(() => (replyTarget.value ? `回复${replyTarget.value.author}` : '写评论'));
+const canSend = computed(() => allowComments.value && draft.value.trim().length > 0);
 
 const openReply = (target?: Comment) => {
+  if (!allowComments.value) {
+    uni.showToast({ title: '该鱼获已关闭评论', icon: 'none' });
+    return;
+  }
   replyTarget.value = target ?? null;
   draft.value = '';
   replyOpen.value = true;
@@ -251,44 +358,60 @@ const closeReply = () => {
   draft.value = '';
 };
 
-const onSend = () => {
-  if (!canSend.value) return;
-  comments.value.push({
-    id: `c${comments.value.length + 1}`,
-    author: '我',
-    avBg: '#EAF5F4',
-    text: draft.value.trim(),
-    likes: 0,
-    time: '刚刚',
-  });
-  totalCount.value += 1;
-  uni.showToast({ title: '已发送', icon: 'success' });
-  closeReply();
+const onSend = async () => {
+  if (!canSend.value || !catchId.value) return;
+  try {
+    await createComment({
+      catchId: catchId.value,
+      content: draft.value.trim(),
+      parentId: replyTarget.value?.id,
+    });
+    uni.showToast({ title: '已发送', icon: 'success' });
+    closeReply();
+    await loadList(true);
+    void loadPostDetail();
+  } catch (e) {
+    console.warn('[comments] create failed', e);
+  }
 };
 
-/* ---------- 顶部排序 / 底部快速发 / 举报 ---------- */
+async function onLike(comment: Comment) {
+  const beforeLiked = comment.source.likedByMe;
+  const beforeCount = comment.source.likeCount;
+  const action = beforeLiked ? 'unlike' : 'like';
+  comment.source.likedByMe = !beforeLiked;
+  comment.source.likeCount = Math.max(0, beforeCount + (action === 'like' ? 1 : -1));
+  try {
+    const resp = await likeComment(comment.id, action);
+    comment.source.likeCount = resp.likeCount;
+  } catch (e) {
+    comment.source.likedByMe = beforeLiked;
+    comment.source.likeCount = beforeCount;
+    console.warn('[comments] like failed', e);
+  }
+}
+
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 
-type SortKey = '最热' | '最新' | '只看楼主';
-const sortOptions: { value: SortKey; label: SortKey; icon: string }[] = [
-  { value: '最热',     label: '最热',     icon: 'local_fire_department' },
-  { value: '最新',     label: '最新',     icon: 'schedule' },
-  { value: '只看楼主', label: '只看楼主', icon: 'person' },
+const sortOptions: { value: SortKey; label: string; icon: string }[] = [
+  { value: 'hot', label: '最热', icon: 'local_fire_department' },
+  { value: 'new', label: '最新', icon: 'schedule' },
 ];
 const sortOpen = ref(false);
-const draftSort = ref<SortKey>('最热');
+const draftSort = ref<SortKey>('hot');
 
 const onSortMenu = () => {
-  draftSort.value = sortLabel.value as SortKey;
+  draftSort.value = sort.value as SortKey;
   sortOpen.value = true;
 };
 const onPickSort = (v: SortKey) => {
   draftSort.value = v;
 };
 const onSortDone = () => {
-  sortLabel.value = draftSort.value;
+  sort.value = draftSort.value;
+  tab.value = sort.value === 'new' ? 'new' : 'all';
   sortOpen.value = false;
-  uni.showToast({ title: `已按「${sortLabel.value}」排序`, icon: 'none' });
+  void loadList(true);
 };
 const onQuickSend = () => openReply();
 const onReport = () => {

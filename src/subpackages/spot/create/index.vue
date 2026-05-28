@@ -434,6 +434,7 @@ const onSubmit = async () => {
     });
     uni.hideLoading();
     uni.showToast({ title: '已提交', icon: 'success' });
+    uni.$emit('profile:spots:changed', { id: resp.id, status: resp.status });
     setTimeout(() => {
       uni.redirectTo({ url: `/subpackages/spot/detail/index?id=${resp.id}` }).catch(() => {
         uni.navigateBack({ delta: 1 }).catch(() => {});

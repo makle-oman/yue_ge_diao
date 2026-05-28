@@ -233,6 +233,57 @@
 }
 
 /* ---------- 费用方式 Sheet (Design 39) ---------- */
+/* ---------- 时间选择 Sheet ---------- */
+.time-options-card {
+  background: $bg-page;
+  border-radius: 28rpx;
+  padding: 8rpx 0;
+}
+.time-option {
+  height: 96rpx;
+  padding: 0 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:active { background: $bg-hover; }
+}
+.time-option-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.time-option-text {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: $text-primary;
+}
+.time-option-value {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $primary;
+}
+.time-divider {
+  height: 1rpx;
+  background: $border-light;
+  margin: 0 32rpx;
+}
+.time-tip {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: $soft-blue;
+
+  .time-tip-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: $text-primary;
+    line-height: 1.35;
+  }
+}
+
 .cost-current {
   display: flex;
   align-items: center;

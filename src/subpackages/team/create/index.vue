@@ -11,7 +11,7 @@
           </view>
           <view class="spot-text">
             <text class="spot-main">钓点</text>
-            <text class="spot-sub">{{ form.spot }} · 可从地图选择</text>
+            <text class="spot-sub">{{ form.spot || '请选择钓点' }} · 可从地图选择</text>
           </view>
           <mxy-icon name="chevron_right" :size="32" color="#99A5AD" />
         </view>
@@ -21,7 +21,7 @@
           <view class="row" @click="onPickTime">
             <text class="row-label">时间</text>
             <view class="row-value">
-              <text class="row-value-text accent">{{ form.time }}</text>
+              <text class="row-value-text accent">{{ timeLabel }}</text>
               <mxy-icon name="chevron_right" :size="26" color="#2D8F87" />
             </view>
           </view>
@@ -30,7 +30,7 @@
           <view class="row" @click="onPickFish">
             <text class="row-label">目标鱼种</text>
             <view class="row-value">
-              <text class="row-value-text accent">{{ form.fish.join(' / ') }}</text>
+              <text class="row-value-text accent">{{ form.fish.length ? form.fish.join(' / ') : '请选择' }}</text>
               <mxy-icon name="chevron_right" :size="26" color="#2D8F87" />
             </view>
           </view>
@@ -92,9 +92,53 @@
     <!-- 底部 -->
     <view class="bottom-bar" :style="{ paddingBottom: 20 + safeBottom + 'px' }">
       <view class="submit-btn" @click="onSubmit">
-        <text class="submit-btn-text">发布组队</text>
+        <text class="submit-btn-text">{{ submitting ? '发布中...' : '发布组队' }}</text>
       </view>
     </view>
+
+    <!-- 时间选择 Sheet -->
+    <mxy-bottom-sheet
+      v-model:visible="timeOpen"
+      title="出钓时间"
+      @done="onTimeDone"
+    >
+      <view class="time-options-card">
+        <picker mode="date" :value="draftDate" :start="todayDate" @change="onDraftDateChange">
+          <view class="time-option">
+            <view class="time-option-left">
+              <mxy-icon name="event" :size="40" color="#2D8F87" />
+              <text class="time-option-text">日期</text>
+            </view>
+            <text class="time-option-value">{{ draftDate }}</text>
+          </view>
+        </picker>
+        <view class="time-divider" />
+        <picker mode="time" :value="draftStartClock" @change="onDraftStartChange">
+          <view class="time-option">
+            <view class="time-option-left">
+              <mxy-icon name="schedule" :size="40" color="#5BA9C4" />
+              <text class="time-option-text">开始</text>
+            </view>
+            <text class="time-option-value">{{ draftStartClock }}</text>
+          </view>
+        </picker>
+        <view class="time-divider" />
+        <picker mode="time" :value="draftEndClock" @change="onDraftEndChange">
+          <view class="time-option">
+            <view class="time-option-left">
+              <mxy-icon name="timer" :size="40" color="#F5A623" />
+              <text class="time-option-text">结束</text>
+            </view>
+            <text class="time-option-value">{{ draftEndClock }}</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="time-tip">
+        <mxy-icon name="lightbulb" :size="36" color="#5BA9C4" />
+        <text class="time-tip-text">结束时间需要晚于开始时间；跨天行程先按当天创建，后续再补跨天选择。</text>
+      </view>
+    </mxy-bottom-sheet>
 
     <!-- 费用方式 Sheet (Design 39) -->
     <mxy-bottom-sheet
@@ -136,25 +180,110 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import { createTeam, type CostMode } from '@/api/teams';
 
 const { safeBottom } = useSystemInfo();
 
+function pad(n: number): string {
+  return n.toString().padStart(2, '0');
+}
+
+function toDateInput(d: Date): string {
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function combineLocal(date: string, clock: string): Date {
+  const [y, m, d] = date.split('-').map(Number);
+  const [hh, mm] = clock.split(':').map(Number);
+  return new Date(y, m - 1, d, hh, mm, 0, 0);
+}
+
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+const todayDate = toDateInput(new Date());
+const defaultDate = toDateInput(tomorrow);
+
 const form = ref({
-  spot: '燕子矶江边',
-  time: '05月25日 05:30-11:00',
-  fish: ['鲫鱼', '鲤鱼'],
+  spot: '',
+  spotId: '',
+  startDate: defaultDate,
+  startClock: '05:30',
+  endClock: '11:00',
+  fish: [] as string[],
   max: 6,
   cost: 'AA',
   carpool: true,
-  note: '早口窗口短，建议 5 点前到。带抄网，岸边湿滑。',
+  note: '',
 });
 
-const onPickSpot = () => uni.showToast({ title: '选择钓点 (待开发)', icon: 'none' });
-const onPickTime = () => uni.showToast({ title: '选择时间 (待开发)', icon: 'none' });
-const onPickFish = () => uni.showToast({ title: '选择鱼种 (待开发)', icon: 'none' });
+const submitting = ref(false);
+const timeOpen = ref(false);
+const draftDate = ref(form.value.startDate);
+const draftStartClock = ref(form.value.startClock);
+const draftEndClock = ref(form.value.endClock);
+
+const timeLabel = computed(() => {
+  const d = combineLocal(form.value.startDate, form.value.startClock);
+  return `${pad(d.getMonth() + 1)}月${pad(d.getDate())}日 ${form.value.startClock}-${form.value.endClock}`;
+});
+
+function onFishSelected(payload: unknown) {
+  const data = payload as { name?: string; names?: string[] };
+  const names = Array.isArray(data.names) && data.names.length
+    ? data.names
+    : data.name
+      ? [data.name]
+      : [];
+  if (names.length) form.value.fish = names;
+}
+
+function onSpotSelected(payload: unknown) {
+  const data = payload as { id?: string; name?: string };
+  if (!data.id || !data.name) return;
+  form.value.spotId = data.id;
+  form.value.spot = data.name;
+}
+
+const onPickSpot = () => {
+  const selected = encodeURIComponent(form.value.spotId || '');
+  const target = encodeURIComponent('team:create');
+  uni.navigateTo({ url: `/subpackages/catch/spot-picker/index?selected=${selected}&target=${target}` });
+};
+const onPickTime = () => {
+  draftDate.value = form.value.startDate;
+  draftStartClock.value = form.value.startClock;
+  draftEndClock.value = form.value.endClock;
+  timeOpen.value = true;
+};
+const onPickFish = () => {
+  const selected = encodeURIComponent(form.value.fish[0] || '');
+  const target = encodeURIComponent('team:create');
+  uni.navigateTo({ url: `/subpackages/catch/fish-picker/index?selected=${selected}&target=${target}` });
+};
+
+const onDraftDateChange = (e: { detail: { value: string } }) => {
+  draftDate.value = e.detail.value;
+};
+const onDraftStartChange = (e: { detail: { value: string } }) => {
+  draftStartClock.value = e.detail.value;
+};
+const onDraftEndChange = (e: { detail: { value: string } }) => {
+  draftEndClock.value = e.detail.value;
+};
+const onTimeDone = () => {
+  const start = combineLocal(draftDate.value, draftStartClock.value);
+  const end = combineLocal(draftDate.value, draftEndClock.value);
+  if (end.getTime() <= start.getTime()) {
+    uni.showToast({ title: '结束时间需晚于开始时间', icon: 'none' });
+    return;
+  }
+  form.value.startDate = draftDate.value;
+  form.value.startClock = draftStartClock.value;
+  form.value.endClock = draftEndClock.value;
+};
 
 type CostKey = 'AA' | '发起人请客' | '各自承担';
 const costOptions: { value: CostKey; label: CostKey; icon: string }[] = [
@@ -185,8 +314,15 @@ const onStep = (delta: number) => {
   }
   form.value.max = next;
 };
-const onSubmit = () => {
-  if (!form.value.spot.trim()) {
+function costToMode(cost: string): CostMode {
+  if (cost === 'AA') return 'aa';
+  if (cost === '发起人请客') return 'host';
+  return 'self';
+}
+
+const onSubmit = async () => {
+  if (submitting.value) return;
+  if (!form.value.spotId) {
     uni.showToast({ title: '请选择钓点', icon: 'none' });
     return;
   }
@@ -194,9 +330,43 @@ const onSubmit = () => {
     uni.showToast({ title: '请选择目标鱼种', icon: 'none' });
     return;
   }
-  uni.showToast({ title: '已发布组队', icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 800);
+  const start = combineLocal(form.value.startDate, form.value.startClock);
+  const end = combineLocal(form.value.startDate, form.value.endClock);
+  if (end.getTime() <= start.getTime()) {
+    uni.showToast({ title: '结束时间需晚于开始时间', icon: 'none' });
+    return;
+  }
+
+  submitting.value = true;
+  try {
+    await createTeam({
+      spotId: form.value.spotId,
+      startTime: start.toISOString(),
+      endTime: end.toISOString(),
+      targetFish: form.value.fish,
+      maxPeople: form.value.max,
+      costMode: costToMode(form.value.cost),
+      needCarpool: form.value.carpool,
+      note: form.value.note || undefined,
+    });
+    uni.showToast({ title: '已发布组队', icon: 'success' });
+    setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 800);
+  } catch (e) {
+    console.warn('[team-create] submit failed', e);
+  } finally {
+    submitting.value = false;
+  }
 };
+
+onMounted(() => {
+  uni.$on('team:create:fish-selected', onFishSelected);
+  uni.$on('team:create:spot-selected', onSpotSelected);
+});
+
+onUnmounted(() => {
+  uni.$off('team:create:fish-selected', onFishSelected);
+  uni.$off('team:create:spot-selected', onSpotSelected);
+});
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

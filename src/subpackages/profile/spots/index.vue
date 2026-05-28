@@ -104,7 +104,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
@@ -241,9 +242,19 @@ watch(keyword, () => {
   }, 300);
 });
 
-onMounted(() => {
+function refreshPage() {
   void loadStats();
   void loadList(true);
+}
+
+onShow(refreshPage);
+
+onMounted(() => {
+  uni.$on('profile:spots:changed', refreshPage);
+});
+
+onUnmounted(() => {
+  uni.$off('profile:spots:changed', refreshPage);
 });
 
 const onManage = () => uni.showToast({ title: '批量管理 (待开发)', icon: 'none' });

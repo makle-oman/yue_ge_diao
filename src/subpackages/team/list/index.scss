@@ -190,3 +190,12 @@
   &.ghost   { background: $bg-page; text { color: $text-primary; } }
 }
 
+.list-state {
+  padding: 32rpx 0;
+  display: flex;
+  justify-content: center;
+}
+.list-state-text {
+  font-size: 24rpx;
+  color: $text-secondary;
+}

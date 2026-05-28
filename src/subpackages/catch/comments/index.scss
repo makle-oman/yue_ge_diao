@@ -79,6 +79,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+  }
+  .post-thumb-img {
+    width: 112rpx;
+    height: 112rpx;
   }
   .post-info {
     flex: 1;
@@ -157,6 +162,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+
+  .comment-avatar-img {
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 50%;
+  }
 
   .comment-avatar-text {
     font-size: 26rpx;
@@ -216,6 +228,16 @@
 .comment-divider {
   height: 1rpx;
   background: $border-light;
+}
+.comment-empty {
+  padding: 48rpx 0;
+  display: flex;
+  justify-content: center;
+
+  text {
+    font-size: 24rpx;
+    color: $text-secondary;
+  }
 }
 
 .scroll-pad { height: 32rpx; }

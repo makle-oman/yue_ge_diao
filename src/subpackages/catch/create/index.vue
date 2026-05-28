@@ -179,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
@@ -264,8 +264,33 @@ const onMethodConfirm = () => {
   methodSheetOpen.value = false;
 };
 
-const onPickFish = () => uni.navigateTo({ url: '/subpackages/catch/fish-picker/index' });
-const onPickSpot = () => uni.navigateTo({ url: '/subpackages/catch/spot-picker/index' });
+function onFishSelected(payload: unknown) {
+  const data = payload as { name?: string; names?: string[] };
+  const names = Array.isArray(data.names) && data.names.length
+    ? data.names
+    : data.name
+      ? [data.name]
+      : [];
+  if (names.length) form.value.fish = names;
+}
+
+function onSpotSelected(payload: unknown) {
+  const data = payload as { id?: string; name?: string };
+  if (!data.name) return;
+  form.value.spotId = data.id || '';
+  form.value.spot = data.name;
+}
+
+const onPickFish = () => {
+  const selected = encodeURIComponent(form.value.fish[0] || '');
+  const target = encodeURIComponent('catch:create');
+  uni.navigateTo({ url: `/subpackages/catch/fish-picker/index?selected=${selected}&target=${target}` });
+};
+const onPickSpot = () => {
+  const selected = encodeURIComponent(form.value.spotId || '');
+  const target = encodeURIComponent('catch:create');
+  uni.navigateTo({ url: `/subpackages/catch/spot-picker/index?selected=${selected}&target=${target}` });
+};
 const onAddPhoto = () => {
   if (uploading.value) return;
   uni.chooseImage({
@@ -328,6 +353,16 @@ async function onPublish() {
     submitting.value = false;
   }
 }
+
+onMounted(() => {
+  uni.$on('catch:create:fish-selected', onFishSelected);
+  uni.$on('catch:create:spot-selected', onSpotSelected);
+});
+
+onUnmounted(() => {
+  uni.$off('catch:create:fish-selected', onFishSelected);
+  uni.$off('catch:create:spot-selected', onSpotSelected);
+});
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

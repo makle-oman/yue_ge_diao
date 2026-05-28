@@ -84,11 +84,11 @@ export function useSystemInfo() {
   /**
    * 顶部右侧需为胶囊预留的最小宽度（含 8px 视觉间距），px。
    * MP-WEIXIN：按胶囊实测左缘 + 8 反推预留；
-   * H5/App：返回 96px（= MP 胶囊最小宽度），让两端右边距视觉一致，
-   *         避免 H5 顶栏右侧元素贴边。
+   * H5/App：返回 0；调用方应仅在 MP-WEIXIN 端把它写进 inline style，
+   *         让 H5 保留 CSS 自身的右侧间距。
    */
   const capsuleRightWidth = computed((): number => {
-    let v = 96;
+    let v = 0;
     // #ifdef MP-WEIXIN
     v = Math.max(96, windowWidth.value - menuButtonLeft.value + 8);
     // #endif

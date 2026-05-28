@@ -8,7 +8,7 @@
       <!-- 设置按钮 -->
       <view
         class="hero-setting"
-        :style="{ top: statusBarHeight + 12 + 'px', right: capsuleRightWidth + 'px' }"
+        :style="heroSettingStyle"
         @click="onSetting"
       >
         <mxy-icon name="settings" :size="40" color="#fff" />
@@ -105,6 +105,7 @@ import CustomTabBar from '@/components/CustomTabBar.vue';
 import { FISHING_AGE_BAND_LABEL } from '@/api/users';
 import { userCatchesStats, formatWeight } from '@/api/catches';
 import { userSpotsStats } from '@/api/spots';
+import { fishLibrary, type FishLibraryItem } from '@/api/fishes';
 import { useAuthStore } from '@/stores';
 
 interface FishItem { name: string; bg: string; locked?: boolean }
@@ -112,6 +113,16 @@ interface MenuItem { key: string; label: string; icon: string; color: string; pa
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 const authStore = useAuthStore();
+
+const heroSettingStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {
+    top: statusBarHeight.value + 12 + 'px',
+  };
+  // #ifdef MP-WEIXIN
+  s.right = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 // 顶部资料卡:全部来自 authStore.profile / user 的响应式 computed,
 // 编辑页保存后回到本页 store 已更新 → 视图自动响应,不再依赖 onShow 重拉
@@ -139,14 +150,8 @@ const stats = ref({
 });
 
 const fishCollected = ref(0);
-const fishTotal = ref(56);
-
-const fishLib = ref<FishItem[]>([
-  { name: '鲫鱼', bg: '#EAF5F4' },
-  { name: '鲤鱼', bg: '#FFF4E1' },
-  { name: '翘嘴', bg: '#EAF6FA' },
-  { name: '鳜鱼', bg: '#EAEEF1', locked: true },
-]);
+const fishTotal = ref(0);
+const fishLib = ref<FishItem[]>([]);
 
 const menus = ref<MenuItem[]>([
   { key: 'catch',  label: '我的鱼获', icon: 'phishing',     color: '#2D8F87', path: '/subpackages/profile/catches/index' },
@@ -174,18 +179,53 @@ async function loadStats() {
   }
 }
 
+function fishBg(f: FishLibraryItem): string {
+  if (!f.unlocked) return '#EAEEF1';
+  if (f.category === 'sea') return '#EAF6FA';
+  return f.common ? '#EAF5F4' : '#FFF4E1';
+}
+
+async function loadFishLibrarySummary() {
+  if (!authStore.isLoggedIn) return;
+  try {
+    const resp = await fishLibrary();
+    fishCollected.value = resp.stats.fresh.done + resp.stats.sea.done;
+    fishTotal.value = resp.stats.fresh.total + resp.stats.sea.total;
+    fishLib.value = resp.list
+      .slice()
+      .sort((a, b) => {
+        if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
+        if (a.common !== b.common) return a.common ? -1 : 1;
+        return a.name.localeCompare(b.name, 'zh-Hans-CN');
+      })
+      .slice(0, 4)
+      .map((f) => ({
+        name: f.name,
+        bg: fishBg(f),
+        locked: !f.unlocked,
+      }));
+  } catch (e) {
+    console.warn('[profile] fishLibrary failed', e);
+  }
+}
+
+function loadProfileData() {
+  void loadStats();
+  void loadFishLibrarySummary();
+}
+
 onMounted(() => {
   // store 初始已 hydrate token/user;profile 若未拉过(冷启动)就拉一次
   if (authStore.isLoggedIn && !authStore.profile) {
     authStore.refreshMe();
   }
-  loadStats();
+  loadProfileData();
 });
 
-// 从其它页面(如编辑资料)返回时,store.profile 已被 patchProfile 更新,这里只刷 stats
+// 从其它页面(如编辑资料/发布鱼获)返回时,刷新 stats 和鱼库摘要
 onShow(() => {
   if (authStore.isLoggedIn) {
-    loadStats();
+    loadProfileData();
   }
 });
 

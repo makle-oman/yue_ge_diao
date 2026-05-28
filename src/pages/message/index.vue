@@ -2,7 +2,7 @@
   <view class="message-page">
     <!-- 顶部状态栏占位 + 标题栏 -->
     <view class="msg-header" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="msg-nav" :style="{ paddingRight: capsuleRightWidth + 'px' }">
+      <view class="msg-nav" :style="msgNavStyle">
         <text class="msg-title">消息</text>
         <text class="msg-read-all" @click="onReadAll">全部已读</text>
       </view>
@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 
@@ -93,6 +93,14 @@ interface MsgRow {
 }
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
+
+const msgNavStyle = computed<Record<string, string>>(() => {
+  const s: Record<string, string> = {};
+  // #ifdef MP-WEIXIN
+  s.paddingRight = capsuleRightWidth.value + 'px';
+  // #endif
+  return s;
+});
 
 const entryTypes = ref<EntryType[]>([
   { key: 'comment', label: '评论', icon: 'alternate_email', color: '#F5A623', bg: '#FFF4E1', badge: '2' },

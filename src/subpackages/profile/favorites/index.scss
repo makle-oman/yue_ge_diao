@@ -201,6 +201,16 @@
   font-weight: 700;
 }
 
+.list-state {
+  padding: 36rpx 0;
+  display: flex;
+  justify-content: center;
+}
+.list-state-text {
+  font-size: 24rpx;
+  color: $text-secondary;
+}
+
 
 /* ---------- 取消收藏确认 Sheet (Design 37) ---------- */
 .unfav-banner {
