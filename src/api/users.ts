@@ -4,6 +4,9 @@
  * 对应后端 modules/users
  *   - POST /users/me      当前登录用户信息
  *   - POST /users/update  更新个人资料(部分字段),返回更新后的 MeProfile
+ *   - POST /users/detail  他人主页
+ *   - POST /users/nearby  附近钓友
+ *   - POST /users/follow  关注 / 取消关注
  */
 
 import { http } from '@/utils/request';
@@ -54,10 +57,60 @@ export interface UpdateMePayload {
   allowShowLoc?: boolean;
 }
 
+export interface NearbyUserItem {
+  id: string;
+  nickname: string | null;
+  avatar: string | null;
+  city: string | null;
+  fishingAgeBand: FishingAgeBand | null;
+  playStyles: string[];
+  distance: number;
+  lastActiveAt: string | null;
+  following: boolean;
+}
+
+export interface PublicUserProfile extends Omit<NearbyUserItem, 'distance'> {
+  distance: number | null;
+  followerCount: number;
+  followingCount: number;
+  stats: {
+    catches: number;
+    spots: number;
+    heaviestG: number | null;
+  };
+  createdAt: string;
+}
+
 export function fetchMe(): Promise<MeProfile> {
   return http.post<MeProfile>('/users/me');
 }
 
 export function updateMe(payload: UpdateMePayload): Promise<MeProfile> {
   return http.post<MeProfile>('/users/update', payload);
+}
+
+export function fetchUserDetail(userId: string): Promise<PublicUserProfile> {
+  return http.post<PublicUserProfile>('/users/detail', { userId });
+}
+
+export function fetchNearbyUsers(params: {
+  lat: number;
+  lng: number;
+  radius?: number;
+  keyword?: string;
+  playStyle?: string;
+  limit?: number;
+}): Promise<{ list: NearbyUserItem[] }> {
+  return http.post('/users/nearby', params);
+}
+
+export function followUser(
+  userId: string,
+  action: 'follow' | 'unfollow',
+): Promise<{ ok: boolean; following: boolean; followerCount: number }> {
+  return http.post('/users/follow', { userId, action });
+}
+
+export function formatFishingAge(code: FishingAgeBand | null): string {
+  return code ? FISHING_AGE_BAND_LABEL[code] : '钓龄待填';
 }

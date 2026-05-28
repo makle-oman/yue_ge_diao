@@ -11,7 +11,7 @@
           :key="tab.key"
           class="feed-tab"
           :class="{ active: activeTab === tab.key }"
-          @click="activeTab = tab.key"
+          @click="onTabChange(tab.key)"
         >
           <text class="feed-tab-text">{{ tab.label }}</text>
           <view v-if="activeTab === tab.key" class="feed-tab-bar" />
@@ -26,7 +26,19 @@
     </view>
 
     <!-- 双列瀑布流 -->
-    <scroll-view class="feed-scroll" scroll-y :refresher-enabled="true" :refresher-triggered="refreshing" @refresherrefresh="onRefresh">
+    <scroll-view
+      class="feed-scroll"
+      scroll-y
+      :refresher-enabled="true"
+      :refresher-triggered="refreshing"
+      @refresherrefresh="onRefresh"
+      @scrolltolower="loadMore"
+    >
+      <view v-if="keyword" class="search-summary">
+        <text class="search-summary-text">搜索：{{ keyword }}</text>
+        <text class="search-summary-clear" @click="clearSearch">清除</text>
+      </view>
+
       <view class="feed-grid">
         <view class="feed-col">
           <mxy-feed-card
@@ -65,7 +77,7 @@
       </view>
 
       <view class="feed-end">
-        <text class="feed-end-text">— 没有更多了 —</text>
+        <text class="feed-end-text">{{ feedEndText }}</text>
       </view>
     </scroll-view>
 
@@ -74,8 +86,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import {
+  listCatches,
+  likeCatch,
+  formatWeight,
+  type CatchFeedItem,
+  type FeedTab,
+} from '@/api/catches';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 
 interface FeedItem {
@@ -93,100 +112,162 @@ interface FeedItem {
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
-const tabs = [
+const tabs: { key: FeedTab; label: string }[] = [
   { key: 'recommend', label: '推荐' },
   { key: 'nearby',    label: '附近' },
   { key: 'follow',    label: '关注' },
 ];
 
-const activeTab = ref('recommend');
+const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
+const activeTab = ref<FeedTab>('recommend');
 const refreshing = ref(false);
-
-const feedList = ref<FeedItem[]>([
-  {
-    id: 'f1',
-    cover: 'https://images.unsplash.com/photo-1635712291708-7afe9e037503?w=600',
-    title: '傍晚野塘连竿,三斤大鲫鱼出水',
-    tag: '鱼获',
-    location: '玄武湖东岸',
-    species: '鲫鱼',
-    author: '老钓客',
-    likes: 128,
-    liked: false,
-  },
-  {
-    id: 'f2',
-    cover: 'https://images.unsplash.com/photo-1564875009929-58c9517cd6fd?w=600',
-    title: '紫金山水库新发现的小钓点,人少鱼多',
-    tag: '钓点',
-    location: '紫金山水库',
-    author: '钓鱼小哥',
-    likes: 256,
-    liked: true,
-  },
-  {
-    id: 'f3',
-    cover: 'https://images.unsplash.com/photo-1741134913547-46bbab5a1f60?w=600',
-    title: '凌晨四点出门,黑坑爆护实录',
-    tag: '鱼获',
-    species: '草鱼',
-    author: '夜钓达人',
-    likes: 432,
-    liked: false,
-  },
-  {
-    id: 'f4',
-    cover: 'https://images.unsplash.com/photo-1727524315467-264c0bd47a13?w=600',
-    title: '钓鱼三年总结,新手必看装备清单',
-    tag: '钓技',
-    author: '装备党',
-    likes: 89,
-    liked: false,
-  },
-  {
-    id: 'f5',
-    cover: 'https://images.unsplash.com/photo-1598209292386-3be9c519290a?w=600',
-    title: '组队周末野钓,招两人,自驾来',
-    tag: '组队',
-    location: '溧水石臼湖',
-    author: '湖光山色',
-    likes: 35,
-    liked: false,
-  },
-  {
-    id: 'f6',
-    cover: 'https://images.unsplash.com/photo-1706652783711-fcb68bad9c9f?w=600',
-    title: '海钓归来,带回一筐小黄鱼',
-    tag: '鱼获',
-    location: '连云港海边',
-    species: '黄鱼',
-    author: '海风咸',
-    likes: 178,
-    liked: false,
-  },
-]);
+const loading = ref(false);
+const hasMore = ref(false);
+const cursor = ref<string | null>(null);
+const keyword = ref('');
+const center = ref({ ...DEFAULT_CENTER });
+const feedList = ref<FeedItem[]>([]);
 
 // 双列瀑布流: 简单按奇偶分两列,实际生产可按累计高度分配
 const colLeft = computed(() => feedList.value.filter((_, i) => i % 2 === 0));
 const colRight = computed(() => feedList.value.filter((_, i) => i % 2 === 1));
+const feedEndText = computed(() => {
+  if (loading.value) return '加载中…';
+  if (feedList.value.length === 0) return keyword.value ? '没有匹配鱼获' : '暂无鱼获';
+  return hasMore.value ? '上拉加载更多' : '— 没有更多了 —';
+});
+
+function catchTitle(c: CatchFeedItem): string {
+  if (c.content) return c.content;
+  const fish = c.fishSpecies.join(' / ') || '鱼获';
+  return `${fish} · ${formatWeight(c.weight)}`;
+}
+
+function formatDistanceText(m: number): string {
+  if (m < 10) return '<10m';
+  if (m < 1000) return `${Math.round(m)}m`;
+  return `${(m / 1000).toFixed(1)}km`;
+}
+
+function toFeedItem(c: CatchFeedItem): FeedItem {
+  const distance = c.distance != null ? formatDistanceText(c.distance) : '';
+  return {
+    id: c.id,
+    cover: c.cover || 'https://images.unsplash.com/photo-1638474690238-4a55f6007635?w=600',
+    title: catchTitle(c),
+    tag: '鱼获',
+    location: c.spotName || c.city || distance || undefined,
+    species: c.fishSpecies[0],
+    author: c.userName || `钓友${c.userId.slice(-4)}`,
+    avatar: c.userAvatar || undefined,
+    likes: c.likeCount,
+    liked: c.liked,
+  };
+}
+
+async function ensureLocation() {
+  if (activeTab.value !== 'nearby') return;
+  try {
+    const loc: any = await new Promise((resolve, reject) =>
+      uni.getLocation({
+        type: 'gcj02',
+        isHighAccuracy: true,
+        highAccuracyExpireTime: 4000,
+        success: resolve,
+        fail: reject,
+      }),
+    );
+    center.value = { latitude: loc.latitude, longitude: loc.longitude };
+  } catch {
+    uni.showToast({ title: '定位失败，已使用默认位置', icon: 'none' });
+  }
+}
+
+async function loadFeed(reset = false) {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    if (reset) {
+      feedList.value = [];
+      cursor.value = null;
+      hasMore.value = false;
+    }
+    await ensureLocation();
+    const resp = await listCatches({
+      tab: activeTab.value,
+      keyword: keyword.value.trim() || undefined,
+      lat: activeTab.value === 'nearby' ? center.value.latitude : undefined,
+      lng: activeTab.value === 'nearby' ? center.value.longitude : undefined,
+      radius: activeTab.value === 'nearby' ? 50_000 : undefined,
+      limit: 20,
+      cursor: cursor.value,
+    });
+    feedList.value = feedList.value.concat(resp.list.map(toFeedItem));
+    cursor.value = resp.nextCursor;
+    hasMore.value = resp.hasMore;
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '鱼获加载失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+function onTabChange(tab: FeedTab) {
+  if (activeTab.value === tab) return;
+  activeTab.value = tab;
+  void loadFeed(true);
+}
 
 const onCardTap = (item: FeedItem) => {
   uni.navigateTo({ url: `/subpackages/catch/detail/index?id=${item.id}` });
 };
 
 const onLike = (item: FeedItem) => {
+  const nextLiked = !item.liked;
   item.liked = !item.liked;
   item.likes += item.liked ? 1 : -1;
+  likeCatch(item.id, nextLiked ? 'like' : 'unlike').catch((e: any) => {
+    item.liked = !nextLiked;
+    item.likes += nextLiked ? -1 : 1;
+    uni.showToast({ title: e?.msg || '操作失败', icon: 'none' });
+  });
 };
 
 const onSearch = () => {
-  uni.showToast({ title: '搜索(待开发)', icon: 'none' });
+  uni.showModal({
+    title: '搜索鱼获',
+    editable: true,
+    placeholderText: '鱼种 / 钓点 / 内容 / 钓友',
+    success: (res) => {
+      if (!res.confirm) return;
+      keyword.value = (res.content || '').trim();
+      void loadFeed(true);
+    },
+  });
+};
+
+const clearSearch = () => {
+  keyword.value = '';
+  void loadFeed(true);
 };
 
 const onRefresh = async () => {
   refreshing.value = true;
-  setTimeout(() => { refreshing.value = false; }, 800);
+  try {
+    await loadFeed(true);
+  } finally {
+    refreshing.value = false;
+  }
 };
+
+const loadMore = () => {
+  if (!hasMore.value || loading.value) return;
+  void loadFeed(false);
+};
+
+onMounted(() => {
+  void loadFeed(true);
+});
 </script>
 
 <style lang="scss" scoped src="./index.scss"></style>

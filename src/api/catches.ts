@@ -20,6 +20,7 @@ import { http } from '@/utils/request';
 export type FeedTab = 'recommend' | 'nearby' | 'follow';
 export type Technique = 'hand' | 'taiwan' | 'lure' | 'sea' | 'other';
 export type Visibility = 'all' | 'public' | 'private';
+export type WeatherSnapshot = Record<string, unknown>;
 
 /** feed 列表 item（list 返回的 shape） */
 export interface CatchFeedItem {
@@ -107,6 +108,7 @@ export function listCatches(params: {
   lat?: number;
   lng?: number;
   radius?: number;
+  keyword?: string;
   limit?: number;
   cursor?: string | null;
 }): Promise<ListResp<CatchFeedItem>> {
@@ -126,6 +128,7 @@ export function createCatch(payload: {
   lng?: number;
   locationVisible?: boolean;
   allowComments?: boolean;
+  weatherSnapshot?: WeatherSnapshot;
 }): Promise<{ id: string; reviewStatus: string; createdAt: string }> {
   return http.post('/catches/create', payload);
 }

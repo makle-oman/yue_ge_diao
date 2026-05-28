@@ -156,6 +156,7 @@ const spot = ref({
   gallery: FALLBACK_GALLERY as string[],
   lat: 0,
   lng: 0,
+  address: '' as string | null,
 });
 
 const weather = ref({
@@ -242,6 +243,7 @@ async function loadDetail() {
       gallery: normalizeGallery(d.photos),
       lat: d.lat,
       lng: d.lng,
+      address: d.address,
     };
     facilities.value = buildFacilities(d);
     isWanted.value = d.yourWantStatus;
@@ -271,7 +273,16 @@ onLoad((options) => {
 const onHeroChange = (e: any) => { heroIndex.value = e.detail.current; };
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });
-const onNavigate = () => uni.showToast({ title: '调起地图导航 (待开发)', icon: 'none' });
+const onNavigate = () => {
+  if (!spot.value.lat || !spot.value.lng) return;
+  uni.openLocation({
+    latitude: spot.value.lat,
+    longitude: spot.value.lng,
+    name: spot.value.name,
+    address: spot.value.address || spot.value.feature,
+    scale: 16,
+  });
+};
 
 async function onWantGo() {
   if (!spot.value.id || wantPending.value) return;

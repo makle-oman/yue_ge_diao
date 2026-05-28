@@ -179,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import MxyIcon from '@/components/mxy-icon/mxy-icon.vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
@@ -189,6 +189,7 @@ import {
   parseLengthInputToCm,
   type Technique,
 } from '@/api/catches';
+import { fetchFishingIndex, formatWeatherLine, type FishingIndex } from '@/api/weather';
 import { uploadImages } from '@/utils/upload';
 import { BizError } from '@/utils/request';
 
@@ -231,11 +232,13 @@ const form = ref({
 
 const weather = ref({
   auto: true,
-  text: '自动填充（待接入天气服务）',
+  text: '正在获取天气...',
 });
 
 const submitting = ref(false);
 const uploading = ref(false);
+const currentLocation = ref<{ lat: number; lng: number } | null>(null);
+const weatherSnapshot = ref<FishingIndex | null>(null);
 
 /* ---------- 钓法弹层 (Design 35) ---------- */
 const methodSheetOpen = ref(false);
@@ -328,6 +331,27 @@ const onAddPhoto = () => {
 };
 const onDelPhoto = (idx: number) => form.value.photos.splice(idx, 1);
 
+async function loadWeather() {
+  try {
+    const loc: any = await new Promise((resolve, reject) =>
+      uni.getLocation({ type: 'gcj02', isHighAccuracy: true, success: resolve, fail: reject }),
+    );
+    currentLocation.value = { lat: loc.latitude, lng: loc.longitude };
+    const data = await fetchFishingIndex({
+      lat: loc.latitude,
+      lng: loc.longitude,
+    });
+    weatherSnapshot.value = data;
+    weather.value.text = formatWeatherLine(data);
+  } catch (_) {
+    weather.value.text = '未获取天气';
+  }
+}
+
+onMounted(() => {
+  void loadWeather();
+});
+
 async function onPublish() {
   if (submitting.value) return;
   if (form.value.photos.length === 0) {
@@ -349,8 +373,11 @@ async function onPublish() {
       technique: methodToTechnique(form.value.method),
       content: form.value.desc || undefined,
       spotId: form.value.spotId || undefined,
+      lat: currentLocation.value?.lat,
+      lng: currentLocation.value?.lng,
       locationVisible: form.value.publicSpot,
       allowComments: form.value.allowComment,
+      weatherSnapshot: weather.value.auto ? (weatherSnapshot.value as unknown as Record<string, unknown> | null) ?? undefined : undefined,
     });
     uni.showToast({ title: '已发布', icon: 'success' });
     setTimeout(() => {

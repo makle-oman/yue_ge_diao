@@ -81,6 +81,29 @@
   padding-bottom: calc(#{$tabbar-height} + 24rpx + env(safe-area-inset-bottom));
 }
 
+.search-summary {
+  margin: 0 32rpx 20rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 16rpx;
+  background: $bg-card;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4rpx 14rpx rgba(0,0,0,.04);
+}
+
+.search-summary-text {
+  font-size: $font-sm;
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.search-summary-clear {
+  font-size: $font-xs;
+  color: $primary;
+  font-weight: 700;
+}
+
 .feed-grid {
   display: flex;
   gap: 16rpx;

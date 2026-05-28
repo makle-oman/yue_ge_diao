@@ -162,17 +162,19 @@ import {
   type CatchDetail,
 } from '@/api/catches';
 import { previewLatestComments, type CommentItem } from '@/api/comments';
+import { fetchUserDetail, followUser } from '@/api/users';
 
 const { statusBarHeight, safeBottom, capsuleRightWidth } = useSystemInfo();
 
 const catchId = ref<string>('');
 const liking = ref(false);
 const collecting = ref(false);
+const followPending = ref(false);
 
 const author = ref({
+  id: '',
   name: '钓友',
   avatar: '',
-  // TODO(follow): 需要 /users/follow 接口，本 wire 只切详情数据；关注按钮先纯前端切换
   following: false,
 });
 
@@ -194,6 +196,23 @@ const catchData = ref({
 });
 
 const previewComments = ref<CommentItem[]>([]);
+
+function formatWeatherSnapshot(raw: Record<string, unknown> | null): string {
+  const current = raw?.current;
+  if (!current || typeof current !== 'object') return '未记录天气';
+  const c = current as {
+    weather?: unknown;
+    temperature?: unknown;
+    pressure?: unknown;
+    windScale?: unknown;
+  };
+  const score = typeof raw?.score === 'number' ? ` · 宜钓 ${raw.score}` : '';
+  const weather = typeof c.weather === 'string' ? c.weather : '天气';
+  const temp = typeof c.temperature === 'number' ? `${c.temperature}°C` : '';
+  const pressure = typeof c.pressure === 'number' ? `气压 ${c.pressure}hPa` : '';
+  const wind = typeof c.windScale === 'number' ? `${c.windScale}级风` : '';
+  return [weather, temp, pressure, wind].filter(Boolean).join(' · ') + score;
+}
 
 const spotLine = computed(() => {
   const c = catchData.value;
@@ -220,8 +239,15 @@ async function loadDetail() {
     catchData.value.likes = d.likeCount;
     catchData.value.collected = d.yourCollectStatus;
     // 天气快照后端字段为 weatherSnapshot（结构待定），后续 weather 服务接入后再渲染
+    catchData.value.weatherText = formatWeatherSnapshot(d.weatherSnapshot);
+    author.value.id = d.user.id;
     author.value.name = d.user.nickname || `钓友${d.user.id.slice(-4)}`;
     author.value.avatar = d.user.avatar || '';
+    fetchUserDetail(d.user.id)
+      .then((profile) => {
+        author.value.following = profile.following;
+      })
+      .catch(() => {});
   } catch (e) {
     console.warn('[catch-detail] load failed', e);
   }
@@ -254,12 +280,22 @@ onShow(() => {
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });
-const onFollow = () => {
-  author.value.following = !author.value.following;
-  uni.showToast({
-    title: author.value.following ? '已关注' : '已取消关注',
-    icon: 'success',
-  });
+const onFollow = async () => {
+  if (!author.value.id || followPending.value) return;
+  followPending.value = true;
+  const next = author.value.following ? 'unfollow' : 'follow';
+  try {
+    const resp = await followUser(author.value.id, next);
+    author.value.following = resp.following;
+    uni.showToast({
+      title: resp.following ? '已关注' : '已取消关注',
+      icon: 'success',
+    });
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '操作失败', icon: 'none' });
+  } finally {
+    followPending.value = false;
+  }
 };
 const onSpotTap = () => {
   if (!catchData.value.spotId) return;

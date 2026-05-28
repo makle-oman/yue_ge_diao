@@ -105,8 +105,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import { fetchFishLibrary, type FishCategory, type FishItem, type FishStats } from '@/api/fishes';
+import { formatWeight } from '@/api/catches';
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 
@@ -116,6 +118,7 @@ type Tone = 'primary' | 'blue' | 'orange' | 'ghost';
 
 interface Fish {
   name: string;
+  category: FishCategory;
   tone: Tone;
   record: string;
   unlocked: boolean;
@@ -135,34 +138,52 @@ const chips = [
   { key: 'locked'   as ChipKey, label: '未点亮' },
 ];
 
-const stats = ref({
-  fresh: { done: 8, total: 20 },
-  sea:   { done: 3, total: 18 },
+const stats = ref<FishStats>({
+  fresh: { done: 0, total: 0 },
+  sea:   { done: 0, total: 0 },
 });
-
-const freshFish: Fish[] = [
-  { name: '鲫鱼',  tone: 'primary', record: '记录 1.5kg', unlocked: true,  common: true },
-  { name: '鲈鱼',  tone: 'blue',    record: '记录 1.2kg', unlocked: true,  common: true },
-  { name: '翘嘴',  tone: 'orange',  record: '记录 0.8kg', unlocked: true,  common: true },
-  { name: '鲈鱼',  tone: 'ghost',   record: '未点亮',     unlocked: false, common: true },
-  { name: '鲤鱼',  tone: 'ghost',   record: '未点亮',     unlocked: false, common: true },
-  { name: '草鱼',  tone: 'ghost',   record: '未点亮',     unlocked: false, common: true },
-];
-
-const seaFish: Fish[] = [
-  { name: '黄花鱼', tone: 'primary', record: '记录 0.6kg', unlocked: true,  common: true },
-  { name: '海鲈',   tone: 'blue',    record: '记录 1.8kg', unlocked: true,  common: true },
-  { name: '鲷鱼',   tone: 'ghost',   record: '未点亮',     unlocked: false, common: true },
-  { name: '马鲛鱼', tone: 'ghost',   record: '未点亮',     unlocked: false, common: false },
-];
+const fishList = ref<Fish[]>([]);
+const loading = ref(false);
 
 const totalUnlocked = computed(() => stats.value.fresh.done + stats.value.sea.done);
 const totalCount = computed(() => stats.value.fresh.total + stats.value.sea.total);
-const progressPct = computed(() => Math.round(totalUnlocked.value / totalCount.value * 100));
+const progressPct = computed(() => totalCount.value ? Math.round(totalUnlocked.value / totalCount.value * 100) : 0);
 const barPct = progressPct;
 
+function toneOf(f: FishItem): Tone {
+  if (!f.unlocked) return 'ghost';
+  if (f.category === 'sea') return 'blue';
+  if (f.common) return 'primary';
+  return 'orange';
+}
+
+function adaptFish(f: FishItem): Fish {
+  return {
+    name: f.name,
+    category: f.category,
+    tone: toneOf(f),
+    record: f.unlocked ? `记录 ${formatWeight(f.maxWeightG)}` : '未点亮',
+    unlocked: f.unlocked,
+    common: f.common,
+  };
+}
+
+async function loadLibrary() {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    const resp = await fetchFishLibrary();
+    stats.value = resp.stats;
+    fishList.value = resp.list.map(adaptFish);
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '鱼库加载失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
 const displayFish = computed<Fish[]>(() => {
-  const pool = activeSeg.value === 'fresh' ? freshFish : seaFish;
+  const pool = fishList.value.filter((f) => f.category === activeSeg.value);
   switch (activeChip.value) {
     case 'unlocked': return pool.filter(f => f.unlocked);
     case 'locked':   return pool.filter(f => !f.unlocked);
@@ -170,6 +191,8 @@ const displayFish = computed<Fish[]>(() => {
     default:         return pool;
   }
 });
+
+onMounted(loadLibrary);
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });

@@ -39,6 +39,43 @@
         </view>
       </view>
 
+      <view v-if="loggedIn && !currentGroup && threads.length > 0" class="msg-section-title">
+        <text>私信会话</text>
+      </view>
+
+      <view v-if="loggedIn && !currentGroup && threads.length > 0" class="msg-list-card">
+        <view
+          v-for="(thread, idx) in threads"
+          :key="thread.id"
+          class="msg-row"
+          @click="onThreadTap(thread)"
+        >
+          <view
+            v-if="!thread.peer.avatar"
+            class="msg-row-av"
+            :style="{ background: thread.avBg }"
+          />
+          <image
+            v-else
+            class="msg-row-av"
+            :src="thread.peer.avatar"
+            mode="aspectFill"
+          />
+
+          <view class="msg-row-text">
+            <text class="msg-row-main">
+              {{ thread.peer.name }}
+              <text v-if="thread.unreadCount > 0" class="msg-row-dot">●</text>
+            </text>
+            <text class="msg-row-sub" :class="{ accent: thread.unreadCount > 0 }">
+              {{ thread.timeText }}<template v-if="thread.excerpt"> · {{ thread.excerpt }}</template>
+            </text>
+          </view>
+
+          <view v-if="idx !== threads.length - 1" class="msg-row-divider" />
+        </view>
+      </view>
+
       <!-- 最近互动标题 -->
       <view class="msg-section-title">
         <text>{{ currentGroup ? GROUP_LABEL[currentGroup] : '最近互动' }}</text>
@@ -132,6 +169,7 @@ import {
   type NotificationItem,
   type UnreadCount,
 } from '@/api/notifications';
+import { fetchMessageThreads, type MessageThread } from '@/api/messages';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 
 interface EntryType {
@@ -157,6 +195,19 @@ interface MsgRow {
   raw: NotificationItem;
 }
 
+interface ThreadRow {
+  id: string;
+  peer: {
+    id: string;
+    name: string;
+    avatar: string | null;
+  };
+  excerpt: string;
+  timeText: string;
+  unreadCount: number;
+  avBg: string;
+}
+
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 const GROUP_LABEL = NOTIFICATION_GROUP_LABEL;
 
@@ -165,6 +216,7 @@ const loading = ref(false);
 const loadingMore = ref(false);
 const refreshing = ref(false);
 const rows = ref<MsgRow[]>([]);
+const threads = ref<ThreadRow[]>([]);
 const nextCursor = ref<string | null>(null);
 const hasMore = ref(false);
 const currentGroup = ref<NotificationGroup | null>(null);
@@ -223,12 +275,41 @@ function toRow(n: NotificationItem): MsgRow {
   };
 }
 
+function toThreadRow(t: MessageThread): ThreadRow {
+  const name = t.peer.nickname || `钓友${t.peer.id.slice(-4)}`;
+  return {
+    id: t.peer.id,
+    peer: {
+      id: t.peer.id,
+      name,
+      avatar: t.peer.avatar,
+    },
+    excerpt: t.lastMessage.content,
+    timeText: timeAgo(t.lastMessage.createdAt),
+    unreadCount: t.unreadCount,
+    avBg: '#EAF5F4',
+  };
+}
+
 async function refreshUnread() {
   if (!loggedIn.value) return;
   try {
     unread.value = await getUnreadCount();
   } catch {
     // 容错:UI 不阻塞
+  }
+}
+
+async function loadThreads() {
+  if (!loggedIn.value) {
+    threads.value = [];
+    return;
+  }
+  try {
+    const r = await fetchMessageThreads({ limit: 20 });
+    threads.value = r.list.map(toThreadRow);
+  } catch (e) {
+    console.warn('[message] threads failed', e);
   }
 }
 
@@ -274,7 +355,7 @@ async function onLoadMore() {
 async function onRefresh() {
   refreshing.value = true;
   try {
-    await Promise.all([refreshUnread(), loadFirstPage()]);
+    await Promise.all([refreshUnread(), loadThreads(), loadFirstPage()]);
   } finally {
     refreshing.value = false;
   }
@@ -328,6 +409,10 @@ async function onRowTap(row: MsgRow) {
   }
 }
 
+function onThreadTap(thread: ThreadRow) {
+  uni.navigateTo({ url: `/subpackages/message/conversation/index?id=${thread.peer.id}` });
+}
+
 function goLogin() {
   uni.navigateTo({ url: '/pages/login/index' }).catch(() => {
     uni.showToast({ title: '请先登录', icon: 'none' });
@@ -343,6 +428,7 @@ onShow(() => {
   loggedIn.value = isLoggedIn();
   if (loggedIn.value) {
     void refreshUnread();
+    void loadThreads();
   }
 });
 </script>

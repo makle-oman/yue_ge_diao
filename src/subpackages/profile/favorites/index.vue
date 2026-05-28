@@ -21,7 +21,7 @@
             :key="t.key"
             class="tab"
             :class="{ active: activeTab === t.key }"
-            @click="activeTab = t.key"
+            @click="onTab(t.key)"
           >
             <text>{{ t.label }} {{ t.count }}</text>
           </view>
@@ -85,7 +85,7 @@
 
       <view class="unfav-body">
         <text class="unfav-body-title">确认取消收藏？</text>
-        <text class="unfav-body-desc">该{{ removeTarget?.kind === 'user' ? '钓友' : '钓点' }}会从"我的收藏"中移除，不影响你的历史浏览和鱼获记录。</text>
+        <text class="unfav-body-desc">该{{ removeTarget?.kind === 'user' ? '钓友' : '收藏' }}会从"我的收藏"中移除，不影响你的历史浏览和鱼获记录。</text>
       </view>
 
       <view class="unfav-buttons">
@@ -106,25 +106,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import { listFavorites, removeFavorite, type FavoriteItem, type FavoriteKind } from '@/api/favorites';
 
 const { statusBarHeight } = useSystemInfo();
 
 type TabKey = 'spot' | 'user';
-type FavKind = 'spot' | 'catch' | 'user';
 type TagTone = 'primary' | 'blue' | 'orange';
-
-interface FavItem {
-  id: string;
-  kind: FavKind;
-  tagText: string;
-  tagTone: TagTone;
-  name: string;
-  meta: string;
-  foot: string;
-  actionText: string;
-}
 
 const activeTab = ref<TabKey>('spot');
 
@@ -136,89 +125,95 @@ const todayBest = ref({
   distance: '4.8km',
 });
 
-const favoriteSpots = ref<FavItem[]>([
-  {
-    id: 'f1',
-    kind: 'spot',
-    tagText: '钓点',
-    tagTone: 'primary',
-    name: '江心洲北汊',
-    meta: '路亚 · 翘嘴/鲈鱼 · 江湾',
-    foot: '今日宜钓评分 86',
-    actionText: '取消',
-  },
-  {
-    id: 'f2',
-    kind: 'spot',
-    tagText: '钓点',
-    tagTone: 'blue',
-    name: '燕子矶江边',
-    meta: '野钓 · 免费 · 缓流',
-    foot: '收藏后 18 人去过',
-    actionText: '取消',
-  },
-  {
-    id: 'f3',
-    kind: 'catch',
-    tagText: '鱼获',
-    tagTone: 'orange',
-    name: '老王的 1.2斤板鲫',
-    meta: '燕子矶江边 · 5-12 早窗',
-    foot: '气压回升, 早窗连竿',
-    actionText: '查看',
-  },
-]);
-
-const favoriteUsers = ref<FavItem[]>([
-  {
-    id: 'u1',
-    kind: 'user',
-    tagText: '钓友',
-    tagTone: 'primary',
-    name: '老周野钓',
-    meta: '5年钓龄 · 常去燕子矶江边',
-    foot: '互相关注',
-    actionText: '取关',
-  },
-  {
-    id: 'u2',
-    kind: 'user',
-    tagText: '钓友',
-    tagTone: 'blue',
-    name: '路亚小陈',
-    meta: '3年钓龄 · 翘嘴/鲈鱼',
-    foot: '上次活跃 30 分钟前',
-    actionText: '取关',
-  },
-  {
-    id: 'u3',
-    kind: 'user',
-    tagText: '钓友',
-    tagTone: 'orange',
-    name: '阿强守水库',
-    meta: '10年钓龄 · 老山水库常驻',
-    foot: '在线',
-    actionText: '取关',
-  },
-]);
+const favoriteSpots = ref<(FavoriteItem & { tagTone: TagTone; actionText: string })[]>([]);
+const favoriteUsers = ref<(FavoriteItem & { tagTone: TagTone; actionText: string })[]>([]);
+const counts = ref({ spot: 0, user: 0 });
+const loading = ref(false);
+const keyword = ref('');
 
 const tabs = computed(() => [
-  { key: 'spot' as TabKey, label: '钓点', count: favoriteSpots.value.length },
-  { key: 'user' as TabKey, label: '钓友', count: favoriteUsers.value.length },
+  { key: 'spot' as TabKey, label: '钓点', count: counts.value.spot },
+  { key: 'user' as TabKey, label: '钓友', count: counts.value.user },
 ]);
 
-const filtered = computed<FavItem[]>(() => {
-  return activeTab.value === 'spot' ? favoriteSpots.value : favoriteUsers.value;
+const filtered = computed(() => {
+  const list = activeTab.value === 'spot' ? favoriteSpots.value : favoriteUsers.value;
+  const kw = keyword.value.trim();
+  if (!kw) return list;
+  return list.filter((item) =>
+    item.name.includes(kw) || item.meta.includes(kw) || item.foot.includes(kw),
+  );
 });
 
+function tagTone(kind: FavoriteKind): TagTone {
+  if (kind === 'catch') return 'orange';
+  if (kind === 'user') return 'blue';
+  return 'primary';
+}
+
+function actionText(kind: FavoriteKind): string {
+  if (kind === 'catch') return '查看';
+  if (kind === 'user') return '取关';
+  return '取消';
+}
+
+function adapt(item: FavoriteItem) {
+  return {
+    ...item,
+    tagTone: tagTone(item.kind),
+    actionText: actionText(item.kind),
+  };
+}
+
+async function loadList() {
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    const resp = await listFavorites({ type: activeTab.value, limit: 50 });
+    counts.value = resp.counts;
+    const list = resp.list.map(adapt);
+    if (activeTab.value === 'spot') {
+      favoriteSpots.value = list;
+    } else {
+      favoriteUsers.value = list;
+    }
+    const firstSpot = list.find((x) => x.kind === 'spot');
+    if (firstSpot) {
+      todayBest.value.name = firstSpot.name;
+      todayBest.value.distance = firstSpot.meta || '已收藏';
+    }
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '收藏加载失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+}
+
+function onTab(key: TabKey) {
+  if (activeTab.value === key) return;
+  activeTab.value = key;
+  void loadList();
+}
+
+onMounted(loadList);
+
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
-const onSearch = () => uni.showToast({ title: '搜索收藏 (待开发)', icon: 'none' });
-const onOpen = (f: FavItem) => {
+const onSearch = () => {
+  uni.showModal({
+    title: '搜索收藏',
+    editable: true,
+    placeholderText: '输入钓点、鱼获或钓友',
+    success: (res) => {
+      if (res.confirm) keyword.value = res.content?.trim() ?? '';
+    },
+  });
+};
+const onOpen = (f: FavoriteItem) => {
   if (f.kind === 'spot')  uni.navigateTo({ url: `/subpackages/spot/detail/index?id=${f.id}` });
   if (f.kind === 'catch') uni.navigateTo({ url: `/subpackages/catch/detail/index?id=${f.id}` });
   if (f.kind === 'user')  uni.navigateTo({ url: `/subpackages/social/user-detail/index?id=${f.id}` });
 };
-const onRemove = (f: FavItem) => {
+const onRemove = (f: FavoriteItem) => {
   if (f.kind === 'catch') {
     onOpen(f);
     return;
@@ -228,15 +223,24 @@ const onRemove = (f: FavItem) => {
 };
 
 const removeOpen = ref(false);
-const removeTarget = ref<FavItem | null>(null);
+const removeTarget = ref<FavoriteItem | null>(null);
 
-const onConfirmRemove = () => {
+const onConfirmRemove = async () => {
   const f = removeTarget.value;
   if (!f) return;
-  const list = f.kind === 'spot' ? favoriteSpots : favoriteUsers;
-  list.value = list.value.filter(item => item.id !== f.id);
-  removeOpen.value = false;
-  uni.showToast({ title: '已取消收藏', icon: 'success' });
+  try {
+    await removeFavorite({ kind: f.kind, id: f.id });
+    const list = f.kind === 'user' ? favoriteUsers : favoriteSpots;
+    list.value = list.value.filter(item => !(item.id === f.id && item.kind === f.kind));
+    counts.value = {
+      ...counts.value,
+      [f.kind === 'user' ? 'user' : 'spot']: Math.max(0, counts.value[f.kind === 'user' ? 'user' : 'spot'] - 1),
+    };
+    removeOpen.value = false;
+    uni.showToast({ title: '已取消收藏', icon: 'success' });
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '操作失败', icon: 'none' });
+  }
 };
 </script>
 

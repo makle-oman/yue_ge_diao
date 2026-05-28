@@ -112,11 +112,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import { updateMe, FISHING_AGE_BAND_LABEL, type MeProfile } from '@/api/users';
+import { useAuthStore } from '@/stores/auth';
 
 const { safeBottom } = useSystemInfo();
+const authStore = useAuthStore();
 
 const profile = ref({
   avatar: '',
@@ -131,9 +134,25 @@ const privacy = ref({
   visible: true,
   publicSpot: false,
 });
+const saving = ref(false);
+
+function applyProfile(me: MeProfile) {
+  profile.value.avatar = me.avatar || '';
+  profile.value.name = me.nickname || `钓友${me.id.slice(-4)}`;
+  profile.value.age = me.fishingAgeBand ? FISHING_AGE_BAND_LABEL[me.fishingAgeBand] : '钓龄待填';
+  profile.value.style = me.playStyles.length ? me.playStyles : ['玩法待填'];
+  profile.value.city = me.city || '城市待填';
+  privacy.value.visible = me.allowNearby;
+  privacy.value.publicSpot = me.allowShowLoc;
+}
+
+onMounted(async () => {
+  const me = authStore.profile || await authStore.refreshMe();
+  if (me) applyProfile(me);
+});
 
 const onEditProfile = () => uni.navigateTo({ url: '/subpackages/profile/edit/index' });
-const onPickField = (k: string) => uni.showToast({ title: `编辑 ${k} (待开发)`, icon: 'none' });
+const onPickField = (_k: string) => uni.navigateTo({ url: '/subpackages/profile/edit/index' });
 const onSubscription = () => uni.showToast({ title: '消息订阅设置 (待开发)', icon: 'none' });
 const onHelp = () => uni.showToast({ title: '帮助与反馈 (待开发)', icon: 'none' });
 const onLogout = () => uni.showModal({
@@ -141,7 +160,10 @@ const onLogout = () => uni.showModal({
   content: '退出后将返回登录页，是否继续？',
   confirmText: '退出',
   success: (r) => {
-    if (r.confirm) uni.reLaunch({ url: '/pages/login/index' });
+    if (r.confirm) {
+      authStore.logout();
+      uni.reLaunch({ url: '/pages/login/index' });
+    }
   },
 });
 const onDelete = () => uni.showModal({
@@ -153,9 +175,22 @@ const onDelete = () => uni.showModal({
     if (r.confirm) uni.showToast({ title: '已提交删除请求', icon: 'success' });
   },
 });
-const onSave = () => {
-  uni.showToast({ title: '已保存', icon: 'success' });
-  setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 600);
+const onSave = async () => {
+  if (saving.value) return;
+  saving.value = true;
+  try {
+    const updated = await updateMe({
+      allowNearby: privacy.value.visible,
+      allowShowLoc: privacy.value.publicSpot,
+    });
+    authStore.patchProfile(updated);
+    uni.showToast({ title: '已保存', icon: 'success' });
+    setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 600);
+  } catch (e: any) {
+    uni.showToast({ title: e?.msg || '保存失败', icon: 'none' });
+  } finally {
+    saving.value = false;
+  }
 };
 </script>
 
