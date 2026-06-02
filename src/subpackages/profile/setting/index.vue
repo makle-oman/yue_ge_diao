@@ -82,11 +82,6 @@
             <mxy-icon name="chevron_right" :size="28" color="#99A5AD" />
           </view>
           <view class="divider" />
-          <view class="op-row" @click="onLogout">
-            <text class="op-label">退出登录</text>
-            <mxy-icon name="chevron_right" :size="28" color="#99A5AD" />
-          </view>
-          <view class="divider" />
           <view class="op-row" @click="onDelete">
             <text class="op-label danger">删除我的所有数据</text>
             <mxy-icon name="chevron_right" :size="28" color="#FF6B6B" />
@@ -152,18 +147,6 @@ const onEditProfile = () => uni.navigateTo({ url: '/subpackages/profile/edit/ind
 const onPickField = (_k: string) => uni.navigateTo({ url: '/subpackages/profile/edit/index' });
 const onSubscription = () => uni.showToast({ title: '消息订阅设置 (待开发)', icon: 'none' });
 const onHelp = () => uni.showToast({ title: '帮助与反馈 (待开发)', icon: 'none' });
-const onLogout = () => uni.showModal({
-  title: '退出登录',
-  content: '退出后将返回登录页，是否继续？',
-  confirmText: '退出',
-  confirmColor: '#C0392B',
-  success: (r) => {
-    if (r.confirm) {
-      authStore.logout();
-      uni.reLaunch({ url: '/pages/login/index' });
-    }
-  },
-});
 const onDelete = () => uni.showModal({
   title: '删除所有数据',
   content: '此操作不可恢复，确认继续？',

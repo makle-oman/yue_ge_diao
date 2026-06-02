@@ -85,8 +85,8 @@
           @click="onMenuTap(m)"
         >
           <mxy-icon :name="m.icon" :size="44" :color="m.color" />
-          <text class="menu-label">{{ m.label }}</text>
-          <mxy-icon name="chevron_right" :size="40" color="#99A5AD" />
+          <text class="menu-label" :class="{ danger: m.danger }">{{ m.label }}</text>
+          <mxy-icon name="chevron_right" :size="40" :color="m.danger ? '#FF6B6B' : '#99A5AD'" />
           <view v-if="idx !== menus.length - 1" class="menu-div" />
         </view>
       </view>
@@ -109,7 +109,7 @@ import { fetchFishLibrary, type FishItem as FishLibraryItem } from '@/api/fishes
 import { useAuthStore } from '@/stores';
 
 interface FishItem { name: string; bg: string; locked?: boolean }
-interface MenuItem { key: string; label: string; icon: string; color: string; path?: string }
+interface MenuItem { key: string; label: string; icon: string; color: string; path?: string; danger?: boolean }
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 const authStore = useAuthStore();
@@ -158,6 +158,7 @@ const menus = ref<MenuItem[]>([
   { key: 'spot',   label: '我的钓点', icon: 'add_location', color: '#5BA9C4', path: '/subpackages/profile/spots/index' },
   { key: 'team',   label: '我的组队', icon: 'groups',       color: '#F5A623', path: '/subpackages/team/list/index' },
   { key: 'favor',  label: '我的收藏', icon: 'star',         color: '#F5A623', path: '/subpackages/profile/favorites/index' },
+  { key: 'logout', label: '退出登录', icon: 'block',        color: '#FF6B6B', danger: true },
 ]);
 
 // 「我的」Tab 顶部 stats 卡:鱼获 total + 最大记录由 /users/catches/stats 拉,
@@ -231,7 +232,20 @@ onShow(() => {
 const onSetting = () => uni.navigateTo({ url: '/subpackages/profile/setting/index' });
 const onMoreFish = () => uni.navigateTo({ url: '/subpackages/profile/fish-library/index' });
 const onFishTap = (f: FishItem) => uni.showToast({ title: f.locked ? '尚未解锁' : f.name, icon: 'none' });
+const onLogout = () => uni.showModal({
+  title: '退出登录',
+  content: '退出后将返回登录页，是否继续？',
+  confirmText: '退出',
+  confirmColor: '#C0392B',
+  success: (r) => {
+    if (r.confirm) {
+      authStore.logout();
+      uni.reLaunch({ url: '/pages/login/index' });
+    }
+  },
+});
 const onMenuTap = (m: MenuItem) => {
+  if (m.key === 'logout') { onLogout(); return; }
   if (m.path) { uni.navigateTo({ url: m.path }); return; }
   uni.showToast({ title: `${m.label} (待开发)`, icon: 'none' });
 };

@@ -242,6 +242,8 @@
     font-size: 30rpx;
     font-weight: 800;
     color: $text-primary;
+
+    &.danger { color: $warning-strong; }
   }
 }
 .menu-div {
