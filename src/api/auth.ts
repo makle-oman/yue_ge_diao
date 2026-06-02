@@ -2,20 +2,15 @@
  * 鉴权相关接口
  *
  * 对应后端 modules/auth
- *   - POST /auth/dev-login  开发环境兜底登录（生产禁用）
+ *   - POST /auth/password-register 手机号 + 密码注册
+ *   - POST /auth/password-login    手机号 + 密码登录
+ *   - POST /auth/wx-login   微信小程序真实登录
  *   - POST /auth/refresh    refresh token 换新一对 (access, refresh)
- *   - 后续：/auth/wx-login、/auth/logout
+ *   - 后续：/auth/logout
  */
 
 import { http } from '@/utils/request';
 import type { AuthUser } from '@/utils/auth';
-
-export interface DevLoginParams {
-  /** 任意字符串，作为 openid 占位；后端会以此 upsert 用户 */
-  openid: string;
-  /** 可选昵称 */
-  nickname?: string;
-}
 
 export interface LoginResult {
   token: string;
@@ -24,8 +19,34 @@ export interface LoginResult {
   user: AuthUser;
 }
 
-export function devLogin(params: DevLoginParams): Promise<LoginResult> {
-  return http.post<LoginResult>('/auth/dev-login', params, { skipAuth: true });
+export interface PasswordAuthParams {
+  phone: string;
+  password: string;
+}
+
+export interface PasswordRegisterParams extends PasswordAuthParams {
+  nickname?: string;
+}
+
+export function passwordRegister(params: PasswordRegisterParams): Promise<LoginResult> {
+  return http.post<LoginResult>('/auth/password-register', params, { skipAuth: true });
+}
+
+export function passwordLogin(params: PasswordAuthParams): Promise<LoginResult> {
+  return http.post<LoginResult>('/auth/password-login', params, { skipAuth: true });
+}
+
+export interface WxLoginParams {
+  /** uni.login({ provider: 'weixin' }) 返回的临时 code */
+  code: string;
+  /** 可选昵称 */
+  nickname?: string;
+  /** 可选头像 URL */
+  avatar?: string;
+}
+
+export function wxLogin(params: WxLoginParams): Promise<LoginResult> {
+  return http.post<LoginResult>('/auth/wx-login', params, { skipAuth: true });
 }
 
 export interface RefreshResult {

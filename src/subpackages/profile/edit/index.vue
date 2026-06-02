@@ -5,12 +5,15 @@
     <scroll-view class="content" scroll-y>
       <view class="form">
         <view class="intro-card">
-          <view class="avatar-wrap">
+          <view class="avatar-wrap" @click="onPickAvatar">
             <mxy-avatar :src="form.avatar" :size="96" />
+            <view class="avatar-mask">
+              <mxy-icon name="add_a_photo" :size="28" color="#fff" />
+            </view>
           </view>
           <view class="intro-text">
             <text class="intro-hello">{{ form.name }}</text>
-            <text class="intro-sub">再补 {{ remaining }} 项资料，就能发布鱼获和钓点。</text>
+            <text class="intro-sub">头像、昵称、城市和玩法会展示在个人主页。</text>
           </view>
         </view>
 
@@ -19,6 +22,20 @@
             <view class="progress-fill" :style="{ width: progressPct + '%' }" />
           </view>
           <text class="progress-text">{{ filled }}/{{ totalFields }}</text>
+        </view>
+
+        <view class="card pad">
+          <text class="card-title">昵称</text>
+          <view class="input-row">
+            <mxy-icon name="person" :size="30" color="#6F7E86" />
+            <input
+              v-model="form.name"
+              class="form-input"
+              maxlength="32"
+              placeholder="请输入昵称"
+              placeholder-class="input-placeholder"
+            />
+          </view>
         </view>
 
         <view class="card pad">
@@ -95,6 +112,7 @@ import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import { uploadImage } from '@/utils/upload';
 import {
   updateMe,
   FISHING_AGE_BAND_LABEL,
@@ -110,6 +128,7 @@ const authStore = useAuthStore();
 
 const ageOptions = ['1年内', '1-3年', '3-5年', '5年以上'] as const;
 const playOptions = ['野钓', '路亚', '黑坑', '海钓', '冰钓'] as const;
+const cityOptions = ['南京', '上海', '杭州', '苏州', '北京', '广州', '深圳', '成都', '武汉', '重庆'];
 
 const form = ref({
   avatar: '',
@@ -122,6 +141,7 @@ const form = ref({
 });
 
 const saving = ref(false);
+const uploading = ref(false);
 
 const togglePlay = (p: string) => {
   const idx = form.value.play.indexOf(p);
@@ -167,10 +187,47 @@ onLoad(() => {
   loadMe();
 });
 
-const onPickCity = () => uni.showToast({ title: '修改城市 (待开发)', icon: 'none' });
+const onPickAvatar = () => {
+  if (uploading.value) return;
+  uni.chooseImage({
+    count: 1,
+    sizeType: ['compressed'],
+    sourceType: ['album', 'camera'],
+    success: async (res) => {
+      const path = res.tempFilePaths?.[0];
+      if (!path) return;
+      uploading.value = true;
+      uni.showLoading({ title: '上传中...' });
+      let avatarUploaded = false;
+      try {
+        const uploaded = await uploadImage(path);
+        form.value.avatar = uploaded.url;
+        avatarUploaded = true;
+      } catch (e) {
+        console.warn('[profile-edit] upload avatar failed', e);
+      } finally {
+        uploading.value = false;
+        uni.hideLoading();
+        if (avatarUploaded) uni.showToast({ title: '头像已上传', icon: 'success' });
+      }
+    },
+  });
+};
+
+const onPickCity = () => uni.showActionSheet({
+  itemList: cityOptions,
+  success: ({ tapIndex }) => {
+    form.value.city = cityOptions[tapIndex] || form.value.city;
+  },
+});
 
 const onSave = async () => {
   if (saving.value) return;
+  const name = form.value.name.trim();
+  if (!name) {
+    uni.showToast({ title: '请输入昵称', icon: 'none' });
+    return;
+  }
   if (remaining.value > 0) {
     uni.showToast({ title: `还有 ${remaining.value} 项必填`, icon: 'none' });
     return;
@@ -178,6 +235,8 @@ const onSave = async () => {
   saving.value = true;
   try {
     const payload: UpdateMePayload = {
+      nickname: name,
+      avatar: form.value.avatar,
       city: form.value.city,
       playStyles: form.value.play,
       allowNearby: form.value.allowNearby,

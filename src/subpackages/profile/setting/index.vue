@@ -43,13 +43,6 @@
           </view>
           <view class="divider" />
 
-          <view class="row" @click="onPickField('signature')">
-            <text class="row-label">个性签名</text>
-            <view class="row-value">
-              <text class="row-value-text accent">{{ profile.signature }}</text>
-              <mxy-icon name="chevron_right" :size="26" color="#2D8F87" />
-            </view>
-          </view>
         </view>
 
         <view class="card">
@@ -113,6 +106,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
 import { updateMe, FISHING_AGE_BAND_LABEL, type MeProfile } from '@/api/users';
@@ -127,7 +121,6 @@ const profile = ref({
   age: '5年以上',
   style: ['野钓', '路亚'],
   city: '南京',
-  signature: '愿者上钩',
 });
 
 const privacy = ref({
@@ -151,6 +144,10 @@ onMounted(async () => {
   if (me) applyProfile(me);
 });
 
+onShow(() => {
+  if (authStore.profile) applyProfile(authStore.profile);
+});
+
 const onEditProfile = () => uni.navigateTo({ url: '/subpackages/profile/edit/index' });
 const onPickField = (_k: string) => uni.navigateTo({ url: '/subpackages/profile/edit/index' });
 const onSubscription = () => uni.showToast({ title: '消息订阅设置 (待开发)', icon: 'none' });
@@ -159,6 +156,7 @@ const onLogout = () => uni.showModal({
   title: '退出登录',
   content: '退出后将返回登录页，是否继续？',
   confirmText: '退出',
+  confirmColor: '#C0392B',
   success: (r) => {
     if (r.confirm) {
       authStore.logout();

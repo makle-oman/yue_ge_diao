@@ -9,18 +9,12 @@
  * 后端 main.ts 已 `app.enableCors({ origin: true, credentials: true })`，
  * 因此本地 localhost:3000 可直接联调，不需 Vite dev-server 代理。
  */
-
-const isDev = import.meta.env.MODE !== 'production';
-
 export const env = {
   /** 后端 API 根地址（含 /api 前缀，与后端 setGlobalPrefix 对齐） */
-  apiBaseUrl: isDev
+  apiBaseUrl: import.meta.env.MODE !== 'production'
     ? 'http://localhost:3000/api'
     : 'https://api.yuegediao.example.com/api',
 
   /** 请求超时（ms） */
   requestTimeout: 15_000,
-
-  /** 是否启用 dev-login 兜底入口（生产环境隐藏） */
-  enableDevLogin: isDev,
 };

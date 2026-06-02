@@ -109,7 +109,7 @@ import { fetchFishLibrary, type FishItem as FishLibraryItem } from '@/api/fishes
 import { useAuthStore } from '@/stores';
 
 interface FishItem { name: string; bg: string; locked?: boolean }
-interface MenuItem { key: string; label: string; icon: string; color: string; path?: string; action?: 'logout' }
+interface MenuItem { key: string; label: string; icon: string; color: string; path?: string }
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
 const authStore = useAuthStore();
@@ -158,7 +158,6 @@ const menus = ref<MenuItem[]>([
   { key: 'spot',   label: '我的钓点', icon: 'add_location', color: '#5BA9C4', path: '/subpackages/profile/spots/index' },
   { key: 'team',   label: '我的组队', icon: 'groups',       color: '#F5A623', path: '/subpackages/team/list/index' },
   { key: 'favor',  label: '我的收藏', icon: 'star',         color: '#F5A623', path: '/subpackages/profile/favorites/index' },
-  { key: 'logout', label: '退出登录', icon: 'logout',       color: '#C0392B', action: 'logout' },
 ]);
 
 // 「我的」Tab 顶部 stats 卡:鱼获 total + 最大记录由 /users/catches/stats 拉,
@@ -233,19 +232,6 @@ const onSetting = () => uni.navigateTo({ url: '/subpackages/profile/setting/inde
 const onMoreFish = () => uni.navigateTo({ url: '/subpackages/profile/fish-library/index' });
 const onFishTap = (f: FishItem) => uni.showToast({ title: f.locked ? '尚未解锁' : f.name, icon: 'none' });
 const onMenuTap = (m: MenuItem) => {
-  if (m.action === 'logout') {
-    uni.showModal({
-      title: '提示',
-      content: '确认退出登录？',
-      success: ({ confirm }) => {
-        if (!confirm) return;
-        authStore.logout();
-        uni.showToast({ title: '已退出', icon: 'success' });
-        setTimeout(() => uni.redirectTo({ url: '/pages/login/index' }), 400);
-      },
-    });
-    return;
-  }
   if (m.path) { uni.navigateTo({ url: m.path }); return; }
   uni.showToast({ title: `${m.label} (待开发)`, icon: 'none' });
 };

@@ -47,7 +47,7 @@ export class BizError extends Error {
 }
 
 export interface RequestOptions {
-  /** 接口路径，以 / 开头，例如 /auth/dev-login */
+  /** 接口路径，以 / 开头，例如 /auth/password-login */
   url: string;
   /** HTTP 方法；后端走 RPC 风格 POST，因此默认 POST */
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';

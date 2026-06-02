@@ -29,6 +29,7 @@
   box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
 }
 .avatar-wrap {
+  position: relative;
   width: 108rpx;
   height: 108rpx;
   border-radius: 50%;
@@ -39,6 +40,20 @@
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
+
+  &:active { opacity: .86; }
+}
+.avatar-mask {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 42rpx;
+  height: 42rpx;
+  border-radius: 50%;
+  background: rgba(26, 43, 51, .72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .intro-text {
   flex: 1;
@@ -99,6 +114,26 @@
   font-size: 30rpx;
   font-weight: 900;
   color: $text-primary;
+}
+.input-row {
+  height: 92rpx;
+  border-radius: 24rpx;
+  background: $bg-page;
+  border: 1rpx solid $border-light;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+.form-input {
+  flex: 1;
+  min-width: 0;
+  height: 92rpx;
+  font-size: 30rpx;
+  color: $text-primary;
+}
+.input-placeholder {
+  color: $text-placeholder;
 }
 
 .seg-row {

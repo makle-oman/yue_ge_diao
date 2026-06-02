@@ -1,8 +1,6 @@
-
 .login {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   background: $bg-page;
@@ -12,7 +10,7 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 896rpx;
+  height: 520rpx;
   flex: none;
 }
 .hero-img {
@@ -26,9 +24,9 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(18, 52, 45, 0.30) 0%,
-    rgba(18, 52, 45, 0.55) 70%,
-    rgba(18, 52, 45, 0.80) 100%
+    rgba(18, 52, 45, 0.25) 0%,
+    rgba(18, 52, 45, 0.54) 70%,
+    rgba(18, 52, 45, 0.78) 100%
   );
 }
 .hero-top {
@@ -60,7 +58,7 @@
     font-size: 32rpx;
     color: #fff;
     font-weight: 900;
-    letter-spacing: 2rpx;
+    letter-spacing: 0;
   }
 }
 
@@ -69,11 +67,11 @@
   flex: 1;
   margin-top: -56rpx;
   background: $bg-page;
-  border-radius: 56rpx 56rpx 0 0;
-  padding: 56rpx 48rpx;
+  border-radius: 48rpx 48rpx 0 0;
+  padding: 48rpx 40rpx 56rpx;
   display: flex;
   flex-direction: column;
-  gap: 36rpx;
+  gap: 28rpx;
   position: relative;
   z-index: 4;
 }
@@ -81,10 +79,10 @@
 .welcome {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 12rpx;
 
   .welcome-title {
-    font-size: 48rpx;
+    font-size: 44rpx;
     color: $text-primary;
     font-weight: 900;
   }
@@ -95,28 +93,107 @@
   }
 }
 
-.wx-btn {
+.auth-tabs {
+  height: 80rpx;
+  padding: 6rpx;
+  border-radius: 40rpx;
+  background: #EAF0F1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rpx;
+}
+.auth-tab {
+  min-width: 0;
+  height: 68rpx;
+  border-radius: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 28rpx;
+    color: $text-secondary;
+    font-weight: 800;
+  }
+
+  &.active {
+    background: $bg-card;
+    box-shadow: 0 6rpx 18rpx rgba(26, 43, 51, 0.08);
+
+    text {
+      color: $primary;
+    }
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22rpx;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+.field-label {
+  font-size: 24rpx;
+  color: $text-primary;
+  font-weight: 800;
+}
+.input-row {
+  height: 96rpx;
+  border-radius: 24rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+.form-input {
+  flex: 1;
+  min-width: 0;
+  height: 96rpx;
+  font-size: 30rpx;
+  color: $text-primary;
+}
+.password-toggle {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input-placeholder {
+  color: $text-placeholder;
+}
+
+.submit-btn {
   height: 104rpx;
   border-radius: 52rpx;
   background: $primary;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
-  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.32);
+  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.30);
 
   &:active { transform: scale(.98); }
 
-  .wx-btn-text {
+  &.disabled {
+    opacity: .64;
+  }
+
+  .submit-btn-text {
     font-size: 32rpx;
     color: #fff;
     font-weight: 900;
   }
 }
 
-.phone-btn {
-  height: 96rpx;
-  border-radius: 48rpx;
+.wx-btn {
+  height: 88rpx;
+  border-radius: 44rpx;
   background: $bg-card;
   border: 1rpx solid $border-light;
   display: flex;
@@ -125,19 +202,18 @@
   gap: 12rpx;
 
   &:active { transform: scale(.98); }
-
-  .phone-btn-text {
-    font-size: 30rpx;
-    color: $text-primary;
-    font-weight: 800;
-  }
+}
+.wx-btn-text {
+  font-size: 28rpx;
+  color: $primary;
+  font-weight: 800;
 }
 
 .benefits {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-  padding: 8rpx 0;
+  gap: 14rpx;
+  padding: 2rpx 0;
 }
 .benefit {
   display: flex;
