@@ -69,15 +69,18 @@
           </view>
         </view>
 
-        <view class="city-card" @click="onPickCity">
-          <view class="city-icon">
-            <mxy-icon name="location_on" :size="32" color="#5BA9C4" />
+        <view class="card pad">
+          <text class="card-title">常驻城市</text>
+          <view class="input-row">
+            <mxy-icon name="location_on" :size="30" color="#6F7E86" />
+            <input
+              v-model="form.city"
+              class="form-input"
+              maxlength="20"
+              placeholder="请输入常驻城市，如 南京"
+              placeholder-class="input-placeholder"
+            />
           </view>
-          <view class="city-text">
-            <text class="city-main">常驻城市</text>
-            <text class="city-sub">{{ form.city || '未填写' }} · 点击修改</text>
-          </view>
-          <text class="city-edit">修改</text>
         </view>
 
         <view class="card">
@@ -128,7 +131,6 @@ const authStore = useAuthStore();
 
 const ageOptions = ['1年内', '1-3年', '3-5年', '5年以上'] as const;
 const playOptions = ['野钓', '路亚', '黑坑', '海钓', '冰钓'] as const;
-const cityOptions = ['南京', '上海', '杭州', '苏州', '北京', '广州', '深圳', '成都', '武汉', '重庆'];
 
 const form = ref({
   avatar: '',
@@ -213,13 +215,6 @@ const onPickAvatar = () => {
     },
   });
 };
-
-const onPickCity = () => uni.showActionSheet({
-  itemList: cityOptions,
-  success: ({ tapIndex }) => {
-    form.value.city = cityOptions[tapIndex] || form.value.city;
-  },
-});
 
 const onSave = async () => {
   if (saving.value) return;

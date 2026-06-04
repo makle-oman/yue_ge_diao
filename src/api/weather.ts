@@ -5,7 +5,8 @@ export type PressureTrend = 'up' | 'stable' | 'down';
 export type FishingIndexLevel = 'excellent' | 'good' | 'normal' | 'bad';
 
 export interface WeatherCurrent {
-  weather: WeatherName;
+  /** 真实数据下为和风返回的天气文字（如「多云」「雷阵雨」），mock 下为内置档位 */
+  weather: string;
   temperature: number;
   pressure: number;
   pressureTrend: PressureTrend;
@@ -16,7 +17,8 @@ export interface WeatherCurrent {
   visibility: number;
   moonPhase: string;
   updatedAt: string;
-  source: 'mock';
+  /** qweather=和风真实数据，mock=后端兜底 */
+  source: 'qweather' | 'mock';
 }
 
 export interface FishingIndex {
