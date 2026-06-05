@@ -30,29 +30,41 @@
   position: relative;
   height: 240rpx;
   background: $map-land;
-  padding: 28rpx;
+  padding: 0;
 
-  .loc-river {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 32rpx;
-    height: 100rpx;
-    background: $map-water;
-    border-radius: 50% / 100rpx 100rpx 0 0;
+  .loc-map-view,
+  .loc-map-fallback {
+    width: 100%;
+    height: 100%;
   }
-  .loc-dot {
-    position: absolute;
-    left: 50%;
-    bottom: 80rpx;
-    width: 40rpx;
-    height: 40rpx;
-    border-radius: 50%;
-    background: $secondary;
-    border: 8rpx solid #fff;
-    transform: translateX(-50%);
-    box-shadow: 0 4rpx 12rpx rgba(91, 169, 196, 0.5);
+
+  .loc-map-fallback {
+    position: relative;
+    background: $map-land;
+    padding: 28rpx;
+    box-sizing: border-box;
+
+    .loc-river {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 32rpx;
+      height: 100rpx;
+      background: $map-water;
+      border-radius: 50% / 100rpx 100rpx 0 0;
+    }
   }
+
+  .loc-map-badge {
+    position: absolute;
+    left: 24rpx;
+    top: 24rpx;
+    padding: 12rpx 18rpx;
+    border-radius: 20rpx;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 4rpx 14rpx rgba(26, 43, 51, 0.12);
+  }
+
   .loc-title {
     font-size: 28rpx;
     font-weight: 900;
@@ -60,28 +72,34 @@
   }
 }
 .loc-row {
-  height: 96rpx;
-  padding: 0 24rpx;
+  min-height: 96rpx;
+  padding: 16rpx 24rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16rpx;
 }
 .loc-acc {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 8rpx;
-  height: 56rpx;
+  min-height: 56rpx;
   padding: 0 20rpx;
   border-radius: 28rpx;
   background: $soft-primary;
 
   .loc-acc-text {
+    flex: 1;
     font-size: 22rpx;
     color: $primary;
     font-weight: 800;
+    line-height: 1.35;
   }
 }
 .loc-relocate {
+  flex-shrink: 0;
   height: 56rpx;
   padding: 0 24rpx;
   border-radius: 28rpx;

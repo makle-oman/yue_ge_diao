@@ -43,7 +43,7 @@
             :key="s.key"
             class="seg"
             :class="{ active: activeSeg === s.key }"
-            @click="activeSeg = s.key"
+            @click="switchSegment(s.key)"
           >
             <text>{{ s.label }}</text>
           </view>
@@ -56,7 +56,7 @@
             :key="c.key"
             class="chip"
             :class="{ active: activeChip === c.key }"
-            @click="activeChip = c.key"
+            @click="switchChip(c.key)"
           >
             <text>{{ c.label }}</text>
           </view>
@@ -74,17 +74,33 @@
             v-for="f in displayFish"
             :key="f.name"
             class="fish-tile"
-            :class="{ locked: !f.unlocked }"
+            :class="[{ locked: !f.unlocked }, f.rarityClass]"
             @click="onTap(f)"
           >
-            <view class="fish-circle" :class="`tone-${f.tone}`">
-              <mxy-icon name="set_meal" :size="48" :color="f.unlocked ? '#1A2B33' : '#BFC8CE'" />
-              <view v-if="f.unlocked" class="fish-check">
-                <mxy-icon name="check" :size="20" color="#fff" />
+            <view class="fish-cover">
+              <image v-if="f.image" class="fish-img" :src="f.image" mode="aspectFill" />
+              <view v-else class="fish-silhouette">
+                <view class="fish-body-shape" />
+                <view class="fish-tail-shape" />
+              </view>
+              <view v-if="f.rarityLabel" class="rarity-badge">
+                <text>{{ f.rarityLabel }}</text>
+              </view>
+              <view v-if="!f.unlocked" class="lock-mask">
+                <mxy-icon name="lock" :size="34" color="#fff" />
               </view>
             </view>
-            <text class="fish-name">{{ f.name }}</text>
-            <text class="fish-meta">{{ f.unlocked ? f.record : '未点亮' }}</text>
+            <view class="fish-info">
+              <text class="fish-name">{{ f.unlocked ? f.name : '未知鱼种' }}</text>
+              <text class="fish-meta">{{ f.unlocked ? f.record : '未解锁' }}</text>
+              <view class="fish-foot">
+                <mxy-icon :name="f.unlocked ? 'schedule' : 'info'" :size="22" :color="f.unlocked ? '#2D8F87' : '#AAB6BD'" />
+                <text>{{ f.unlocked ? f.firstCatchText : f.lockHint }}</text>
+              </view>
+            </view>
+          </view>
+          <view v-if="!displayFish.length" class="empty-state">
+            <text>暂无鱼种</text>
           </view>
         </view>
 
@@ -107,7 +123,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useSystemInfo } from '@/utils/useSystemInfo';
-import { fetchFishLibrary, type FishCategory, type FishItem, type FishStats } from '@/api/fishes';
+import { fetchFishLibrary, type FishCategory, type FishFilter, type FishItem, type FishRarity, type FishStats } from '@/api/fishes';
 import { formatWeight } from '@/api/catches';
 
 const { statusBarHeight, capsuleRightWidth } = useSystemInfo();
@@ -121,7 +137,6 @@ const heroTopStyle = computed<Record<string, string>>(() => {
 });
 
 type SegKey = 'fresh' | 'sea';
-type ChipKey = 'unlocked' | 'common' | 'locked';
 type Tone = 'primary' | 'blue' | 'orange' | 'ghost';
 
 interface Fish {
@@ -129,21 +144,28 @@ interface Fish {
   category: FishCategory;
   tone: Tone;
   record: string;
+  firstCatchText: string;
+  lockHint: string;
+  rarity?: FishRarity;
+  rarityLabel: string;
+  rarityClass: string;
+  image?: string;
   unlocked: boolean;
   common: boolean;
 }
 
 const activeSeg = ref<SegKey>('fresh');
-const activeChip = ref<ChipKey>('unlocked');
+const activeChip = ref<FishFilter>('all');
 
 const segments = [
   { key: 'fresh' as SegKey, label: '淡水鱼' },
   { key: 'sea'   as SegKey, label: '海鱼' },
 ];
 const chips = [
-  { key: 'unlocked' as ChipKey, label: '已点亮' },
-  { key: 'common'   as ChipKey, label: '常见鱼' },
-  { key: 'locked'   as ChipKey, label: '未点亮' },
+  { key: 'all'      as FishFilter, label: '全部' },
+  { key: 'common'   as FishFilter, label: '常见' },
+  { key: 'rare'     as FishFilter, label: '稀有' },
+  { key: 'locked'   as FishFilter, label: '未点亮' },
 ];
 
 const stats = ref<FishStats>({
@@ -152,11 +174,17 @@ const stats = ref<FishStats>({
 });
 const fishList = ref<Fish[]>([]);
 const loading = ref(false);
+let requestSeq = 0;
 
 const totalUnlocked = computed(() => stats.value.fresh.done + stats.value.sea.done);
 const totalCount = computed(() => stats.value.fresh.total + stats.value.sea.total);
 const progressPct = computed(() => totalCount.value ? Math.round(totalUnlocked.value / totalCount.value * 100) : 0);
 const barPct = progressPct;
+const rarityText: Record<FishRarity, string> = {
+  rare: '稀有',
+  epic: '极罕',
+  legendary: '传说',
+};
 
 function toneOf(f: FishItem): Tone {
   if (!f.unlocked) return 'ghost';
@@ -164,41 +192,64 @@ function toneOf(f: FishItem): Tone {
   if (f.common) return 'primary';
   return 'orange';
 }
+function formatFirstCatch(date: string | null) {
+  if (!date) return '首次: 未记录';
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '首次: 未记录';
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `首次: ${y}.${m}.${day}`;
+}
 
 function adaptFish(f: FishItem): Fish {
+  const rarityLabel = f.rarity ? rarityText[f.rarity] : '';
   return {
     name: f.name,
     category: f.category,
     tone: toneOf(f),
-    record: f.unlocked ? `记录 ${formatWeight(f.maxWeightG)}` : '未点亮',
+    record: f.unlocked ? `最高 ${formatWeight(f.maxWeightG)}` : '未点亮',
+    firstCatchText: formatFirstCatch(f.firstCatchAt),
+    lockHint: f.rarity ? '未知水域' : (f.category === 'fresh' ? '淡水常见' : '海水常见'),
+    rarity: f.rarity,
+    rarityLabel,
+    rarityClass: f.rarity ? `rarity-${f.rarity}` : '',
+    image: f.image,
     unlocked: f.unlocked,
     common: f.common,
   };
 }
 
 async function loadLibrary() {
-  if (loading.value) return;
+  const seq = ++requestSeq;
   loading.value = true;
   try {
-    const resp = await fetchFishLibrary();
+    const resp = await fetchFishLibrary({
+      category: activeSeg.value,
+      filter: activeChip.value,
+    });
+    if (seq !== requestSeq) return;
     stats.value = resp.stats;
     fishList.value = resp.list.map(adaptFish);
   } catch (e: any) {
-    uni.showToast({ title: e?.msg || '鱼库加载失败', icon: 'none' });
+    if (seq === requestSeq) uni.showToast({ title: e?.msg || '鱼库加载失败', icon: 'none' });
   } finally {
-    loading.value = false;
+    if (seq === requestSeq) loading.value = false;
   }
 }
+function switchSegment(key: SegKey) {
+  if (activeSeg.value === key) return;
+  activeSeg.value = key;
+  activeChip.value = 'all';
+  void loadLibrary();
+}
+function switchChip(key: FishFilter) {
+  if (activeChip.value === key) return;
+  activeChip.value = key;
+  void loadLibrary();
+}
 
-const displayFish = computed<Fish[]>(() => {
-  const pool = fishList.value.filter((f) => f.category === activeSeg.value);
-  switch (activeChip.value) {
-    case 'unlocked': return pool.filter(f => f.unlocked);
-    case 'locked':   return pool.filter(f => !f.unlocked);
-    case 'common':   return pool.filter(f => f.common);
-    default:         return pool;
-  }
-});
+const displayFish = computed<Fish[]>(() => fishList.value);
 
 onMounted(loadLibrary);
 

@@ -44,6 +44,15 @@
     },
     /* 快应用特有相关 */
     "quickapp" : {},
+    "h5" : {
+        "sdkConfigs" : {
+            "maps" : {
+                "tencent" : {
+                    "key" : "FVOBZ-SUSY7-GHEXO-HEQ77-P6NSV-AZF6G"
+                }
+            }
+        }
+    },
     /* 小程序特有相关 */
     "mp-weixin" : {
         "appid" : "",

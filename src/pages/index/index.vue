@@ -8,7 +8,7 @@
       <text> 改成 <cover-view>, 并把 mxy-icon 替换为 cover-image (因为字体图标在 cover-view 里不渲染)。
       H5/App 端无此问题。
     -->
-    <!-- #ifdef MP-WEIXIN -->
+    <!-- #ifdef MP-WEIXIN || H5 -->
     <map
       class="map-view"
       :latitude="center.latitude"
@@ -23,10 +23,12 @@
     <!-- #endif -->
 
     <!-- #ifndef MP-WEIXIN -->
+    <!-- #ifndef H5 -->
     <view class="map-mock">
       <view class="map-mock-grid" />
-      <text class="map-mock-tip">地图区域 · H5 端待接入腾讯地图 JS SDK</text>
+      <text class="map-mock-tip">地图区域 · 当前端待接入地图 SDK</text>
     </view>
+    <!-- #endif -->
     <!-- #endif -->
 
     <!-- 顶部胶囊导航 (城市选择 + 搜索 + 通知) -->
@@ -107,17 +109,25 @@
         </view>
         <view class="city-search">
           <mxy-icon name="search" :size="32" color="#6B7B85" />
-          <text class="city-search-text">搜索城市 / 区县</text>
+          <input
+            class="city-search-input"
+            v-model="cityKeyword"
+            confirm-type="search"
+            placeholder="搜索城市 / 区县"
+            placeholder-style="color:#99A5AD"
+            @input="onCityKeywordInput"
+            @confirm="loadCityOptions(false)"
+          />
         </view>
         <view class="current-city-card">
           <mxy-icon name="my_location" :size="40" color="#2D8F87" />
           <view class="current-city-main">
             <text class="current-city-title">当前定位：{{ city }}</text>
-            <text class="current-city-sub">江宁区 · 已为你筛选附近钓点</text>
+            <text class="current-city-sub">{{ currentCitySub }}</text>
           </view>
           <text class="relocate-text" @click="onLocate">重定位</text>
         </view>
-        <text class="city-block-title">热门城市</text>
+        <text class="city-block-title">{{ cityListTitle }}</text>
         <view class="city-pill-row">
           <view
             v-for="item in hotCities"
@@ -129,22 +139,27 @@
             <text>{{ item.name }}</text>
           </view>
         </view>
-        <text class="city-block-title">最近访问</text>
-        <view class="recent-city-list">
-          <view
-            v-for="item in recentCities"
-            :key="item.name"
-            class="recent-city-row"
-            :class="{ active: item.name === city }"
-            @click="selectCity(item)"
-          >
-            <view>
-              <text class="recent-city-name">{{ item.name }}</text>
-              <text class="recent-city-meta">{{ item.spots }} 个钓点 · {{ item.anglers }} 位钓友在线</text>
-            </view>
-            <mxy-icon v-if="item.name === city" name="check_circle" :size="32" color="#2D8F87" />
-          </view>
+        <view v-if="!loadingCities && hotCities.length === 0" class="city-empty">
+          <text>暂无匹配城市</text>
         </view>
+        <template v-if="!cityKeyword.trim() && recentCities.length">
+          <text class="city-block-title">最近访问</text>
+          <view class="recent-city-list">
+            <view
+              v-for="item in recentCities"
+              :key="item.name"
+              class="recent-city-row"
+              :class="{ active: item.name === city }"
+              @click="selectCity(item)"
+            >
+              <view>
+                <text class="recent-city-name">{{ item.name }}</text>
+                <text class="recent-city-meta">{{ item.spots }} 个钓点 · {{ item.anglers }} 位钓友在线</text>
+              </view>
+              <mxy-icon v-if="item.name === city" name="check_circle" :size="32" color="#2D8F87" />
+            </view>
+          </view>
+        </template>
       </view>
     </view>
 
@@ -174,6 +189,9 @@
               <text class="notify-row-meta">{{ item.meta }}</text>
             </view>
             <view v-if="item.unread" class="notify-unread-dot" />
+          </view>
+          <view v-if="!notificationPreview.length" class="notify-empty">
+            <text>{{ loggedIn ? '暂无消息' : '登录后查看消息' }}</text>
           </view>
         </view>
         <view class="notify-more" @click="onViewAllNotifications">
@@ -223,17 +241,31 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
+import { isLoggedIn } from '@/utils/auth';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 import {
   nearbySpots,
+  listSpotCities,
   formatDistance,
   SPOT_TYPE_LABEL,
+  type SpotCityOption,
   type SpotListItem,
   type SpotType,
   type WaterType,
 } from '@/api/spots';
 import { fetchFishingIndex } from '@/api/weather';
+import {
+  getUnreadCount,
+  listNotifications,
+  markNotificationsRead,
+  notificationActionText,
+  notificationExcerpt,
+  notificationTargetPath,
+  type NotificationGroup,
+  type NotificationItem as ApiNotificationItem,
+} from '@/api/notifications';
 
 interface FilterChip { key: ChipKey; label: string }
 interface SpotItem {
@@ -248,19 +280,26 @@ interface SpotItem {
   score: number;
   latitude: number;
   longitude: number;
+  city: string | null;
 }
-interface CityOption {
-  readonly name: string;
-  readonly spots: number;
-  readonly anglers: number;
-}
-interface NotificationItem {
+type CityOption = SpotCityOption;
+interface HomeNotificationItem {
   readonly id: string;
   readonly icon: string;
   readonly title: string;
   readonly meta: string;
   readonly unread: boolean;
-  readonly target: string;
+  readonly target: string | null;
+}
+interface UniLocationAddress {
+  city?: string;
+  province?: string;
+  district?: string;
+}
+interface UniLocationResult {
+  latitude: number;
+  longitude: number;
+  address?: UniLocationAddress | null;
 }
 
 const TYPE_EMOJI: Record<SpotType, string> = {
@@ -295,6 +334,7 @@ const CHIP_QUERY: Record<ChipKey, { type?: SpotType; waterType?: WaterType }> = 
 
 const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
 const NEARBY_RADIUS_M = 10000;
+const CITY_RADIUS_M = 200000;
 const NEARBY_LIMIT = 30;
 const FALLBACK_COVER = 'https://images.unsplash.com/photo-1727524315467-264c0bd47a13?w=600';
 
@@ -325,6 +365,7 @@ function adaptSpot(item: SpotListItem): SpotItem {
     score: ratingToScore(item.avgRating, item.ratingCount),
     latitude: item.lat,
     longitude: item.lng,
+    city: item.city,
   };
 }
 
@@ -342,13 +383,17 @@ const topRowStyle = computed<Record<string, string>>(() => {
 });
 
 const city = ref('南京');
-const hasUnread = ref(true);
+const currentDistrict = ref('');
+const loggedIn = ref(isLoggedIn());
+const unreadTotal = ref(0);
 const activeChip = ref<ChipKey>('all');
 const showCitySheet = ref(false);
 const showNotifyPopover = ref(false);
 const nearbyAnglersOnline = ref(12);
 const activeSpotId = ref<string>('');
 const scrollIntoView = ref<string>('');
+const cityKeyword = ref('');
+const loadingCities = ref(false);
 
 const filterChips = ref<FilterChip[]>([
   { key: 'all',     label: '全部' },
@@ -367,48 +412,20 @@ const fishingIndex = ref({
 });
 
 const hotCities = ref<CityOption[]>([
-  { name: '南京', spots: 23, anglers: 12 },
-  { name: '杭州', spots: 18, anglers: 9 },
-  { name: '苏州', spots: 16, anglers: 7 },
-  { name: '上海', spots: 21, anglers: 11 },
+  { name: '南京', spots: 0, anglers: 0, latitude: DEFAULT_CENTER.latitude, longitude: DEFAULT_CENTER.longitude },
 ]);
 
 const recentCities = ref<CityOption[]>([
-  { name: '南京', spots: 23, anglers: 12 },
-  { name: '扬州', spots: 8, anglers: 3 },
+  { name: '南京', spots: 0, anglers: 0, latitude: DEFAULT_CENTER.latitude, longitude: DEFAULT_CENTER.longitude },
 ]);
 
-const notificationPreview = ref<NotificationItem[]>([
-  {
-    id: 'n1',
-    icon: 'chat_bubble',
-    title: '老周评论了你的鱼获',
-    meta: '“这位置明早还能去吗？” · 5分钟前',
-    unread: true,
-    target: '/pages/message/index',
-  },
-  {
-    id: 'n2',
-    icon: 'favorite',
-    title: '老王收藏了你的钓点',
-    meta: '燕子矶江边 · 12分钟前',
-    unread: true,
-    target: '/pages/message/index',
-  },
-  {
-    id: 'n3',
-    icon: 'groups',
-    title: '组队约钓有新报名',
-    meta: '江心洲夜钓队 · 1小时前',
-    unread: true,
-    target: '/pages/message/index',
-  },
-]);
+const notificationPreview = ref<HomeNotificationItem[]>([]);
 
 const center = ref({ ...DEFAULT_CENTER });
 const spots = ref<SpotItem[]>([]);
 const loadingSpots = ref(false);
 let spotRequestSeq = 0;
+let cityRequestSeq = 0;
 
 const filteredSpots = computed(() => spots.value);
 
@@ -432,10 +449,88 @@ const markers = computed(() =>
   })),
 );
 
-const unreadCount = computed(() => notificationPreview.value.filter((item) => item.unread).length);
+const hasUnread = computed(() => unreadTotal.value > 0);
+const unreadCount = computed(() => unreadTotal.value);
+const cityListTitle = computed(() => cityKeyword.value.trim() ? '搜索结果' : '热门城市');
+const currentCitySub = computed(() =>
+  currentDistrict.value ? `${currentDistrict.value} · 已为你筛选附近钓点` : '已为你筛选附近钓点',
+);
 
-async function locateUser(silent = false) {
+const NOTIFICATION_ICON: Record<NotificationGroup, string> = {
+  comment: 'alternate_email',
+  like: 'favorite',
+  team: 'groups',
+  system: 'campaign',
+};
+
+function timeAgo(iso: string): string {
+  const t = new Date(iso).getTime();
+  if (Number.isNaN(t)) return '';
+  const diff = Date.now() - t;
+  if (diff < 60_000) return '刚刚';
+  if (diff < 3_600_000) return Math.floor(diff / 60_000) + ' 分钟前';
+  if (diff < 86_400_000) return Math.floor(diff / 3_600_000) + ' 小时前';
+  if (diff < 7 * 86_400_000) return Math.floor(diff / 86_400_000) + ' 天前';
+  const d = new Date(iso);
+  return `${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
+function adaptNotification(n: ApiNotificationItem): HomeNotificationItem {
+  const actor = n.actor?.name || '钓友';
+  const excerpt = notificationExcerpt(n);
+  return {
+    id: n.id,
+    icon: NOTIFICATION_ICON[n.group] ?? 'campaign',
+    title: `${actor}${notificationActionText(n)}`,
+    meta: excerpt ? `${timeAgo(n.createdAt)} · ${excerpt}` : timeAgo(n.createdAt),
+    unread: !n.readAt,
+    target: notificationTargetPath(n),
+  };
+}
+
+function normalizeCityName(name: string): string {
+  return name.trim().replace(/市$/, '');
+}
+
+function updateCurrentPlace(nextCity?: string | null, nextDistrict?: string | null): boolean {
+  const cityName = nextCity?.trim();
+  if (!cityName) return false;
+  city.value = normalizeCityName(cityName);
+  currentDistrict.value = nextDistrict?.trim() || '';
+  return true;
+}
+
+function rememberCity(item: CityOption) {
+  recentCities.value = [
+    item,
+    ...recentCities.value.filter((cityItem) => cityItem.name !== item.name),
+  ].slice(0, 3);
+}
+
+async function loadCityOptions(silent = true) {
+  const seq = ++cityRequestSeq;
+  loadingCities.value = true;
   try {
+    const keyword = cityKeyword.value.trim();
+    const { list } = await listSpotCities({
+      keyword: keyword || undefined,
+      limit: keyword ? 20 : 8,
+    });
+    if (seq !== cityRequestSeq) return;
+    hotCities.value = list;
+    if (!keyword && recentCities.value.length === 0) {
+      recentCities.value = list.slice(0, 2);
+    }
+  } catch (e: any) {
+    if (seq === cityRequestSeq && !silent) uni.showToast({ title: e?.msg || '城市加载失败', icon: 'none' });
+  } finally {
+    if (seq === cityRequestSeq) loadingCities.value = false;
+  }
+}
+
+async function locateUser(silent = false): Promise<boolean> {
+  try {
+    // #ifdef MP-WEIXIN
     const setting: any = await new Promise((resolve, reject) =>
       uni.getSetting({ success: resolve, fail: reject }),
     );
@@ -446,15 +541,23 @@ async function locateUser(silent = false) {
         confirmText: '去设置',
         success: (res) => { if (res.confirm) uni.openSetting(); },
       });
-      return;
+      return false;
     }
-    const loc: any = await new Promise((resolve, reject) =>
-      uni.getLocation({ type: 'gcj02', isHighAccuracy: true, success: resolve, fail: reject }),
+    // #endif
+    const loc = await new Promise<UniLocationResult>((resolve, reject) =>
+      uni.getLocation({ type: 'gcj02', geocode: true, isHighAccuracy: true, success: resolve, fail: reject }),
     );
-    center.value = { latitude: loc.latitude, longitude: loc.longitude };
+    const latitude = Number(loc.latitude);
+    const longitude = Number(loc.longitude);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) throw new Error('invalid location');
+    center.value = { latitude, longitude };
+    const synced = updateCurrentPlace(loc.address?.city || loc.address?.province, loc.address?.district);
     if (!silent) uni.showToast({ title: '已重新定位', icon: 'success' });
-  } catch (_) {
+    return synced;
+  } catch (e) {
+    console.warn('[home] locate failed', e);
     if (!silent) uni.showToast({ title: '定位失败，已使用默认位置', icon: 'none' });
+    return false;
   }
 }
 
@@ -463,18 +566,23 @@ async function locateUser(silent = false) {
  * - 默认半径 NEARBY_RADIUS_M（10km），后端按距离升序返回。
  * - 失败 toast 一下但不抛，避免首页空白；spots 保持上一次的值。
  */
-async function loadSpots(silent = false) {
+async function loadSpots(silent = false, syncCity = false) {
   const seq = ++spotRequestSeq;
   loadingSpots.value = true;
   try {
     const { list } = await nearbySpots({
       lat: center.value.latitude,
       lng: center.value.longitude,
-      radius: NEARBY_RADIUS_M,
+      radius: city.value ? CITY_RADIUS_M : NEARBY_RADIUS_M,
       limit: NEARBY_LIMIT,
+      city: city.value || undefined,
       ...(CHIP_QUERY[activeChip.value] ?? {}),
     });
     if (seq !== spotRequestSeq) return;
+    if (syncCity) {
+      const nearestCity = list.find((item) => item.city)?.city;
+      if (nearestCity) updateCurrentPlace(nearestCity, null);
+    }
     spots.value = list.map(adaptSpot);
     activeSpotId.value = '';
   } catch (e: any) {
@@ -503,23 +611,54 @@ async function loadFishingIndex() {
     };
   }
 }
+async function loadNotificationPreview() {
+  loggedIn.value = isLoggedIn();
+  if (!loggedIn.value) {
+    unreadTotal.value = 0;
+    notificationPreview.value = [];
+    return;
+  }
+  const [count, page] = await Promise.allSettled([
+    getUnreadCount(),
+    listNotifications({ limit: 3 }),
+  ]);
+  if (count.status === 'fulfilled') {
+    unreadTotal.value = count.value.total;
+  }
+  if (page.status === 'fulfilled') {
+    notificationPreview.value = page.value.list.map(adaptNotification);
+  }
+}
 
 onMounted(async () => {
-  await locateUser(true);
-  await Promise.all([loadSpots(true), loadFishingIndex()]);
+  const synced = await locateUser(true);
+  await Promise.all([loadSpots(true, !synced), loadFishingIndex(), loadNotificationPreview(), loadCityOptions(true)]);
+});
+
+onShow(() => {
+  void loadNotificationPreview();
 });
 
 const onCityTap = () => {
   showCitySheet.value = true;
   showNotifyPopover.value = false;
+  void loadCityOptions(true);
 };
 const closeCitySheet = () => {
   showCitySheet.value = false;
 };
-const selectCity = (item: CityOption) => {
-  city.value = item.name;
+const onCityKeywordInput = () => {
+  void loadCityOptions(true);
+};
+const selectCity = async (item: CityOption) => {
+  updateCurrentPlace(item.name, null);
+  if (Number.isFinite(item.latitude) && Number.isFinite(item.longitude)) {
+    center.value = { latitude: item.latitude, longitude: item.longitude };
+  }
   nearbyAnglersOnline.value = item.anglers;
+  rememberCity(item);
   closeCitySheet();
+  await Promise.all([loadSpots(false), loadFishingIndex()]);
 };
 const onSearchTap = () => {
   uni.navigateTo({ url: '/subpackages/spot/list/index' });
@@ -527,6 +666,7 @@ const onSearchTap = () => {
 const onNotifyTap = () => {
   showNotifyPopover.value = !showNotifyPopover.value;
   showCitySheet.value = false;
+  if (showNotifyPopover.value) void loadNotificationPreview();
 };
 const onChipTap = (key: ChipKey) => {
   if (activeChip.value === key) return;
@@ -536,16 +676,33 @@ const onChipTap = (key: ChipKey) => {
 const closeNotifyPopover = () => {
   showNotifyPopover.value = false;
 };
-const markAllRead = () => {
-  notificationPreview.value = notificationPreview.value.map((item) => ({ ...item, unread: false }));
-  hasUnread.value = false;
+const markAllRead = async () => {
+  if (!loggedIn.value) {
+    uni.navigateTo({ url: '/pages/login/index' });
+    return;
+  }
+  try {
+    await markNotificationsRead({ all: true });
+    unreadTotal.value = 0;
+    notificationPreview.value = notificationPreview.value.map((item) => ({ ...item, unread: false }));
+  } catch (e) {
+    console.warn('[home] mark notifications read failed', e);
+  }
 };
-const onNotificationTap = (item: NotificationItem) => {
-  uni.navigateTo({ url: item.target });
+const onNotificationTap = (item: HomeNotificationItem) => {
+  if (item.unread) {
+    notificationPreview.value = notificationPreview.value.map((n) =>
+      n.id === item.id ? { ...n, unread: false } : n,
+    );
+    unreadTotal.value = Math.max(0, unreadTotal.value - 1);
+    markNotificationsRead({ ids: [item.id] }).catch(() => undefined);
+  }
+  uni.navigateTo({ url: item.target ?? '/pages/message/index' });
 };
 const onLocate = async () => {
-  await locateUser(false);
-  await Promise.all([loadSpots(true), loadFishingIndex()]);
+  const synced = await locateUser(false);
+  await Promise.all([loadSpots(true, !synced), loadFishingIndex()]);
+  if (showCitySheet.value) void loadCityOptions(true);
 };
 const onReportSpot = () => uni.navigateTo({ url: '/subpackages/spot/create/index' });
 const onViewAllSpots = () => uni.navigateTo({ url: '/subpackages/spot/list/index' });
@@ -558,6 +715,7 @@ const focusSpot = (spot: SpotItem) => {
   activeSpotId.value = spot.id;
   scrollIntoView.value = `card-${spot.id}`;
   center.value = { latitude: spot.latitude, longitude: spot.longitude };
+  if (spot.city) updateCurrentPlace(spot.city, null);
 };
 
 const onSpotTap = (spot: SpotItem) => {

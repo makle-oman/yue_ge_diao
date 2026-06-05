@@ -32,6 +32,7 @@
 }
 .hero-body {
   margin-top: 24rpx;
+  padding-right: 152rpx;
   display: flex;
   flex-direction: column;
   gap: 10rpx;
@@ -50,7 +51,7 @@
 .hero-badge {
   position: absolute;
   right: 32rpx;
-  bottom: 32rpx;
+  bottom: 116rpx;
   width: 112rpx;
   height: 112rpx;
   border-radius: 56rpx;
@@ -161,6 +162,7 @@
 /* Chip 行 */
 .chips {
   display: flex;
+  flex-wrap: wrap;
   gap: 16rpx;
 
   .chip {
@@ -207,67 +209,167 @@
 .fish-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20rpx;
+  gap: 28rpx 20rpx;
 }
 .fish-tile {
-  width: calc((100% - 40rpx) / 3);
+  width: calc((100% - 20rpx) / 2);
   background: $bg-card;
-  border-radius: 24rpx;
-  border: 1rpx solid $border-light;
-  padding: 20rpx 12rpx 18rpx;
+  border-radius: 16rpx;
+  border: 2rpx solid #CBE7F5;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  box-shadow: 0 6rpx 18rpx rgba(26, 43, 51, 0.06);
+  overflow: hidden;
+  box-shadow: 0 8rpx 22rpx rgba(26, 43, 51, 0.06);
 
   &:active { transform: scale(.97); }
 
   &.locked {
-    background: #F2F4F6;
+    background: #EAF6FA;
+    border-style: dashed;
+    border-color: #D3EAF4;
     box-shadow: none;
   }
+  &.rarity-rare,
+  &.rarity-epic,
+  &.rarity-legendary {
+    border-color: #E7C98E;
+  }
 }
-.fish-circle {
+.fish-cover {
   position: relative;
-  width: 96rpx;
+  width: 100%;
+  height: 212rpx;
+  background: linear-gradient(135deg, #D9E9ED, #BFD1D7);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fish-img {
+  width: 100%;
+  height: 100%;
+}
+.fish-silhouette {
+  position: relative;
+  width: 190rpx;
   height: 96rpx;
-  border-radius: 48rpx;
+  opacity: .48;
+  transform: rotate(-8deg);
+}
+.fish-body-shape {
+  position: absolute;
+  left: 34rpx;
+  top: 18rpx;
+  width: 122rpx;
+  height: 62rpx;
+  border-radius: 62rpx 72rpx 56rpx 62rpx;
+  background: #74858D;
+}
+.fish-tail-shape {
+  position: absolute;
+  left: 4rpx;
+  top: 28rpx;
+  width: 48rpx;
+  height: 44rpx;
+  background: #74858D;
+  clip-path: polygon(0 0, 100% 50%, 0 100%, 30% 50%);
+}
+.rarity-badge {
+  position: absolute;
+  left: 14rpx;
+  top: 14rpx;
+  height: 38rpx;
+  padding: 0 18rpx;
+  border-radius: 20rpx;
+  background: #B86A00;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  &.tone-primary { background: $soft-primary; }
-  &.tone-blue    { background: $soft-blue; }
-  &.tone-orange  { background: $soft-orange; }
-  &.tone-ghost   { background: $border-light; }
+  text {
+    font-size: 22rpx;
+    color: #fff;
+    font-weight: 900;
+  }
 }
-.fish-check {
+.rarity-epic .rarity-badge {
+  background: #A86A21;
+}
+.rarity-legendary .rarity-badge {
+  background: #97A8B1;
+
+  text { color: #40515A; }
+}
+.lock-mask {
   position: absolute;
-  right: -4rpx;
-  bottom: -4rpx;
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 16rpx;
-  background: $primary;
-  border: 3rpx solid #fff;
+  inset: 0;
+  background: rgba(92, 108, 116, .48);
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.locked .fish-img {
+  filter: grayscale(1);
+  opacity: .42;
+}
+.fish-info {
+  min-height: 150rpx;
+  padding: 20rpx 22rpx 22rpx;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+.locked .fish-info {
+  background: #E5F4FA;
+}
 .fish-name {
-  font-size: 24rpx;
+  font-size: 28rpx;
   font-weight: 900;
   color: $text-primary;
-  margin-top: 6rpx;
+  line-height: 1.2;
 }
 .fish-meta {
-  font-size: 20rpx;
+  font-size: 23rpx;
   color: $text-secondary;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.fish-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+
+  text {
+    font-size: 22rpx;
+    color: $primary;
+    font-weight: 700;
+    line-height: 1.2;
+  }
 }
 .fish-tile.locked .fish-name {
   color: $text-secondary;
+}
+.fish-tile.locked .fish-meta,
+.fish-tile.locked .fish-foot text {
+  color: #AAB6BD;
+}
+.empty-state {
+  width: 100%;
+  height: 180rpx;
+  border-radius: 16rpx;
+  background: $bg-card;
+  border: 1rpx dashed $border-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 26rpx;
+    color: $text-secondary;
+    font-weight: 700;
+  }
 }
 
 /* 周目标 */

@@ -7,13 +7,34 @@
         <!-- 现场定位 -->
         <view class="loc-card">
           <view class="loc-map">
-            <view class="loc-river" />
-            <view class="loc-dot" />
-            <text class="loc-title">{{ locTitle }}</text>
+            <!-- #ifdef MP-WEIXIN || H5 -->
+            <map
+              class="loc-map-view"
+              :latitude="mapCenter.latitude"
+              :longitude="mapCenter.longitude"
+              :scale="16"
+              :markers="locMarkers"
+              show-location
+              enable-zoom
+              enable-scroll
+            >
+              <cover-view class="loc-map-badge">
+                <cover-view class="loc-title">{{ locTitle }}</cover-view>
+              </cover-view>
+            </map>
+            <!-- #endif -->
+            <!-- #ifndef MP-WEIXIN -->
+            <!-- #ifndef H5 -->
+            <view class="loc-map-fallback">
+              <view class="loc-river" />
+              <text class="loc-title">{{ locTitle }}</text>
+            </view>
+            <!-- #endif -->
+            <!-- #endif -->
           </view>
           <view class="loc-row">
             <view class="loc-acc">
-              <mxy-icon :name="locOk ? 'check_circle' : 'error_outline'" :size="24" :color="locOk ? '#2D8F87' : '#F5A623'" />
+              <mxy-icon :name="locIcon" :size="24" :color="locIconColor" />
               <text class="loc-acc-text">{{ locHint }}</text>
             </view>
             <view class="loc-relocate" @click="onRelocate">
@@ -218,24 +239,75 @@ import { uploadImages } from '@/utils/upload';
 const { safeBottom } = useSystemInfo();
 
 const ACCURACY_LIMIT = 50;
+const DEFAULT_CENTER = { latitude: 32.0603, longitude: 118.7969 };
 
-const accuracy = ref<number>(0);
+type LocationStatus = 'idle' | 'locating' | 'ready' | 'low_accuracy' | 'failed';
+interface UniLocationResult {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+}
+
+const accuracy = ref<number | null>(null);
 const lat = ref<number>(0);
 const lng = ref<number>(0);
+const locating = ref(false);
+const locationFailed = ref(false);
 const submitting = ref(false);
 const editId = ref('');
 const isEdit = computed(() => !!editId.value);
 
-const locOk = computed(() => accuracy.value > 0 && accuracy.value <= ACCURACY_LIMIT);
+const hasLocation = computed(() => Number.isFinite(lat.value) && Number.isFinite(lng.value) && lat.value !== 0 && lng.value !== 0);
+const locOk = computed(() => hasLocation.value && (accuracy.value == null || accuracy.value <= ACCURACY_LIMIT));
+const locStatus = computed<LocationStatus>(() => {
+  if (locating.value) return 'locating';
+  if (!hasLocation.value) return locationFailed.value ? 'failed' : 'idle';
+  if (!locOk.value) return 'low_accuracy';
+  return 'ready';
+});
+const locIcon = computed(() => {
+  if (locOk.value) return 'check_circle';
+  if (locStatus.value === 'low_accuracy' || locStatus.value === 'failed') return 'warning';
+  return 'my_location';
+});
+const locIconColor = computed(() => (locOk.value ? '#2D8F87' : '#F5A623'));
 const locTitle = computed(() => {
-  if (isEdit.value && accuracy.value > 0) return '原定位已加载';
-  if (accuracy.value === 0) return '正在获取定位…';
+  if (isEdit.value && hasLocation.value) return '原定位已加载';
+  if (locStatus.value === 'locating' || locStatus.value === 'idle') return '正在获取定位…';
+  if (locStatus.value === 'failed') return '定位未获取';
   if (locOk.value) return '现场定位已通过';
   return '当前精度偏低';
 });
+const mapCenter = computed(() => ({
+  latitude: hasLocation.value ? lat.value : DEFAULT_CENTER.latitude,
+  longitude: hasLocation.value ? lng.value : DEFAULT_CENTER.longitude,
+}));
+const locMarkers = computed(() => {
+  if (!hasLocation.value) return [];
+  return [{
+    id: 1,
+    latitude: lat.value,
+    longitude: lng.value,
+    width: 28,
+    height: 36,
+    callout: {
+      content: '当前位置',
+      color: '#1A2B33',
+      fontSize: 12,
+      borderRadius: 12,
+      bgColor: '#FFFFFF',
+      padding: 6,
+      display: 'ALWAYS',
+    },
+  }];
+});
+const formatCoord = (value: number) => value.toFixed(6);
 const locHint = computed(() => {
-  if (accuracy.value === 0) return '请稍候，正在获取经纬度';
-  if (locOk.value) return `精度 ${accuracy.value}m，可上报`;
+  if (locStatus.value === 'locating' || locStatus.value === 'idle') return '请稍候，正在获取经纬度';
+  if (!hasLocation.value) return '定位失败，请重新定位';
+  const coordText = `经纬度 ${formatCoord(lat.value)}, ${formatCoord(lng.value)}`;
+  if (accuracy.value == null) return coordText;
+  if (locOk.value) return `${coordText} · 精度 ${accuracy.value}m`;
   return `精度 ${accuracy.value}m，需 <${ACCURACY_LIMIT}m`;
 });
 
@@ -298,8 +370,10 @@ const toggleCondition = (k: string) => {
 /** 真正调 uni.getLocation 拿经纬度+精度。失败给 toast 不阻塞。 */
 async function fetchLocation(silent = false) {
   if (!silent) uni.showLoading({ title: '定位中...' });
+  locating.value = true;
+  locationFailed.value = false;
   try {
-    const loc: any = await new Promise((resolve, reject) =>
+    const loc = await new Promise<UniLocationResult>((resolve, reject) =>
       uni.getLocation({
         type: 'gcj02',
         isHighAccuracy: true,
@@ -308,22 +382,30 @@ async function fetchLocation(silent = false) {
         fail: reject,
       }),
     );
-    lat.value = loc.latitude;
-    lng.value = loc.longitude;
-    accuracy.value = Math.round(loc.accuracy ?? 0);
+    const nextLat = Number(loc.latitude);
+    const nextLng = Number(loc.longitude);
+    if (!Number.isFinite(nextLat) || !Number.isFinite(nextLng)) throw new Error('invalid location');
+    lat.value = nextLat;
+    lng.value = nextLng;
+    accuracy.value = typeof loc.accuracy === 'number' && Number.isFinite(loc.accuracy)
+      ? Math.round(loc.accuracy)
+      : null;
     if (!silent) {
       uni.hideLoading();
-      if (accuracy.value > ACCURACY_LIMIT) {
+      if (accuracy.value != null && accuracy.value > ACCURACY_LIMIT) {
         uni.showToast({ title: `精度 ${accuracy.value}m 偏低，请到开阔处再试`, icon: 'none' });
       } else {
-        uni.showToast({ title: `精度 ${accuracy.value}m`, icon: 'success' });
+        uni.showToast({ title: accuracy.value == null ? '定位成功' : `精度 ${accuracy.value}m`, icon: 'success' });
       }
     }
   } catch (_) {
+    locationFailed.value = true;
     if (!silent) {
       uni.hideLoading();
       uni.showToast({ title: '定位失败', icon: 'none' });
     }
+  } finally {
+    locating.value = false;
   }
 }
 
@@ -343,7 +425,8 @@ function applyEditableSpot(d: EditableSpotDetail) {
   );
   lat.value = d.lat;
   lng.value = d.lng;
-  accuracy.value = 1;
+  accuracy.value = null;
+  locationFailed.value = false;
 }
 
 async function loadEditSpot() {
@@ -458,7 +541,7 @@ const onSubmit = async () => {
     uni.showToast({ title: '请先完成定位', icon: 'none' });
     return;
   }
-  if (accuracy.value > ACCURACY_LIMIT) {
+  if (accuracy.value != null && accuracy.value > ACCURACY_LIMIT) {
     uni.showToast({ title: `定位精度 ${accuracy.value}m，需 <${ACCURACY_LIMIT}m 才可上报`, icon: 'none' });
     return;
   }
@@ -477,7 +560,7 @@ const onSubmit = async () => {
       waterType: form.value.waterCode,
       lat: lat.value,
       lng: lng.value,
-      accuracy: accuracy.value,
+      accuracy: accuracy.value ?? undefined,
       city: undefined,
       description: form.value.desc.trim() || undefined,
       fishSpecies: form.value.fish.length ? form.value.fish : undefined,

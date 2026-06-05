@@ -108,6 +108,14 @@ export interface SpotHistoryResp {
   hasMore: boolean;
 }
 
+export interface SpotCityOption {
+  name: string;
+  spots: number;
+  anglers: number;
+  latitude: number;
+  longitude: number;
+}
+
 export interface ListResp<T> {
   list: T[];
   nextCursor: string | null;
@@ -133,10 +141,18 @@ export function nearbySpots(params: {
   lng: number;
   radius?: number;
   limit?: number;
+  city?: string;
   type?: SpotType;
   waterType?: WaterType;
 }): Promise<{ list: SpotListItem[] }> {
   return http.post('/spots/nearby', params, { dedupe: true });
+}
+
+export function listSpotCities(params: {
+  keyword?: string;
+  limit?: number;
+} = {}): Promise<{ list: SpotCityOption[] }> {
+  return http.post('/spots/cities', params, { dedupe: true });
 }
 
 export function searchSpots(params: {
