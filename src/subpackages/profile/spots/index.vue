@@ -81,7 +81,11 @@
           </view>
 
           <view v-if="!loading && spots.length === 0" class="empty">
-            <text class="empty-text">{{ keyword ? '没有匹配的钓点' : '还没有上报过钓点,去发一个吧' }}</text>
+            <view class="empty-icon">
+              <mxy-icon name="add_location_alt" :size="42" color="#2D8F87" />
+            </view>
+            <text class="empty-title">{{ keyword ? '没有匹配的钓点' : '还没有上报过钓点' }}</text>
+            <text class="empty-text">{{ keyword ? '换个关键词再试试' : '去发一个吧' }}</text>
           </view>
           <view v-if="hasMore && !loading" class="more" @click="loadMore">
             <text class="more-text">加载更多</text>

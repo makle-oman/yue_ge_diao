@@ -109,6 +109,28 @@
   }
 }
 
+.search-bar {
+  height: 84rpx;
+  padding: 0 24rpx;
+  border-radius: 28rpx;
+  background: $bg-card;
+  border: 1rpx solid $border-light;
+  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  font-size: 28rpx;
+  color: $text-primary;
+}
+.search-ph {
+  color: $text-placeholder;
+}
+
 /* 钓点列表 */
 .spot-list {
   display: flex;
@@ -198,6 +220,48 @@
   padding: 12rpx 8rpx;
 
   &:active { opacity: .6; }
+}
+.empty {
+  min-height: 260rpx;
+  padding: 40rpx 32rpx;
+  border-radius: 32rpx;
+  background: $bg-card;
+  border: 1rpx dashed rgba(45, 143, 135, 0.32);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+.empty-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: $soft-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.empty-title {
+  font-size: 30rpx;
+  color: $text-primary;
+  font-weight: 900;
+}
+.empty-text {
+  font-size: 24rpx;
+  color: $text-secondary;
+  font-weight: 700;
+}
+.more {
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.more-text {
+  font-size: 24rpx;
+  color: $text-secondary;
+  font-weight: 700;
 }
 
 /* 底部 CTA */

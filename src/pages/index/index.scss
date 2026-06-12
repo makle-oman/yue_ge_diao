@@ -41,6 +41,99 @@
   }
 }
 
+.spot-callout {
+  position: relative;
+  width: 504rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 16rpx 44rpx rgba(26, 43, 51, .18);
+  box-sizing: border-box;
+}
+.spot-callout-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.spot-callout-title {
+  flex: 1;
+  min-width: 0;
+  color: $text-primary;
+  font-size: 32rpx;
+  font-weight: 900;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.spot-callout-close {
+  width: 48rpx;
+  height: 48rpx;
+  color: $text-secondary;
+  font-size: 42rpx;
+  line-height: 48rpx;
+  text-align: center;
+}
+.spot-callout-meta {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin-top: 8rpx;
+}
+.spot-callout-rating,
+.spot-callout-distance {
+  color: $text-regular;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+.spot-callout-rating {
+  color: #7A5A1B;
+}
+.spot-callout-tags {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 22rpx;
+}
+.spot-callout-tag {
+  height: 48rpx;
+  padding: 0 20rpx;
+  border-radius: 12rpx;
+  background: $soft-primary;
+  color: $text-regular;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 48rpx;
+}
+.spot-callout-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 72rpx;
+  margin-top: 22rpx;
+  border-radius: 12rpx;
+  background: $primary;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+.spot-callout-action-icon {
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 900;
+}
+.spot-callout-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: -16rpx;
+  width: 36rpx;
+  height: 36rpx;
+  margin-left: -18rpx;
+  background: rgba(255, 255, 255, .96);
+  transform: rotate(45deg);
+}
+
 /* ---------- 顶部胶囊 ---------- */
 .top-bar {
   position: absolute;
@@ -326,29 +419,47 @@
   color: $text-primary;
   font-weight: 900;
 }
+.city-pill-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
 .city-pill-row {
+  width: max-content;
   display: flex;
-  gap: 14rpx;
+  gap: 20px;
+  padding-bottom: 4rpx;
 }
 .city-option-pill {
-  height: 56rpx;
-  padding: 0 26rpx;
-  border-radius: 28rpx;
+  flex: 0 0 auto;
+  width: 48rpx;
+  min-height: 100rpx;
+  padding: 14rpx 0;
+  border-radius: 34rpx;
   background: $bg-card;
   border: 1rpx solid $border-light;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 
-  text {
+  .city-option-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14rpx;
+  }
+  .city-option-char {
+    display: block;
     font-size: $font-sm;
     color: $text-primary;
     font-weight: 800;
+    line-height: 1;
   }
   &.active {
     background: $primary;
     border-color: $primary;
-    text { color: #fff; }
+    .city-option-char { color: #fff; }
   }
 }
 .recent-city-list {

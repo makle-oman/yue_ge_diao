@@ -86,6 +86,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import {
   listSpots,
@@ -132,6 +133,8 @@ const cursor = ref<string | null>(null);
 const hasMore = ref(true);
 const loading = ref(false);
 const keyword = ref('');
+const currentCity = ref('');
+const hasRouteCenter = ref(false);
 
 /** 后端 type → 列表卡片 tone（icon 背景）。 */
 const TYPE_TONE: Record<SpotType, { tone: Tone; iconColor: string }> = {
@@ -171,12 +174,14 @@ function adapt(item: SpotListItem): SpotItem {
 
 /** chip → 请求参数。`near` 收紧 radius，其它三个用 type 过滤。 */
 function paramsForChip(chip: ChipKey, cur: string | null) {
+  const queryCity = cityForQuery();
   const base = {
     lat: center.value.latitude,
     lng: center.value.longitude,
     radius: NORMAL_RADIUS,
     limit: PAGE_LIMIT,
     cursor: cur,
+    city: queryCity,
   };
   switch (chip) {
     case 'wild': return { ...base, type: 'wild' as SpotType };
@@ -187,6 +192,7 @@ function paramsForChip(chip: ChipKey, cur: string | null) {
 }
 
 function searchParamsForChip(chip: ChipKey, cur: string | null) {
+  const queryCity = cityForQuery();
   const base = {
     keyword: keyword.value.trim(),
     lat: center.value.latitude,
@@ -194,6 +200,7 @@ function searchParamsForChip(chip: ChipKey, cur: string | null) {
     radius: chip === 'near' ? NEAR_RADIUS : NORMAL_RADIUS,
     limit: PAGE_LIMIT,
     cursor: cur,
+    city: queryCity,
   };
   switch (chip) {
     case 'wild': return { ...base, type: 'wild' as SpotType };
@@ -207,6 +214,20 @@ function fetchSpotPage(cur: string | null) {
     return searchSpots(searchParamsForChip(activeChip.value, cur));
   }
   return listSpots(paramsForChip(activeChip.value, cur));
+}
+
+function normalizeCityName(name: string): string {
+  return name.trim().replace(/市$/, '');
+}
+
+function cityForQuery(): string | undefined {
+  const name = currentCity.value.trim();
+  return name || undefined;
+}
+
+function readRouteNumber(value: unknown): number | null {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
 }
 
 async function loadFirstPage() {
@@ -243,16 +264,30 @@ async function loadMore() {
 }
 
 async function locateThenLoad() {
-  try {
-    const loc: any = await new Promise((resolve, reject) =>
-      uni.getLocation({ type: 'gcj02', success: resolve, fail: reject }),
-    );
-    center.value = { latitude: loc.latitude, longitude: loc.longitude };
-  } catch (_) {
-    // 拿不到定位就用 DEFAULT_CENTER
+  if (!hasRouteCenter.value) {
+    try {
+      const loc: any = await new Promise((resolve, reject) =>
+        uni.getLocation({ type: 'gcj02', success: resolve, fail: reject }),
+      );
+      center.value = { latitude: loc.latitude, longitude: loc.longitude };
+    } catch (_) {
+      // 拿不到定位就用 DEFAULT_CENTER
+    }
   }
   await loadFirstPage();
 }
+
+onLoad((options) => {
+  const lat = readRouteNumber(options?.lat);
+  const lng = readRouteNumber(options?.lng);
+  if (lat !== null && lng !== null) {
+    center.value = { latitude: lat, longitude: lng };
+    hasRouteCenter.value = true;
+  }
+  if (options?.city) {
+    currentCity.value = normalizeCityName(decodeURIComponent(String(options.city)));
+  }
+});
 
 onMounted(locateThenLoad);
 
@@ -265,8 +300,9 @@ function onChip(key: ChipKey) {
 const filteredSpots = computed(() => spots.value);
 const summaryTitle = computed(() => {
   const kw = keyword.value.trim();
-  if (kw) return `搜索「${kw}」 · ${filteredSpots.value.length} 个钓点`;
-  return `南京附近 · ${filteredSpots.value.length} 个钓点`;
+  const name = currentCity.value || '当前位置';
+  if (kw) return `${name} · 搜索「${kw}」 · ${filteredSpots.value.length} 个钓点`;
+  return `${name}附近 · ${filteredSpots.value.length} 个钓点`;
 });
 
 const onOpenMap = () => uni.switchTab({ url: '/pages/index/index' }).catch(() => uni.navigateBack({ delta: 1 }));
