@@ -27,6 +27,13 @@ export function fetchFishLibrary(params: {
   return http.post('/fishes/library', params, { dedupe: true });
 }
 
+export function fetchFishCatalog(params: {
+  category?: FishCategory;
+  filter?: FishFilter;
+} = {}): Promise<{ list: Omit<FishItem, 'unlocked' | 'firstCatchAt' | 'maxWeightG'>[] }> {
+  return http.post('/fishes/list', params, { dedupe: true });
+}
+
 export function fetchFishProgress(): Promise<FishStats> {
   return http.post('/fishes/library-progress', {}, { dedupe: true });
 }

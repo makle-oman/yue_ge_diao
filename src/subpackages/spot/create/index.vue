@@ -114,11 +114,11 @@
             <text class="row-label">主要鱼种</text>
             <view class="fish-chips">
               <view
-                v-for="(f, idx) in form.fish"
+                v-for="(f, idx) in fishOptions"
                 :key="f"
                 class="fish-chip"
-                :class="`tone-${idx % 3}`"
-                @click="onRemoveFish(idx)"
+                :class="form.fish.includes(f) ? `tone-${idx % 3}` : 'muted'"
+                @click="toggleFish(f)"
               >
                 <text>{{ f }}</text>
               </view>
@@ -331,6 +331,7 @@ import { ref, computed, nextTick } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useSystemInfo } from '@/utils/useSystemInfo';
 import MxyFormNav from '@/components/mxy-form-nav/mxy-form-nav.vue';
+import { fetchFishCatalog, type FishCategory } from '@/api/fishes';
 import {
   createSpot,
   editableSpotDetail,
@@ -550,6 +551,7 @@ const form = ref({
   photos: [] as string[],
   desc: '',
 });
+const fishOptions = ref<string[]>([]);
 
 const toggleCondition = (k: string) => {
   const idx = form.value.conditions.indexOf(k);
@@ -799,10 +801,23 @@ function applyEditableSpot(d: EditableSpotDetail) {
   locationFailed.value = false;
 }
 
+async function loadFishOptions() {
+  try {
+    const category: FishCategory = form.value.waterCode === 'sea' || form.value.typeCode === 'sea' ? 'sea' : 'fresh';
+    const { list } = await fetchFishCatalog({ category, filter: 'common' });
+    const names = list.map((item) => item.name);
+    fishOptions.value = Array.from(new Set([...form.value.fish, ...names])).slice(0, 18);
+  } catch (e) {
+    console.warn('[spot-create] fish catalog load failed', e);
+    fishOptions.value = form.value.fish;
+  }
+}
+
 async function loadEditSpot() {
   try {
     const d = await editableSpotDetail(editId.value);
     applyEditableSpot(d);
+    void loadFishOptions();
   } catch (e: any) {
     uni.showToast({ title: e?.msg || '钓点加载失败', icon: 'none' });
     setTimeout(() => uni.navigateBack({ delta: 1 }).catch(() => {}), 600);
@@ -812,7 +827,10 @@ async function loadEditSpot() {
 onLoad((options) => {
   editId.value = String((options as { id?: string })?.id ?? '');
   if (editId.value) void loadEditSpot();
-  else void fetchLocation(true);
+  else {
+    void fetchLocation(true);
+    void loadFishOptions();
+  }
 });
 
 const onRelocate = () => fetchLocation(false);
@@ -931,11 +949,13 @@ const onTypeDone = () => {
   form.value.type = draftType.value;
   form.value.typeCode = TYPE_LABEL_TO_CODE[draftType.value];
   typeOpen.value = false;
+  void loadFishOptions();
 };
 const onWaterDone = () => {
   form.value.water = draftWater.value;
   form.value.waterCode = WATER_LABEL_TO_CODE[draftWater.value];
   waterOpen.value = false;
+  void loadFishOptions();
 };
 
 const onAddFish = () => {
@@ -948,10 +968,16 @@ const onAddFish = () => {
         const value = (res.content || '').trim();
         if (value && !form.value.fish.includes(value)) {
           form.value.fish.push(value);
+          fishOptions.value = Array.from(new Set([value, ...fishOptions.value]));
         }
       }
     },
   });
+};
+const toggleFish = (name: string) => {
+  const idx = form.value.fish.indexOf(name);
+  if (idx >= 0) form.value.fish.splice(idx, 1);
+  else form.value.fish.push(name);
 };
 const onRemoveFish = (idx: number) => form.value.fish.splice(idx, 1);
 

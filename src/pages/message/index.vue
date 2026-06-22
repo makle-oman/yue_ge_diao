@@ -292,11 +292,27 @@ function toThreadRow(t: MessageThread): ThreadRow {
       name,
       avatar: t.peer.avatar,
     },
-    excerpt: t.lastMessage.content,
+    excerpt: messageExcerpt(t.lastMessage),
     timeText: timeAgo(t.lastMessage.createdAt),
     unreadCount: t.unreadCount,
     avBg: '#EAF5F4',
   };
+}
+
+function messageExcerpt(message: MessageThread['lastMessage']): string {
+  if (message.type === 'location') {
+    try {
+      const loc = JSON.parse(message.content) as { name?: unknown; address?: unknown };
+      const name = typeof loc.name === 'string' ? loc.name : '';
+      const address = typeof loc.address === 'string' ? loc.address : '';
+      return ['[位置]', name || address].filter(Boolean).join(' ');
+    } catch (_) {
+      return '[位置]';
+    }
+  }
+  if (message.type === 'image') return '[图片]';
+  if (message.type === 'video') return '[视频]';
+  return message.content;
 }
 
 async function refreshUnread() {

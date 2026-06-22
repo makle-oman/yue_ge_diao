@@ -238,7 +238,13 @@
   padding: 0 28rpx;
   gap: 20rpx;
 
-  &.fish { height: 124rpx; align-items: center; }
+  &.fish {
+    min-height: 124rpx;
+    height: auto;
+    align-items: flex-start;
+    padding-top: 28rpx;
+    padding-bottom: 28rpx;
+  }
 
   .row-label {
     font-size: 28rpx;
@@ -300,6 +306,10 @@
   &.tone-0 { background: $soft-primary; text { color: $primary; } }
   &.tone-1 { background: $soft-blue;    text { color: $secondary; } }
   &.tone-2 { background: $soft-orange;  text { color: $accent; } }
+  &.muted {
+    background: $bg-page;
+    text { color: $text-secondary; }
+  }
 
   &.add {
     background: $bg-page;

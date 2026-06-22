@@ -1,10 +1,19 @@
+/* ---------- 局部色彩变量 ---------- */
+$c-pine: #2A3C36;       /* 沉稳暗松绿 */
+$c-sand: #C29F72;       /* 柔和沙金色 */
+$c-bg: #F8F9F8;         /* 轻质灰白底色 */
+$c-card: #FFFFFF;
+$c-text-main: #222B28;  /* 偏灰的深绿字色 */
+$c-text-sub: #6E7B76;   /* 偏灰的次级字色 */
+$c-border: #E8ECEB;     /* 精致淡灰边框 */
+
 .profile-setting {
   position: relative;
   height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: $bg-page;
+  background: $c-bg;
 }
 
 .content {
@@ -13,139 +22,200 @@
 }
 
 .form {
-  padding: 28rpx 24rpx 156rpx;
+  padding: 28rpx 32rpx 40rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
 }
 
-.avatar-area {
-  padding: 18rpx 0 12rpx;
+/* ---------- 横向头像卡片 ---------- */
+.avatar-card {
+  background: $c-card;
+  border-radius: 28rpx;
+  padding: 36rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 14rpx;
+  gap: 32rpx;
+  border: 1rpx solid $c-border;
+  box-shadow: 0 4rpx 16rpx rgba(42, 60, 54, 0.01);
 }
 
 .avatar-wrap {
   position: relative;
-  width: 144rpx;
-  height: 144rpx;
+  width: 132rpx;
+  height: 132rpx;
   border-radius: 50%;
-  border: 4rpx solid $primary;
-  background: $bg-card;
+  border: 4rpx solid #ffffff;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.18);
+  box-shadow: 0 8rpx 24rpx rgba(42, 60, 54, 0.06);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
 
-  &:active { opacity: .86; }
+  &:active {
+    transform: scale(0.96);
+  }
 }
 
 .camera-badge {
   position: absolute;
   right: -2rpx;
-  bottom: 0;
-  width: 46rpx;
-  height: 46rpx;
+  bottom: -2rpx;
+  width: 44rpx;
+  height: 44rpx;
   border-radius: 50%;
-  background: $accent;
-  border: 4rpx solid $bg-card;
+  background: $c-sand;
+  border: 3rpx solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.08);
 }
 
-.avatar-tip {
-  font-size: 24rpx;
-  font-weight: 700;
-  color: $text-primary;
-}
-
-.section-card {
-  background: $bg-card;
-  border-radius: 20rpx;
-  padding: 24rpx;
+.avatar-info {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 14rpx;
-  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
+  gap: 6rpx;
+}
+
+.avatar-title {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $c-text-main;
+}
+
+.avatar-subtitle {
+  font-size: 20rpx;
+  color: $c-text-sub;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* ---------- 列表式表单行 ---------- */
+.section-card,
+.card {
+  background: $c-card;
+  border-radius: 28rpx;
+  padding: 36rpx;
+  display: flex;
+  flex-direction: column;
+  border: 1rpx solid $c-border;
+  box-shadow: 0 4rpx 16rpx rgba(42, 60, 54, 0.01);
+  overflow: hidden;
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 10rpx;
-  margin-bottom: 4rpx;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
 
   text {
-    font-size: 30rpx;
-    color: $primary;
+    font-size: 28rpx;
+    color: $c-text-main;
     font-weight: 900;
+    letter-spacing: 1rpx;
   }
 }
 
-.field-label {
-  margin-top: 4rpx;
-  font-size: 22rpx;
-  color: $text-primary;
-  font-weight: 800;
+.card-title {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $c-text-main;
+  padding-bottom: 16rpx;
 }
 
-.text-field {
-  height: 70rpx;
-  border-radius: 16rpx;
-  background: $soft-primary;
-  padding: 0 20rpx;
+.form-item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #F3F6F5;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
 }
 
-.field-input {
+.row-label {
+  font-size: 26rpx;
+  color: $c-text-main;
+  font-weight: 850;
+  flex-shrink: 0;
+}
+
+.row-input {
   flex: 1;
   min-width: 0;
-  height: 70rpx;
+  height: 52rpx;
   font-size: 26rpx;
-  color: $text-primary;
+  color: $c-text-main;
   font-weight: 700;
+  text-align: right;
 }
 
 .input-placeholder {
-  color: $text-placeholder;
+  color: #BAC2BF;
   font-weight: 500;
 }
 
+.field-label {
+  margin-top: 24rpx;
+  font-size: 22rpx;
+  color: $c-text-sub;
+  font-weight: 800;
+  margin-bottom: 12rpx;
+}
+
+/* ---------- iOS 经典滑动胶囊控制 ---------- */
 .segment-row {
   display: flex;
-  gap: 20rpx;
+  gap: 4rpx;
+  background: #ECEFEF;
+  padding: 4rpx;
+  border-radius: 16rpx;
+  width: 220rpx;
+  flex-shrink: 0;
 }
 
 .segment {
   flex: 1;
-  height: 68rpx;
-  border-radius: 34rpx;
-  background: $soft-primary;
+  height: 56rpx;
+  border-radius: 12rpx;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 
   text {
-    font-size: 26rpx;
-    color: $text-primary;
-    font-weight: 900;
+    font-size: 24rpx;
+    color: $c-text-sub;
+    font-weight: 800;
   }
 
   &.active {
-    background: $primary;
+    background: #ffffff;
+    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.04);
 
-    text { color: #fff; }
+    text {
+      color: $c-text-main;
+      font-weight: 900;
+    }
   }
 }
 
+/* ---------- 胶囊徽章 (Pills) ---------- */
 .chip-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 14rpx;
+  gap: 16rpx;
 
   &.compact {
     flex-wrap: nowrap;
@@ -153,66 +223,69 @@
     .chip {
       flex: 1;
       min-width: 0;
-      padding: 0 8rpx;
+      padding: 0;
     }
   }
 }
 
 .chip {
   min-width: 92rpx;
-  height: 56rpx;
-  border-radius: 28rpx;
-  padding: 0 22rpx;
-  background: $soft-primary;
+  height: 64rpx;
+  border-radius: 18rpx;
+  padding: 0 24rpx;
+  background: #F0F3F2;
+  border: 1rpx solid transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8rpx;
+  transition: all 0.15s ease;
 
   text {
     font-size: 24rpx;
-    color: $text-primary;
+    color: $c-text-sub;
     font-weight: 800;
   }
 
-  &.active {
-    background: $primary;
+  &:active {
+    transform: scale(0.97);
+  }
 
-    text { color: #fff; }
+  &.active {
+    background: rgba(42, 60, 54, 0.06);
+    border-color: rgba(42, 60, 54, 0.3);
+
+    text {
+      color: $c-pine;
+      font-weight: 900;
+    }
   }
 
   &.play.active {
-    background: $secondary;
+    background: rgba(194, 159, 114, 0.08);
+    border-color: rgba(194, 159, 114, 0.5);
+
+    text {
+      color: $c-sand;
+      font-weight: 900;
+    }
   }
 }
 
-.card {
-  background: $bg-card;
-  border-radius: 20rpx;
-  box-shadow: 0 6rpx 20rpx rgba(26, 43, 51, 0.06);
-  padding-top: 8rpx;
-  padding-bottom: 8rpx;
-}
-
-.card-title {
-  font-size: 30rpx;
-  font-weight: 900;
-  color: $text-primary;
-  padding: 24rpx 32rpx 12rpx;
-}
-
+/* ---------- 分割线 ---------- */
 .divider {
   height: 1rpx;
-  background: $border-light;
-  margin: 0 32rpx;
+  background: $c-border;
+  margin: 4rpx 0;
 }
 
+/* ---------- 隐私设置项 ---------- */
 .privacy-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
-  padding: 24rpx 32rpx;
+  padding: 16rpx 0;
 }
 
 .privacy-text {
@@ -220,102 +293,121 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6rpx;
+  gap: 4rpx;
 
   .privacy-main {
     font-size: 26rpx;
-    font-weight: 800;
-    color: $text-primary;
+    font-weight: 850;
+    color: $c-text-main;
   }
 
   .privacy-sub {
-    font-size: 22rpx;
-    color: $text-secondary;
+    font-size: 20rpx;
+    color: $c-text-sub;
   }
 }
 
-.op-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 96rpx;
-  padding: 0 32rpx;
-
-  &:active { background: $bg-hover; }
-
-  .op-label {
-    font-size: 26rpx;
-    color: $text-primary;
-    font-weight: 800;
-
-    &.danger { color: $warning-strong; }
-  }
-
-  .op-value {
-    display: flex;
-    align-items: center;
-    gap: 4rpx;
-  }
-
-  .op-value-text {
-    font-size: 24rpx;
-    color: $text-secondary;
-  }
-}
-
+/* ---------- iOS 开关 ---------- */
 .switch {
-  width: 88rpx;
+  width: 90rpx;
   height: 52rpx;
   border-radius: 26rpx;
-  background: $border-base;
+  background: #E4E8E7;
   position: relative;
-  transition: background .2s;
+  transition: background 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   flex-shrink: 0;
 
   &.on {
-    background: $primary;
+    background: #34C759;
 
-    .switch-dot { transform: translateX(36rpx); }
+    .switch-dot {
+      transform: translateX(38rpx);
+    }
   }
 }
 
 .switch-dot {
   position: absolute;
-  top: 6rpx;
-  left: 6rpx;
-  width: 40rpx;
-  height: 40rpx;
+  top: 5rpx;
+  left: 5rpx;
+  width: 42rpx;
+  height: 42rpx;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
-  transition: transform .2s;
+  background: #ffffff;
+  box-shadow: 0 3rpx 8rpx rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* ---------- 操作行 ---------- */
+.op-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 104rpx;
+  padding: 0 4rpx;
+
+  &:active {
+    opacity: 0.6;
+  }
+
+  .op-left {
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+  }
+
+  .op-label {
+    font-size: 26rpx;
+    color: $c-text-main;
+    font-weight: 800;
+
+    &.danger {
+      color: #D9534F;
+    }
+  }
+
+  .op-value {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+  }
+
+  .op-value-text {
+    font-size: 22rpx;
+    color: $c-text-sub;
+    font-weight: 700;
+  }
+}
+
+/* ---------- 哑光暗黑保存按钮 ---------- */
 .bottom-bar {
   flex: none;
-  background: $bg-card;
-  border-top: 1rpx solid $border-light;
-  padding: 20rpx 32rpx;
+  background: #ffffff;
+  border-top: 1rpx solid $c-border;
+  padding: 24rpx 36rpx;
 }
 
 .submit-btn {
-  height: 104rpx;
-  border-radius: 52rpx;
-  background: $primary;
-  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.32);
+  height: 98rpx;
+  border-radius: 49rpx;
+  background: #1F2926;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease;
 
-  &:active { transform: scale(.98); }
+  &:active {
+    transform: scale(0.98);
+  }
 
   &.disabled {
-    opacity: .6;
+    opacity: 0.45;
   }
 
   .submit-btn-text {
-    font-size: 32rpx;
-    color: #fff;
+    font-size: 28rpx;
+    color: #ffffff;
     font-weight: 900;
+    letter-spacing: 2rpx;
   }
 }

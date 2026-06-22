@@ -1,11 +1,13 @@
 import { http } from '@/utils/request';
 
+export type MessageType = 'text' | 'location' | 'image' | 'video';
+
 export interface MessageItem {
   id: string;
   fromId: string;
   toId: string;
   content: string;
-  type: string;
+  type: MessageType;
   readAt: string | null;
   createdAt: string;
 }
@@ -43,6 +45,7 @@ export function fetchMessageHistory(payload: {
 export function sendMessage(payload: {
   toUserId: string;
   content: string;
+  type?: MessageType;
 }): Promise<MessageItem> {
   return http.post('/messages/send', payload);
 }

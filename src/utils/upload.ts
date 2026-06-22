@@ -114,6 +114,8 @@ export function uploadImage(
   });
 }
 
+export const uploadFile = uploadImage;
+
 /**
  * 批量上传,逐个抛 Promise(失败的那张静默吞掉,不阻塞其它)。
  * 返回成功上传的远程 URL 数组(与输入顺序一致,失败的索引位被剔除)。

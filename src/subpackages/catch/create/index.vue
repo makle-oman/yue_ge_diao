@@ -103,14 +103,14 @@
 
         <!-- 隐私 -->
         <view class="card">
-          <view class="row">
+          <view class="row switch-row">
             <text class="row-label">公开钓点位置</text>
             <view class="switch" :class="{ on: form.publicSpot }" @click="form.publicSpot = !form.publicSpot">
               <view class="switch-dot" />
             </view>
           </view>
           <view class="divider" />
-          <view class="row">
+          <view class="row switch-row">
             <text class="row-label">允许评论</text>
             <view class="switch" :class="{ on: form.allowComment }" @click="form.allowComment = !form.allowComment">
               <view class="switch-dot" />
@@ -309,8 +309,11 @@ const onPickFish = () => {
 const onPickSpot = () => {
   const selected = encodeURIComponent(form.value.spotId || '');
   const target = encodeURIComponent('catch:create');
+  const locationQuery = currentLocation.value
+    ? `&lat=${currentLocation.value.lat}&lng=${currentLocation.value.lng}`
+    : '';
   uni.navigateTo({
-    url: `/subpackages/catch/spot-picker/index?selected=${selected}&target=${target}`,
+    url: `/subpackages/catch/spot-picker/index?selected=${selected}&target=${target}${locationQuery}`,
     events: {
       spotSelected(data: unknown) {
         applySpotSelected(data);

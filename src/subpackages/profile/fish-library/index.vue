@@ -1,7 +1,14 @@
 <template>
   <view class="fish-lib">
-    <!-- 渐变 Hero -->
+    <!-- 极光 Mesh Gradient Hero 顶栏 -->
     <view class="hero" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <!-- 极光流光背景层 -->
+      <view class="hero-glow-1" />
+      <view class="hero-glow-2" />
+      <view class="hero-grid-pattern" />
+      <view class="hero-circle-1" />
+      <view class="hero-circle-2" />
+
       <view class="hero-top" :style="heroTopStyle">
         <view class="hero-back" @click="onBack">
           <mxy-icon name="arrow_back" :size="40" color="#fff" />
@@ -21,14 +28,29 @@
 
     <scroll-view class="content" scroll-y>
       <view class="form">
-        <!-- 总进度卡 -->
+        <!-- 游戏化里程碑进度卡 -->
         <view class="progress-card">
           <view class="progress-head">
             <text class="progress-title">总进度</text>
             <text class="progress-side">解锁 80% 奖励</text>
           </view>
-          <view class="progress-bar">
-            <view class="progress-fill" :style="{ width: barPct + '%' }" />
+          <view class="progress-bar-wrap">
+            <view class="progress-bar">
+              <view class="progress-fill" :style="{ width: barPct + '%' }" />
+              <!-- 里程碑节点 -->
+              <view class="marker" style="left: 30%;">
+                <view class="marker-dot" :class="{ reached: barPct >= 30 }" />
+                <text class="marker-label">30%</text>
+              </view>
+              <view class="marker" style="left: 60%;">
+                <view class="marker-dot" :class="{ reached: barPct >= 60 }" />
+                <text class="marker-label">60%</text>
+              </view>
+              <view class="marker" style="left: 80%;">
+                <view class="marker-dot gold-chest" :class="{ reached: barPct >= 80 }" />
+                <text class="marker-label highlight">80% 🏆</text>
+              </view>
+            </view>
           </view>
           <view class="progress-foot">
             <text class="progress-foot-text">淡水鱼 {{ stats.fresh.done }}/{{ stats.fresh.total }}</text>
@@ -80,21 +102,39 @@
             <view class="fish-cover">
               <image v-if="f.image" class="fish-img" :src="f.image" mode="aspectFill" />
               <view v-else class="fish-silhouette">
-                <view class="fish-body-shape" />
-                <view class="fish-tail-shape" />
+                <svg class="fish-bone-svg" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 细长鱼轮廓 -->
+                  <g v-if="getBoneType(f.name) === 'slender'">
+                    <path d="M 88 25 C 80 21 68 20 55 20 C 42 20 28 22 18 23 C 14 21 9 18 7 20 C 9 24 9 26 7 30 C 9 32 14 29 18 27 C 28 28 42 30 55 30 C 68 30 80 29 88 25 Z" fill="currentColor" opacity="0.22" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                  </g>
+                  <!-- 扁宽鱼轮廓 -->
+                  <g v-else-if="getBoneType(f.name) === 'deep'">
+                    <path d="M 83 25 C 75 15 65 6 52 6 C 45 8 30 15 18 22 C 14 18 9 12 7 15 C 9 22 9 28 7 35 C 9 38 14 32 18 28 C 30 35 45 42 52 44 C 65 44 75 35 85 25 Z" fill="currentColor" opacity="0.22" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                  </g>
+                  <!-- 掠食性鱼轮廓 -->
+                  <g v-else-if="getBoneType(f.name) === 'predatory'">
+                    <path d="M 85 25 C 75 17 68 15 60 15 C 55 10 45 8 40 16 C 30 17 20 20 16 22 C 12 18 8 12 6 15 C 8 22 8 28 6 35 C 8 38 12 32 16 28 C 20 30 30 33 40 34 C 45 38 55 38 60 35 C 68 35 75 33 85 25 Z" fill="currentColor" opacity="0.22" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                  </g>
+                  <!-- 标准鱼轮廓 -->
+                  <g v-else>
+                    <path d="M 85 25 C 75 18 70 14 62 14 C 60 11 50 9 45 14 C 35 15 25 19 18 22 C 14 20 10 16 8 18 C 10 23 10 27 8 32 C 10 34 14 30 18 28 C 25 31 35 35 45 36 C 47 39 52 41 55 36 C 70 36 75 32 85 25 Z" fill="currentColor" opacity="0.22" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                  </g>
+                </svg>
               </view>
               <view v-if="f.rarityLabel" class="rarity-badge">
                 <text>{{ f.rarityLabel }}</text>
               </view>
               <view v-if="!f.unlocked" class="lock-mask">
-                <mxy-icon name="lock" :size="34" color="#fff" />
+                <view class="lock-glow-ring">
+                  <mxy-icon name="lock" :size="30" color="#C29F72" />
+                </view>
               </view>
             </view>
             <view class="fish-info">
               <text class="fish-name">{{ f.unlocked ? f.name : '未知鱼种' }}</text>
               <text class="fish-meta">{{ f.unlocked ? f.record : '未解锁' }}</text>
               <view class="fish-foot">
-                <mxy-icon :name="f.unlocked ? 'schedule' : 'info'" :size="22" :color="f.unlocked ? '#2D8F87' : '#AAB6BD'" />
+                <mxy-icon :name="f.unlocked ? 'schedule' : 'info'" :size="22" :color="f.unlocked ? '#2A3C36' : '#8A9995'" />
                 <text>{{ f.unlocked ? f.firstCatchText : f.lockHint }}</text>
               </view>
             </view>
@@ -252,6 +292,20 @@ function switchChip(key: FishFilter) {
 const displayFish = computed<Fish[]>(() => fishList.value);
 
 onMounted(loadLibrary);
+
+function getBoneType(name: string): string {
+  const n = name || '';
+  if (n.includes('黑鱼') || n.includes('鳗') || n.includes('鳝') || n.includes('泥鳅') || n.includes('鲶')) {
+    return 'slender';
+  }
+  if (n.includes('鳊') || n.includes('鲳') || n.includes('鲫') || n.includes('鲂') || n.includes('缩骨')) {
+    return 'deep';
+  }
+  if (n.includes('鲈') || n.includes('鳜') || n.includes('鲨') || n.includes('金枪') || n.includes('翘嘴') || n.includes('石斑')) {
+    return 'predatory';
+  }
+  return 'standard';
+}
 
 const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {});
 const onShare = () => uni.showToast({ title: '分享 (待开发)', icon: 'none' });

@@ -152,6 +152,78 @@
   .bubble-text { color: #fff; }
 }
 
+.location-card {
+  width: 420rpx;
+  max-width: 78vw;
+  overflow: hidden;
+  border-radius: 32rpx;
+  background: $bg-card;
+  box-shadow: 0 8rpx 28rpx rgba(26, 43, 51, 0.1);
+
+  &:active { opacity: .86; }
+}
+.location-mine {
+  border: 2rpx solid rgba(45, 143, 135, 0.18);
+}
+.location-other {
+  border: 1rpx solid $border-light;
+}
+.location-map {
+  height: 168rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(90deg, rgba(45, 143, 135, 0.08) 1rpx, transparent 1rpx),
+    linear-gradient(0deg, rgba(45, 143, 135, 0.08) 1rpx, transparent 1rpx),
+    $soft-primary;
+  background-size: 40rpx 40rpx;
+}
+.location-info {
+  padding: 20rpx 24rpx 22rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.location-title {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $text-primary;
+}
+.location-sub {
+  font-size: 22rpx;
+  line-height: 1.35;
+  color: $text-secondary;
+}
+
+.media-card {
+  max-width: 520rpx;
+  overflow: hidden;
+  border-radius: 28rpx;
+  background: $bg-card;
+  box-shadow: 0 8rpx 28rpx rgba(26, 43, 51, 0.1);
+
+  &:active { opacity: .9; }
+}
+.media-mine {
+  border: 2rpx solid rgba(45, 143, 135, 0.18);
+}
+.media-other {
+  border: 1rpx solid $border-light;
+}
+.media-image {
+  display: block;
+  width: 420rpx;
+  max-width: 76vw;
+}
+.media-video {
+  display: block;
+  width: 520rpx;
+  max-width: 76vw;
+  height: 300rpx;
+  background: #000;
+}
+
 /* 引用卡片(组队信息) */
 .team-quote {
   max-width: 80%;
@@ -275,6 +347,125 @@
 }
 
 /* ---------- 聊天更多操作 Sheet (Design 36) ---------- */
+.time-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+.time-current {
+  height: 80rpx;
+  padding: 0 28rpx;
+  border-radius: 24rpx;
+  background: $soft-primary;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.time-current-label {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: $text-secondary;
+}
+.time-current-value {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $primary;
+}
+.time-picker {
+  width: 100%;
+  height: 420rpx;
+  border-radius: 24rpx;
+  background: $bg-page;
+  overflow: hidden;
+}
+.time-picker-item {
+  height: 88rpx;
+  line-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 28rpx;
+    font-weight: 800;
+    color: $text-primary;
+  }
+}
+
+.joined-sheet {
+  display: flex;
+  flex-direction: column;
+}
+.joined-empty {
+  min-height: 180rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 28rpx;
+    font-weight: 800;
+    color: $text-secondary;
+  }
+}
+.joined-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.joined-item {
+  min-height: 112rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 24rpx;
+  background: $bg-page;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+
+  &:active { opacity: .78; }
+}
+.joined-item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.joined-title {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $text-primary;
+  line-height: 1.25;
+}
+.joined-meta {
+  font-size: 24rpx;
+  color: $text-secondary;
+  line-height: 1.3;
+}
+.joined-badge {
+  flex-shrink: 0;
+  height: 48rpx;
+  padding: 0 18rpx;
+  border-radius: 24rpx;
+  background: $soft-primary;
+  display: flex;
+  align-items: center;
+
+  &.pending {
+    background: $soft-orange;
+  }
+
+  text {
+    font-size: 22rpx;
+    font-weight: 900;
+    color: $primary;
+  }
+
+  &.pending text {
+    color: $warning-strong;
+  }
+}
+
 .more-banner {
   display: flex;
   align-items: center;

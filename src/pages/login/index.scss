@@ -24,9 +24,9 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(18, 52, 45, 0.25) 0%,
-    rgba(18, 52, 45, 0.54) 70%,
-    rgba(18, 52, 45, 0.78) 100%
+    rgba(18, 52, 45, 0.15) 0%,
+    rgba(18, 52, 45, 0.45) 60%,
+    #F7F9FA 100% // Fades into page background color
   );
 }
 .hero-top {
@@ -44,82 +44,120 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.34);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  border: 1rpx solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.9);
+    background: rgba(0, 0, 0, 0.4);
+  }
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 10rpx;
+  gap: 12rpx;
+  animation: floatEffect 4s ease-in-out infinite;
 
   .brand-text {
-    font-size: 32rpx;
+    font-size: 36rpx;
     color: #fff;
     font-weight: 900;
-    letter-spacing: 0;
+    letter-spacing: 2rpx;
+    text-shadow: 0 4rpx 12rpx rgba(18, 52, 45, 0.3);
   }
+}
+
+@keyframes floatEffect {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8rpx); }
 }
 
 /* ---------- Panel ---------- */
 .panel {
   flex: 1;
-  margin-top: -56rpx;
-  background: $bg-page;
+  margin-top: -64rpx;
+  background: #ffffff;
   border-radius: 48rpx 48rpx 0 0;
-  padding: 48rpx 40rpx 56rpx;
+  padding: 56rpx 44rpx 56rpx;
   display: flex;
   flex-direction: column;
-  gap: 28rpx;
+  gap: 32rpx;
   position: relative;
   z-index: 4;
+  box-shadow: 0 -10rpx 40rpx rgba(18, 52, 45, 0.05);
 }
 
 .welcome {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 10rpx;
+  margin-bottom: 8rpx;
 
   .welcome-title {
-    font-size: 44rpx;
+    font-size: 46rpx;
     color: $text-primary;
     font-weight: 900;
+    letter-spacing: -0.5rpx;
   }
   .welcome-sub {
     font-size: 26rpx;
     color: $text-secondary;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 }
 
 .auth-tabs {
+  position: relative;
   height: 80rpx;
   padding: 6rpx;
   border-radius: 40rpx;
-  background: #EAF0F1;
+  background: #f0f3f5;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6rpx;
+  z-index: 1;
+  overflow: hidden;
+}
+.auth-tab-slider {
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  width: calc(50% - 9rpx);
+  height: 68rpx;
+  border-radius: 34rpx;
+  background: #ffffff;
+  box-shadow: 0 6rpx 16rpx rgba(26, 43, 51, 0.08);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1;
+
+  &.slider-register {
+    transform: translateX(calc(100% + 12rpx));
+  }
 }
 .auth-tab {
+  position: relative;
   min-width: 0;
   height: 68rpx;
   border-radius: 34rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
+  cursor: pointer;
 
   text {
     font-size: 28rpx;
     color: $text-secondary;
     font-weight: 800;
+    transition: color 0.3s ease;
   }
 
   &.active {
-    background: $bg-card;
-    box-shadow: 0 6rpx 18rpx rgba(26, 43, 51, 0.08);
-
     text {
       color: $primary;
     }
@@ -129,91 +167,164 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 22rpx;
+  gap: 0; // Control gaps manually on fields to support smooth collapsing
 }
+
 .field {
   display: flex;
   flex-direction: column;
   gap: 12rpx;
+  margin-bottom: 24rpx;
+  transition: all 0.3s ease;
 }
+
 .field-label {
   font-size: 24rpx;
   color: $text-primary;
   font-weight: 800;
+  padding-left: 6rpx;
 }
+
 .input-row {
   height: 96rpx;
   border-radius: 24rpx;
-  background: $bg-card;
-  border: 1rpx solid $border-light;
-  padding: 0 24rpx;
+  background: #f7f9fa;
+  border: 2rpx solid transparent;
+  padding: 0 28rpx;
   display: flex;
   align-items: center;
-  gap: 14rpx;
+  gap: 16rpx;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &.focus {
+    border-color: $primary;
+    background: #ffffff;
+    box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.08);
+    transform: translateY(-2rpx);
+  }
 }
+
 .form-input {
   flex: 1;
   min-width: 0;
   height: 96rpx;
   font-size: 30rpx;
   color: $text-primary;
+  font-weight: 500;
 }
 .password-toggle {
-  width: 56rpx;
-  height: 56rpx;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: -8rpx;
+  transition: opacity 0.2s ease;
+
+  &:active {
+    opacity: 0.6;
+  }
 }
 .input-placeholder {
   color: $text-placeholder;
 }
 
+/* ---------- Nickname Expand Transition ---------- */
+.nickname-field {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-bottom: 0;
+  pointer-events: none;
+  transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.25s ease,
+              margin-bottom 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+
+  &.show {
+    max-height: 160rpx;
+    opacity: 1;
+    margin-bottom: 24rpx;
+    pointer-events: auto;
+  }
+}
+
+/* ---------- Submit Button ---------- */
 .submit-btn {
   height: 104rpx;
   border-radius: 52rpx;
-  background: $primary;
+  background: linear-gradient(135deg, #3bb5aa 0%, #208077 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(45, 143, 135, 0.30);
+  box-shadow: 0 10rpx 30rpx rgba(45, 143, 135, 0.35);
+  margin-top: 12rpx;
+  transition: all 0.25s ease;
 
-  &:active { transform: scale(.98); }
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0 4rpx 16rpx rgba(45, 143, 135, 0.2);
+  }
 
   &.disabled {
-    opacity: .64;
+    opacity: .6;
+    pointer-events: none;
   }
 
   .submit-btn-text {
     font-size: 32rpx;
     color: #fff;
     font-weight: 900;
+    letter-spacing: 2rpx;
   }
 }
 
+/* ---------- Loader Spinner ---------- */
+.loader-spinner {
+  width: 36rpx;
+  height: 36rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spinEffect 0.8s linear infinite;
+}
+
+@keyframes spinEffect {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- WeChat Button ---------- */
 .wx-btn {
-  height: 88rpx;
-  border-radius: 44rpx;
-  background: $bg-card;
-  border: 1rpx solid $border-light;
+  height: 104rpx;
+  border-radius: 52rpx;
+  background: linear-gradient(135deg, #07c160 0%, #05a752 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
+  gap: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.25);
+  transition: all 0.25s ease;
+  border: none;
 
-  &:active { transform: scale(.98); }
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.15);
+  }
 }
 .wx-btn-text {
-  font-size: 28rpx;
-  color: $primary;
+  font-size: 30rpx;
+  color: #ffffff;
   font-weight: 800;
 }
 
+/* ---------- Benefits ---------- */
 .benefits {
   display: flex;
   flex-direction: column;
-  gap: 14rpx;
-  padding: 2rpx 0;
+  gap: 16rpx;
+  background: #f7f9fa;
+  padding: 24rpx 28rpx;
+  border-radius: 24rpx;
+  margin-top: 8rpx;
 }
 .benefit {
   display: flex;
@@ -224,42 +335,69 @@
     flex: 1;
     font-size: 24rpx;
     color: $text-secondary;
+    font-weight: 500;
   }
 }
 
+/* ---------- Agreement ---------- */
 .agreement {
   display: flex;
   align-items: flex-start;
   gap: 16rpx;
-  padding: 4rpx 0;
-
-  &:active { opacity: .8; }
+  padding: 8rpx 12rpx;
+  margin-top: 12rpx;
+  cursor: pointer;
 }
 .agree-box {
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 18rpx;
-  border: 2rpx solid $border-base;
-  background: $bg-card;
+  width: 38rpx;
+  height: 38rpx;
+  border-radius: 50%;
+  border: 3rpx solid $border-base;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   margin-top: 2rpx;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &.on {
     background: $primary;
     border-color: $primary;
+  }
+
+  &.pop {
+    animation: popEffect 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 }
 .agree-text {
   flex: 1;
   font-size: 24rpx;
   color: $text-secondary;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-weight: 500;
 
   .agree-link {
     color: $primary;
     font-weight: 700;
+    margin: 0 4rpx;
   }
 }
+
+@keyframes popEffect {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Shake Feedback ---------- */
+.shake {
+  animation: shakeEffect 0.4s ease-in-out;
+}
+
+@keyframes shakeEffect {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-12rpx); }
+  40%, 80% { transform: translateX(12rpx); }
+}
+

@@ -153,16 +153,6 @@
 
   &:active { transform: scale(.99); }
 }
-.avatar {
-  width: 112rpx;
-  height: 112rpx;
-  border-radius: 50%;
-  flex-shrink: 0;
-
-  &.tone-primary { background: $soft-primary; }
-  &.tone-blue    { background: $soft-blue; }
-  &.tone-orange  { background: $soft-orange; }
-}
 .user-info {
   flex: 1;
   min-width: 0;

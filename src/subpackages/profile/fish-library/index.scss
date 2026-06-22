@@ -1,398 +1,658 @@
+/* ---------- 局部色彩变量 ---------- */
+$c-pine: #2A3C36;       /* 沉稳暗松绿 */
+$c-sand: #C29F72;       /* 柔和沙金色 */
+$c-bg: #F8F9F8;         /* 轻质灰白底色 */
+$c-card: #FFFFFF;
+$c-text-main: #222B28;  /* 偏灰的深绿字色 */
+$c-text-sub: #6E7B76;   /* 偏灰的次级字色 */
+$c-border: #E8ECEB;     /* 精致淡灰边框 */
 
 .fish-lib {
   position: relative;
   min-height: 100vh;
-  background: $bg-page;
+  background: $c-bg;
   display: flex;
   flex-direction: column;
 }
 
-/* Hero */
+/* ---------- 极光 Mesh Gradient Hero 顶栏 ---------- */
 .hero {
   position: relative;
   flex: none;
-  background: linear-gradient(135deg, $primary 0%, $secondary 100%);
-  padding: 0 32rpx 96rpx;
+  background: #1F302A; /* 深松绿基底 */
+  padding: 0 32rpx 112rpx;
   color: #fff;
+  overflow: hidden;
 }
+
+/* 极光流光背景层 */
+.hero-glow-1 {
+  position: absolute;
+  width: 450rpx;
+  height: 450rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26, 188, 156, 0.28) 0%, rgba(26, 188, 156, 0) 70%);
+  filter: blur(60rpx);
+  top: -120rpx;
+  left: -80rpx;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-glow-2 {
+  position: absolute;
+  width: 500rpx;
+  height: 500rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(194, 159, 114, 0.25) 0%, rgba(194, 159, 114, 0) 70%);
+  filter: blur(70rpx);
+  bottom: -150rpx;
+  right: -100rpx;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 装饰网格与线条 */
+.hero-grid-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 2;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.15) 1rpx, transparent 1rpx),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1rpx, transparent 1rpx);
+  background-size: 24rpx 24rpx;
+}
+
+.hero-circle-1 {
+  position: absolute;
+  top: 60rpx;
+  right: -100rpx;
+  width: 280rpx;
+  height: 280rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(255, 255, 255, 0.05);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-circle-2 {
+  position: absolute;
+  bottom: -40rpx;
+  left: 60rpx;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(255, 255, 255, 0.04);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 确保内容高于背景流光 */
+.hero-top, .hero-body, .hero-badge {
+  position: relative;
+  z-index: 10;
+}
+
 .hero-top {
   height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .hero-back, .hero-share {
   width: 64rpx;
   height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8rpx);
 
-  &:active { opacity: .6; }
+  &:active {
+    transform: scale(0.92);
+  }
 }
+
 .hero-body {
-  margin-top: 24rpx;
+  margin-top: 20rpx;
   padding-right: 152rpx;
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 8rpx;
 }
+
 .hero-title {
-  font-size: 44rpx;
+  font-size: 48rpx;
   font-weight: 900;
   color: #fff;
   line-height: 1.1;
+  letter-spacing: 2rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
 }
+
 .hero-sub {
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
 }
+
+/* 磨砂玻璃环形进度 */
 .hero-badge {
   position: absolute;
   right: 32rpx;
-  bottom: 116rpx;
-  width: 112rpx;
-  height: 112rpx;
-  border-radius: 56rpx;
-  background: rgba(255, 255, 255, 0.18);
-  border: 2rpx solid rgba(255, 255, 255, 0.4);
+  bottom: 120rpx;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
 }
+
 .hero-badge-num {
   font-size: 32rpx;
   font-weight: 900;
   color: #fff;
+  letter-spacing: -0.5rpx;
 }
 
-/* 内容容器：上提覆盖在 hero 上 */
+/* ---------- 内容排版 ---------- */
 .content {
   flex: 1;
   min-height: 0;
   margin-top: -48rpx;
 }
+
 .form {
   display: flex;
   flex-direction: column;
-  padding: 0 32rpx 32rpx;
-  gap: 24rpx;
+  padding: 0 32rpx 48rpx;
+  gap: 28rpx;
 }
 
-/* 进度卡 */
+/* ---------- 游戏化里程碑进度卡 ---------- */
 .progress-card {
-  background: $bg-card;
+  background: $c-card;
   border-radius: 32rpx;
-  padding: 28rpx 28rpx 24rpx;
-  border: 1rpx solid $border-light;
-  box-shadow: 0 10rpx 30rpx rgba(26, 43, 51, 0.10);
+  padding: 36rpx;
+  border: 1rpx solid $c-border;
+  box-shadow: 0 8rpx 28rpx rgba(42, 60, 54, 0.03);
 
   .progress-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 18rpx;
+    margin-bottom: 8rpx;
   }
+
   .progress-title {
-    font-size: 30rpx;
+    font-size: 28rpx;
     font-weight: 900;
-    color: $text-primary;
+    color: $c-text-main;
   }
+
   .progress-side {
     font-size: 22rpx;
-    color: $accent;
-    font-weight: 800;
+    color: $c-sand;
+    font-weight: 850;
   }
+
+  .progress-bar-wrap {
+    padding: 24rpx 10rpx 36rpx;
+  }
+
   .progress-bar {
-    height: 18rpx;
-    background: $border-light;
-    border-radius: 9rpx;
-    overflow: hidden;
+    position: relative;
+    height: 14rpx;
+    background: #ECEFEF;
+    border-radius: 7rpx;
   }
+
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, $primary, $secondary);
-    border-radius: 9rpx;
-    transition: width .3s ease;
+    background: linear-gradient(90deg, #2A3C36, #406859);
+    border-radius: 7rpx;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 10rpx rgba(42, 60, 54, 0.25);
   }
+
+  /* 奖励节点标志 */
+  .marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 5;
+  }
+
+  .marker-dot {
+    width: 14rpx;
+    height: 14rpx;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 4rpx solid #CCD5D3;
+    transition: all 0.3s ease;
+
+    &.reached {
+      border-color: $c-pine;
+      background: $c-pine;
+      box-shadow: 0 0 8rpx rgba(42, 60, 54, 0.4);
+    }
+  }
+
+  /* 80% 黄金宝箱节点 */
+  .gold-chest {
+    width: 18rpx;
+    height: 18rpx;
+    border-color: #E2CDAD;
+
+    &.reached {
+      background: $c-sand;
+      border-color: $c-sand;
+      box-shadow: 0 0 12rpx rgba(194, 159, 114, 0.7);
+    }
+  }
+
+  .marker-label {
+    font-size: 18rpx;
+    color: $c-text-sub;
+    font-weight: 700;
+    margin-top: 12rpx;
+    white-space: nowrap;
+
+    &.highlight {
+      color: $c-sand;
+      font-weight: 900;
+    }
+  }
+
   .progress-foot {
-    margin-top: 16rpx;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-top: 1rpx solid #F0F3F2;
+    padding-top: 18rpx;
   }
+
   .progress-foot-text {
     font-size: 22rpx;
-    color: $text-secondary;
-    font-weight: 700;
+    color: $c-text-sub;
+    font-weight: 800;
   }
 }
 
-/* 分段 (淡水/海鱼) */
+/* ---------- iOS 经典滑动胶囊控制 ---------- */
 .segment {
-  height: 76rpx;
-  background: $bg-card;
-  border-radius: 38rpx;
-  padding: 8rpx;
+  height: 72rpx;
+  background: #ECEFEF;
+  border-radius: 20rpx;
+  padding: 6rpx;
   display: flex;
-  border: 1rpx solid $border-light;
+  gap: 4rpx;
 
   .seg {
     flex: 1;
     height: 100%;
-    border-radius: 34rpx;
+    border-radius: 16rpx;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
 
     text {
-      font-size: 26rpx;
-      color: $text-secondary;
+      font-size: 25rpx;
+      color: $c-text-sub;
       font-weight: 800;
     }
+
     &.active {
-      background: $primary;
-      text { color: #fff; }
+      background: #ffffff;
+      box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+
+      text {
+        color: $c-pine;
+        font-weight: 900;
+      }
     }
   }
 }
 
-/* Chip 行 */
+/* ---------- 过滤器 Chips ---------- */
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 16rpx;
 
   .chip {
-    height: 56rpx;
+    height: 58rpx;
     padding: 0 26rpx;
-    background: $bg-card;
-    border-radius: 28rpx;
-    border: 1rpx solid $border-light;
+    background: #F0F3F2;
+    border-radius: 16rpx;
+    border: 1rpx solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.15s ease;
 
     text {
-      font-size: 24rpx;
-      color: $text-secondary;
-      font-weight: 700;
+      font-size: 23rpx;
+      color: $c-text-sub;
+      font-weight: 800;
     }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
     &.active {
-      background: $soft-primary;
-      border-color: transparent;
-      text { color: $primary; }
+      background: rgba(42, 60, 54, 0.06);
+      border-color: rgba(42, 60, 54, 0.3);
+
+      text {
+        color: $c-pine;
+        font-weight: 900;
+      }
     }
   }
 }
 
-/* 章节标题 */
+/* ---------- 章节标题 ---------- */
 .section-head {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-top: 8rpx;
-}
-.section-title {
-  font-size: 30rpx;
-  font-weight: 900;
-  color: $text-primary;
-}
-.section-meta {
-  font-size: 22rpx;
-  color: $text-secondary;
+  margin-top: 10rpx;
+  padding: 0 4rpx;
 }
 
-/* 鱼库网格 */
+.section-title {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: $c-text-main;
+}
+
+.section-meta {
+  font-size: 22rpx;
+  color: $c-text-sub;
+  font-weight: 700;
+}
+
+/* ---------- 鱼库网格 ---------- */
 .fish-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 28rpx 20rpx;
+  gap: 24rpx;
 }
+
 .fish-tile {
-  width: calc((100% - 20rpx) / 2);
-  background: $bg-card;
-  border-radius: 16rpx;
-  border: 2rpx solid #CBE7F5;
+  width: calc((100% - 24rpx) / 2);
+  background: $c-card;
+  border-radius: 24rpx;
+  border: 1rpx solid $c-border;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 8rpx 22rpx rgba(26, 43, 51, 0.06);
+  box-shadow: 0 4rpx 16rpx rgba(42, 60, 54, 0.01);
+  transition: all 0.2s ease;
 
-  &:active { transform: scale(.97); }
-
-  &.locked {
-    background: #EAF6FA;
-    border-style: dashed;
-    border-color: #D3EAF4;
-    box-shadow: none;
+  &:active {
+    transform: scale(0.96);
   }
-  &.rarity-rare,
-  &.rarity-epic,
+
+  /* 稀有度高亮边框与外发光 */
+  &.rarity-rare {
+    border-color: rgba(216, 180, 143, 0.45);
+    box-shadow: 0 4rpx 16rpx rgba(216, 180, 143, 0.06);
+  }
+  &.rarity-epic {
+    border-color: rgba(194, 159, 114, 0.55);
+    box-shadow: 0 4rpx 20rpx rgba(194, 159, 114, 0.1);
+  }
   &.rarity-legendary {
-    border-color: #E7C98E;
+    border-color: rgba(42, 60, 54, 0.65);
+    box-shadow: 0 4rpx 22rpx rgba(42, 60, 54, 0.1);
+  }
+
+  /* ==================== 神秘黑卡图鉴风格 (未解锁) ==================== */
+  &.locked {
+    background: #111A17; /* 暗绿密室黑 */
+    border: 1rpx solid #243530;
+    box-shadow: inset 0 0 24rpx rgba(26, 188, 156, 0.03), 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+
+    .fish-cover {
+      background: linear-gradient(135deg, #162421, #0E1614);
+      /* 电子微光扫描线网格 */
+      background-image: 
+        linear-gradient(rgba(42, 60, 54, 0.25) 1rpx, transparent 1rpx),
+        linear-gradient(90deg, rgba(42, 60, 54, 0.25) 1rpx, transparent 1rpx);
+      background-size: 16rpx 16rpx;
+    }
+
+    .fish-silhouette {
+      opacity: 0.22;
+      filter: drop-shadow(0 0 6rpx rgba(194, 159, 114, 0.18));
+
+      .fish-body-shape, .fish-tail-shape {
+        background: $c-sand; /* 金色图腾鱼身 */
+      }
+    }
+
+    /* 黄金发光锁圈 */
+    .lock-mask {
+      background: rgba(17, 26, 23, 0.15);
+    }
+
+    .lock-glow-ring {
+      width: 72rpx;
+      height: 72rpx;
+      border-radius: 50%;
+      background: rgba(194, 159, 114, 0.12);
+      border: 1rpx solid rgba(194, 159, 114, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20rpx rgba(194, 159, 114, 0.2);
+      animation: lockPulse 2s infinite ease-in-out;
+    }
+
+    .fish-info {
+      background: #15221E;
+    }
+
+    .fish-name {
+      color: #A3B5B0;
+      font-weight: 800;
+    }
+
+    .fish-meta {
+      color: #617570;
+    }
+
+    .fish-foot text {
+      color: #617570;
+    }
   }
 }
+
+@keyframes lockPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+    box-shadow: 0 0 16rpx rgba(194, 159, 114, 0.15);
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+    box-shadow: 0 0 28rpx rgba(194, 159, 114, 0.35);
+  }
+}
+
 .fish-cover {
   position: relative;
   width: 100%;
-  height: 212rpx;
-  background: linear-gradient(135deg, #D9E9ED, #BFD1D7);
+  height: 200rpx;
+  background: linear-gradient(135deg, #DCE6E3, #C4D2CE);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .fish-img {
   width: 100%;
   height: 100%;
 }
+
 .fish-silhouette {
   position: relative;
-  width: 190rpx;
-  height: 96rpx;
-  opacity: .48;
-  transform: rotate(-8deg);
-}
-.fish-body-shape {
-  position: absolute;
-  left: 34rpx;
-  top: 18rpx;
-  width: 122rpx;
-  height: 62rpx;
-  border-radius: 62rpx 72rpx 56rpx 62rpx;
-  background: #74858D;
-}
-.fish-tail-shape {
-  position: absolute;
-  left: 4rpx;
-  top: 28rpx;
-  width: 48rpx;
-  height: 44rpx;
-  background: #74858D;
-  clip-path: polygon(0 0, 100% 50%, 0 100%, 30% 50%);
-}
-.rarity-badge {
-  position: absolute;
-  left: 14rpx;
-  top: 14rpx;
-  height: 38rpx;
-  padding: 0 18rpx;
-  border-radius: 20rpx;
-  background: #B86A00;
+  width: 170rpx;
+  height: 84rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: rotate(-6deg);
+  opacity: 0.35;
+}
+
+.fish-bone-svg {
+  width: 100%;
+  height: 100%;
+  color: #C29F72; /* 柔和沙金骨架色 */
+}
+
+/* 哑光质感稀有度标签 */
+.rarity-badge {
+  position: absolute;
+  left: 12rpx;
+  top: 12rpx;
+  height: 36rpx;
+  padding: 0 16rpx;
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  z-index: 12;
 
   text {
-    font-size: 22rpx;
+    font-size: 20rpx;
     color: #fff;
     font-weight: 900;
   }
 }
+
+.rarity-rare .rarity-badge {
+  background: #D8B48F; /* 浅沙棕 */
+}
 .rarity-epic .rarity-badge {
-  background: #A86A21;
+  background: #C29F72; /* 沙金色 */
 }
 .rarity-legendary .rarity-badge {
-  background: #97A8B1;
-
-  text { color: #40515A; }
+  background: #2A3C36; /* 哑光暗绿 */
 }
+
 .lock-mask {
   position: absolute;
   inset: 0;
-  background: rgba(92, 108, 116, .48);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
+
 .locked .fish-img {
   filter: grayscale(1);
-  opacity: .42;
+  opacity: 0.35;
 }
+
 .fish-info {
-  min-height: 150rpx;
-  padding: 20rpx 22rpx 22rpx;
-  background: #fff;
+  min-height: 144rpx;
+  padding: 20rpx;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 8rpx;
 }
-.locked .fish-info {
-  background: #E5F4FA;
-}
+
 .fish-name {
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: 900;
-  color: $text-primary;
+  color: $c-text-main;
   line-height: 1.2;
 }
+
 .fish-meta {
-  font-size: 23rpx;
-  color: $text-secondary;
+  font-size: 22rpx;
+  color: $c-text-sub;
   font-weight: 700;
   line-height: 1.2;
 }
+
 .fish-foot {
   margin-top: auto;
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 6rpx;
 
   text {
-    font-size: 22rpx;
-    color: $primary;
-    font-weight: 700;
+    font-size: 20rpx;
+    color: $c-pine;
+    font-weight: 800;
     line-height: 1.2;
   }
 }
-.fish-tile.locked .fish-name {
-  color: $text-secondary;
-}
-.fish-tile.locked .fish-meta,
-.fish-tile.locked .fish-foot text {
-  color: #AAB6BD;
-}
+
 .empty-state {
   width: 100%;
   height: 180rpx;
-  border-radius: 16rpx;
-  background: $bg-card;
-  border: 1rpx dashed $border-base;
+  border-radius: 24rpx;
+  background: $c-card;
+  border: 1rpx dashed $c-border;
   display: flex;
   align-items: center;
   justify-content: center;
 
   text {
     font-size: 26rpx;
-    color: $text-secondary;
-    font-weight: 700;
+    color: $c-text-sub;
+    font-weight: 800;
   }
 }
 
-/* 周目标 */
+/* ---------- 周目标卡 ---------- */
 .goal-card {
-  background: $bg-card;
+  background: #FDFBFA;
   border-radius: 28rpx;
-  border: 1rpx solid $border-light;
-  padding: 24rpx;
+  border: 1rpx solid #F5EAE0;
+  padding: 28rpx;
   display: flex;
   align-items: center;
-  gap: 20rpx;
-  box-shadow: 0 6rpx 24rpx rgba(26, 43, 51, 0.06);
+  gap: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(194, 159, 114, 0.02);
 }
+
 .goal-icon {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 20rpx;
-  background: $soft-orange;
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 18rpx;
+  background: #F9EDE3;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
+
 .goal-text {
   flex: 1;
   display: flex;
@@ -400,13 +660,15 @@
   gap: 6rpx;
   min-width: 0;
 }
+
 .goal-main {
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: 900;
-  color: $text-primary;
-}
-.goal-sub {
-  font-size: 22rpx;
-  color: $text-secondary;
+  color: $c-text-main;
 }
 
+.goal-sub {
+  font-size: 20rpx;
+  color: $c-text-sub;
+  font-weight: 700;
+}

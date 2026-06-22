@@ -13,7 +13,7 @@
           <mxy-icon name="arrow_back" :size="40" color="#fff" />
         </view>
         <view class="brand">
-          <mxy-icon name="phishing" :size="36" color="#fff" />
+          <mxy-icon name="phishing" :size="40" color="#fff" />
           <text class="brand-text">约个钓</text>
         </view>
       </view>
@@ -22,11 +22,12 @@
     <!-- Panel -->
     <view class="panel">
       <view class="welcome">
-        <text class="welcome-title">手机号登录</text>
-        <text class="welcome-sub">手机号会作为后台识别账号，微信端可用快速登录。</text>
+        <text class="welcome-title">{{ mode === 'login' ? '欢迎回来' : '开启钓鱼之旅' }}</text>
+        <text class="welcome-sub">{{ mode === 'login' ? '使用手机号登录您的账号，与钓友探讨渔乐。' : '仅需一步，注册您的专属账号，发现好钓点。' }}</text>
       </view>
 
       <view class="auth-tabs">
+        <view class="auth-tab-slider" :class="`slider-${mode}`" />
         <view class="auth-tab" :class="{ active: mode === 'login' }" @click="mode = 'login'">
           <text>登录</text>
         </view>
@@ -35,11 +36,11 @@
         </view>
       </view>
 
-      <view class="auth-form">
+      <view class="auth-form" :class="{ shake: shakeTrigger }">
         <view class="field">
           <text class="field-label">手机号</text>
-          <view class="input-row">
-            <mxy-icon name="call" :size="30" color="#6F7E86" />
+          <view class="input-row" :class="{ focus: focusedField === 'phone' }">
+            <mxy-icon name="call" :size="30" :color="focusedField === 'phone' ? '#2D8F87' : '#6F7E86'" />
             <input
               v-model="phone"
               class="form-input"
@@ -47,14 +48,16 @@
               maxlength="11"
               placeholder="请输入手机号"
               placeholder-class="input-placeholder"
+              @focus="focusedField = 'phone'"
+              @blur="focusedField = null"
             />
           </view>
         </view>
 
         <view class="field">
           <text class="field-label">密码</text>
-          <view class="input-row">
-            <mxy-icon name="lock" :size="30" color="#6F7E86" />
+          <view class="input-row" :class="{ focus: focusedField === 'password' }">
+            <mxy-icon name="lock" :size="30" :color="focusedField === 'password' ? '#2D8F87' : '#6F7E86'" />
             <input
               v-model="password"
               class="form-input"
@@ -62,35 +65,40 @@
               maxlength="32"
               placeholder="6-32 位密码"
               placeholder-class="input-placeholder"
+              @focus="focusedField = 'password'"
+              @blur="focusedField = null"
             />
             <view class="password-toggle" @click="passwordVisible = !passwordVisible">
-              <mxy-icon :name="passwordVisible ? 'visibility_off' : 'lock'" :size="30" color="#6F7E86" />
+              <mxy-icon :name="passwordVisible ? 'visibility' : 'visibility_off'" :size="32" color="#6F7E86" />
             </view>
           </view>
         </view>
 
-        <view v-if="mode === 'register'" class="field">
+        <view class="field nickname-field" :class="{ show: mode === 'register' }">
           <text class="field-label">昵称</text>
-          <view class="input-row">
-            <mxy-icon name="person" :size="30" color="#6F7E86" />
+          <view class="input-row" :class="{ focus: focusedField === 'nickname' }">
+            <mxy-icon name="person" :size="30" :color="focusedField === 'nickname' ? '#2D8F87' : '#6F7E86'" />
             <input
               v-model="nickname"
               class="form-input"
               maxlength="32"
               placeholder="默认使用钓友 + 手机尾号"
               placeholder-class="input-placeholder"
+              @focus="focusedField = 'nickname'"
+              @blur="focusedField = null"
             />
           </view>
         </view>
 
-        <view class="submit-btn" :class="{ disabled: submitting }" @click="onPasswordSubmit">
-          <text class="submit-btn-text">{{ mode === 'login' ? '登录' : '注册并登录' }}</text>
+        <view class="submit-btn" :class="{ disabled: submitting, loading: submitting }" @click="onPasswordSubmit">
+          <view v-if="submitting" class="loader-spinner" />
+          <text v-else class="submit-btn-text">{{ mode === 'login' ? '登录' : '注册并登录' }}</text>
         </view>
       </view>
 
       <!-- #ifdef MP-WEIXIN -->
       <view class="wx-btn" @click="onWxLogin">
-        <mxy-icon name="chat" :size="32" color="#2D8F87" />
+        <mxy-icon name="chat" :size="36" color="#fff" />
         <text class="wx-btn-text">微信快速登录</text>
       </view>
       <!-- #endif -->
@@ -106,13 +114,14 @@
         </view>
       </view>
 
-      <view class="agreement" @click="agreed = !agreed">
-        <view class="agree-box" :class="{ on: agreed }">
-          <mxy-icon v-if="agreed" name="check" :size="22" color="#fff" />
+      <view class="agreement" @click="toggleAgree">
+        <view class="agree-box" :class="{ on: agreed, pop: agreePop }">
+          <mxy-icon v-if="agreed" name="check" :size="20" color="#fff" />
         </view>
         <text class="agree-text">
           已阅读并同意
           <text class="agree-link" @click.stop="onPolicy('user')">《用户协议》</text>
+          和
           <text class="agree-link" @click.stop="onPolicy('privacy')">《隐私政策》</text>
         </text>
       </view>
@@ -142,6 +151,25 @@ const passwordVisible = ref(false);
 const agreed = ref(false);
 const submitting = ref(false);
 
+const focusedField = ref<string | null>(null);
+const shakeTrigger = ref(false);
+const agreePop = ref(false);
+
+const triggerShake = () => {
+  shakeTrigger.value = true;
+  setTimeout(() => {
+    shakeTrigger.value = false;
+  }, 500);
+};
+
+const toggleAgree = () => {
+  agreed.value = !agreed.value;
+  agreePop.value = true;
+  setTimeout(() => {
+    agreePop.value = false;
+  }, 300);
+};
+
 const ensureAgreed = () => {
   if (!agreed.value) {
     uni.showToast({ title: '请先阅读并同意协议', icon: 'none' });
@@ -156,16 +184,21 @@ const onBack = () => uni.navigateBack({ delta: 1 }).catch(() => {
 
 const onPasswordSubmit = async () => {
   if (submitting.value) return;
-  if (!ensureAgreed()) return;
+  if (!ensureAgreed()) {
+    triggerShake();
+    return;
+  }
 
   const p = phone.value.trim();
   const pw = password.value;
   if (!/^1[3-9]\d{9}$/.test(p)) {
     uni.showToast({ title: '请输入正确手机号', icon: 'none' });
+    triggerShake();
     return;
   }
   if (pw.length < 6 || pw.length > 32) {
     uni.showToast({ title: '密码需为 6-32 位', icon: 'none' });
+    triggerShake();
     return;
   }
 
@@ -182,6 +215,7 @@ const onPasswordSubmit = async () => {
     finishLogin(result);
   } catch (e) {
     uni.hideLoading();
+    triggerShake();
     console.warn('[login] password auth failed', e);
   } finally {
     submitting.value = false;
@@ -189,7 +223,10 @@ const onPasswordSubmit = async () => {
 };
 
 const onWxLogin = async () => {
-  if (!ensureAgreed()) return;
+  if (!ensureAgreed()) {
+    triggerShake();
+    return;
+  }
   // #ifdef MP-WEIXIN
   await runWxLogin();
   return;
@@ -213,13 +250,13 @@ async function runWxLogin() {
   } catch (e) {
     uni.hideLoading();
     uni.showToast({ title: '微信登录失败', icon: 'none' });
+    triggerShake();
     console.warn('[login] wx-login failed', e);
   }
 }
 
 function finishLogin({ token, refreshToken, user }: LoginResult) {
   authStore.login(token, refreshToken, user);
-  // 异步 fire-and-forget 把完整 profile 也拉一份(供 profile 页直接消费)
   authStore.refreshMe();
   uni.hideLoading();
   uni.showToast({ title: '登录成功', icon: 'success' });

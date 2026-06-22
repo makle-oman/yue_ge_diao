@@ -169,6 +169,20 @@
   flex-direction: column;
   gap: 24rpx;
 }
+.empty-row {
+  min-height: 160rpx;
+  border-radius: 32rpx;
+  border: 1rpx dashed $border-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 26rpx;
+    color: $text-secondary;
+    font-weight: 700;
+  }
+}
 .spot-row {
   display: flex;
   align-items: center;

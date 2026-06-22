@@ -1,54 +1,62 @@
 <template>
   <view class="profile-setting">
+    <!-- Optimized Settings and Profile -->
     <mxy-form-nav title="设置与资料" action-text="保存" :action-disabled="saving" @action="onSave" />
 
     <scroll-view class="content" scroll-y>
       <view class="form">
-        <view class="avatar-area">
+        <!-- 横向头像卡片 -->
+        <view class="avatar-card">
           <view class="avatar-wrap" @click="onPickAvatar">
-            <mxy-avatar :src="form.avatar" :size="128" />
+            <mxy-avatar :src="form.avatar" :size="116" />
             <view class="camera-badge">
-              <mxy-icon name="add_a_photo" :size="28" color="#fff" />
+              <mxy-icon name="add_a_photo" :size="22" color="#fff" />
             </view>
           </view>
-          <text class="avatar-tip">点击更换头像</text>
+          <view class="avatar-info">
+            <text class="avatar-title">更新头像</text>
+            <text class="avatar-subtitle">点击更换您的垂钓头像，支持 JPG/PNG 格式</text>
+          </view>
         </view>
 
+        <!-- 基础信息（横向行式表单） -->
         <view class="section-card">
           <view class="section-title">
-            <mxy-icon name="person" :size="30" color="#2D8F87" />
+            <mxy-icon name="person" :size="30" color="#2A3C36" />
             <text>基础信息</text>
           </view>
 
-          <text class="field-label">昵称</text>
-          <view class="text-field">
+          <view class="form-item">
+            <text class="row-label">昵称</text>
             <input
               v-model="form.name"
-              class="field-input"
+              class="row-input"
               maxlength="32"
               placeholder="请输入昵称"
               placeholder-class="input-placeholder"
             />
           </view>
 
-          <text class="field-label">性别</text>
-          <view class="segment-row">
-            <view
-              v-for="item in genderOptions"
-              :key="item.value"
-              class="segment"
-              :class="{ active: form.gender === item.value }"
-              @click="form.gender = item.value"
-            >
-              <text>{{ item.label }}</text>
+          <view class="form-item">
+            <text class="row-label">性别</text>
+            <view class="segment-row">
+              <view
+                v-for="item in genderOptions"
+                :key="item.value"
+                class="segment"
+                :class="{ active: form.gender === item.value }"
+                @click="form.gender = item.value"
+              >
+                <text>{{ item.label }}</text>
+              </view>
             </view>
           </view>
 
-          <text class="field-label">所在地</text>
-          <view class="text-field">
+          <view class="form-item">
+            <text class="row-label">所在地</text>
             <input
               v-model="form.city"
-              class="field-input"
+              class="row-input"
               maxlength="32"
               placeholder="请输入所在地"
               placeholder-class="input-placeholder"
@@ -56,9 +64,10 @@
           </view>
         </view>
 
+        <!-- 钓鱼资历 -->
         <view class="section-card">
           <view class="section-title">
-            <mxy-icon name="phishing" :size="30" color="#2D8F87" />
+            <mxy-icon name="phishing" :size="30" color="#2A3C36" />
             <text>钓鱼资历</text>
           </view>
 
@@ -84,12 +93,13 @@
               :class="{ active: form.play.includes(item) }"
               @click="togglePlay(item)"
             >
-              <mxy-icon v-if="form.play.includes(item)" name="check" :size="22" color="#fff" />
+              <mxy-icon v-if="form.play.includes(item)" name="check" :size="20" color="#2A3C36" />
               <text>{{ item }}</text>
             </view>
           </view>
         </view>
 
+        <!-- 隐私设置 -->
         <view class="card">
           <text class="card-title">隐私设置</text>
           <view class="privacy-row">
@@ -113,9 +123,13 @@
           </view>
         </view>
 
+        <!-- 操作设置列表（带图标） -->
         <view class="card">
           <view class="op-row" @click="onSubscription">
-            <text class="op-label">消息订阅</text>
+            <view class="op-left">
+              <mxy-icon name="notifications" :size="30" color="#2A3C36" />
+              <text class="op-label">消息订阅</text>
+            </view>
             <view class="op-value">
               <text class="op-value-text">已开启</text>
               <mxy-icon name="chevron_right" :size="28" color="#99A5AD" />
@@ -123,12 +137,18 @@
           </view>
           <view class="divider" />
           <view class="op-row" @click="onHelp">
-            <text class="op-label">帮助与反馈</text>
+            <view class="op-left">
+              <mxy-icon name="info" :size="30" color="#2A3C36" />
+              <text class="op-label">帮助与反馈</text>
+            </view>
             <mxy-icon name="chevron_right" :size="28" color="#99A5AD" />
           </view>
           <view class="divider" />
           <view class="op-row" @click="onDelete">
-            <text class="op-label danger">删除我的所有数据</text>
+            <view class="op-left">
+              <mxy-icon name="warning" :size="30" color="#D9534F" />
+              <text class="op-label danger">删除我的所有数据</text>
+            </view>
             <mxy-icon name="chevron_right" :size="28" color="#FF6B6B" />
           </view>
         </view>

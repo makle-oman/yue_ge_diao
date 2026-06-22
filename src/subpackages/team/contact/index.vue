@@ -198,7 +198,9 @@ const onChat = () => {
   uni.navigateTo({
     url:
       '/subpackages/message/conversation/index?peer=' +
-      encodeURIComponent(owner.value.id),
+      encodeURIComponent(owner.value.id) +
+      '&teamId=' +
+      encodeURIComponent(teamId.value),
   });
 };
 const onApply = async () => {

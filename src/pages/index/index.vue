@@ -13,13 +13,17 @@
       class="map-view"
       :latitude="center.latitude"
       :longitude="center.longitude"
-      :scale="14"
-      :markers="markers"
+      :scale="MAP_SCALE"
+      :markers="mapMarkers"
+      id="homeMap"
       show-location
       enable-zoom
       enable-scroll
       @markertap="onMarkerTap"
+      @callouttap="onCalloutTap"
+      @regionchange="onMapRegionChange"
     >
+      <!-- #ifdef MP-WEIXIN -->
       <cover-view slot="callout">
         <cover-view v-if="activeSpot" :marker-id="activeSpot.markerId" class="spot-callout">
           <cover-view class="spot-callout-head">
@@ -35,13 +39,47 @@
             <cover-view v-if="activeSpot.waterTag" class="spot-callout-tag">{{ activeSpot.waterTag }}</cover-view>
           </cover-view>
           <cover-view class="spot-callout-action" @tap.stop="onSpotNavigate(activeSpot)">
-            <cover-view class="spot-callout-action-icon">△</cover-view>
             <cover-view>立即前往</cover-view>
           </cover-view>
-          <cover-view class="spot-callout-arrow" />
         </cover-view>
       </cover-view>
+      <!-- #endif -->
     </map>
+    <!-- #ifdef H5 -->
+    <view class="map-marker-layer">
+      <view
+        v-for="spot in h5OverlaySpots"
+        :key="spot.id"
+        class="map-spot-marker"
+        :class="{ active: spot.id === activeSpotId }"
+        :style="spot.style"
+        @click.stop="focusSpot(spot)"
+      >
+        <image class="map-spot-marker-img" :src="MAP_MARKER_ICON" mode="aspectFit" />
+      </view>
+    </view>
+    <!-- #endif -->
+    <!-- #endif -->
+
+    <!-- #ifdef H5 -->
+    <view v-if="activeSpot" class="spot-callout spot-callout--h5" :style="activeSpotPopoverStyle" @click.stop>
+      <view class="spot-callout-head">
+        <text class="spot-callout-title">{{ activeSpot.name }}</text>
+        <text class="spot-callout-close" @click.stop="closeSpotPopover">×</text>
+      </view>
+      <view class="spot-callout-meta">
+        <text class="spot-callout-rating">宜钓 {{ activeSpot.score }}</text>
+        <text class="spot-callout-distance">{{ activeSpot.distance || '附近' }}</text>
+        <text class="spot-callout-distance">★ {{ activeSpot.ratingText }}</text>
+      </view>
+      <view class="spot-callout-tags">
+        <text class="spot-callout-tag">{{ activeSpot.tag }}</text>
+        <text v-if="activeSpot.waterTag" class="spot-callout-tag">{{ activeSpot.waterTag }}</text>
+      </view>
+      <view class="spot-callout-action" @click.stop="onSpotNavigate(activeSpot)">
+        <text>立即前往</text>
+      </view>
+    </view>
     <!-- #endif -->
 
     <!-- #ifndef MP-WEIXIN -->
@@ -116,7 +154,7 @@
       </view>
       <view class="angler-entry-text">
         <text class="angler-entry-title">找钓友</text>
-        <text class="angler-entry-sub">{{ nearbyAnglersOnline }}人在线</text>
+        <text class="angler-entry-sub">附近{{ nearbyAnglersCount }}人</text>
       </view>
     </view>
 
@@ -180,7 +218,7 @@
             >
               <view>
                 <text class="recent-city-name">{{ item.name }}</text>
-                <text class="recent-city-meta">{{ item.spots }} 个钓点 · {{ item.anglers }} 位钓友在线</text>
+                <text class="recent-city-meta">{{ item.spots }} 个钓点 · {{ item.anglers }} 位钓友</text>
               </view>
               <mxy-icon v-if="item.name === city" name="check_circle" :size="32" color="#2D8F87" />
             </view>
@@ -293,6 +331,7 @@ import {
   type NotificationGroup,
   type NotificationItem as ApiNotificationItem,
 } from '@/api/notifications';
+import { fetchNearbyUsers } from '@/api/users';
 
 interface FilterChip { key: ChipKey; label: string }
 interface SpotItem {
@@ -388,9 +427,20 @@ const NEARBY_RADIUS_M = 10000;
 const CITY_RADIUS_M = 200000;
 const NEARBY_LIMIT = 30;
 const FALLBACK_COVER = 'https://images.unsplash.com/photo-1727524315467-264c0bd47a13?w=600';
+const MAP_SCALE = 15;
 const MAP_MARKER_ICON = '/static/spot-marker.png';
 const CITY_PENDING = '定位中';
 const CITY_UNKNOWN = '当前位置';
+
+function spotMarkerId(id: string): number {
+  const numericId = Number(id);
+  if (Number.isSafeInteger(numericId) && numericId > 0) return numericId;
+  let hash = 0;
+  for (let i = 0; i < id.length; i += 1) {
+    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  }
+  return (hash % 2_147_483_647) || 1;
+}
 
 /** 后端 photos[0] 可能是 OSS key（如 spots/seed/xx.webp），还没接上传 host 时回退到占位图。 */
 function pickCover(photos: string[]): string {
@@ -409,7 +459,7 @@ function ratingToScore(avgRating: number, ratingCount: number): number {
 function adaptSpot(item: SpotListItem): SpotItem {
   return {
     id: item.id,
-    markerId: Number(item.id) || 0,
+    markerId: spotMarkerId(item.id),
     name: item.name,
     type: item.type,
     waterType: item.waterType,
@@ -448,7 +498,7 @@ const unreadTotal = ref(0);
 const activeChip = ref<ChipKey>('all');
 const showCitySheet = ref(false);
 const showNotifyPopover = ref(false);
-const nearbyAnglersOnline = ref(12);
+const nearbyAnglersCount = ref(0);
 const activeSpotId = ref<string>('');
 const scrollIntoView = ref<string>('');
 const cityKeyword = ref('');
@@ -478,31 +528,79 @@ const notificationPreview = ref<HomeNotificationItem[]>([]);
 
 const center = ref({ ...DEFAULT_CENTER });
 const spots = ref<SpotItem[]>([]);
+const mapSize = ref({ width: 375, height: 667 });
 const loadingSpots = ref(false);
 let spotRequestSeq = 0;
 let cityRequestSeq = 0;
+let anglersRequestSeq = 0;
 
 const filteredSpots = computed(() => spots.value);
 
-const markers = computed(() =>
-  filteredSpots.value.map((s) => ({
-    id: s.markerId,
-    latitude: s.latitude,
-    longitude: s.longitude,
-    iconPath: MAP_MARKER_ICON,
-    width: 32,
-    height: 40,
-    ...(s.id === activeSpotId.value
-      ? {
-          customCallout: {
-            anchorX: 0,
-            anchorY: -8,
-            display: 'ALWAYS',
-          },
-        }
-      : {}),
+function mercatorPoint(latitude: number, longitude: number) {
+  const sin = Math.sin((latitude * Math.PI) / 180);
+  const size = 256 * 2 ** MAP_SCALE;
+  return {
+    x: ((longitude + 180) / 360) * size,
+    y: (0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * size,
+  };
+}
+
+function mapPointStyle(spot: SpotItem): Record<string, string> {
+  const mapCenter = mercatorPoint(center.value.latitude, center.value.longitude);
+  const point = mercatorPoint(spot.latitude, spot.longitude);
+  const x = mapSize.value.width / 2 + point.x - mapCenter.x;
+  const y = mapSize.value.height / 2 + point.y - mapCenter.y;
+  const visible = x > -120 && x < mapSize.value.width + 120 && y > -160 && y < mapSize.value.height + 120;
+  return {
+    left: `${x}px`,
+    top: `${y}px`,
+    visibility: visible ? 'visible' : 'hidden',
+  };
+}
+
+const h5OverlaySpots = computed(() =>
+  filteredSpots.value.map((spot) => ({
+    ...spot,
+    style: mapPointStyle(spot),
   })),
 );
+
+const activeSpotPopoverStyle = computed<Record<string, string>>(() => {
+  if (!activeSpot.value) return {};
+  return mapPointStyle(activeSpot.value);
+});
+
+const mapMarkers = computed(() => {
+  // #ifdef H5
+  return [];
+  // #endif
+  return (
+  filteredSpots.value.map((s) => {
+    const marker = {
+      id: s.markerId,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      iconPath: MAP_MARKER_ICON,
+      width: 32,
+      height: 40,
+    };
+    if (s.id !== activeSpotId.value) return marker;
+    // #ifdef H5
+    return marker;
+    // #endif
+    // #ifndef H5
+    return {
+      ...marker,
+      customCallout: {
+        anchorX: 0,
+        anchorY: -8,
+        display: 'ALWAYS',
+      },
+    };
+    // #endif
+  })
+  );
+});
 
 const activeSpot = computed(() => spots.value.find((s) => s.id === activeSpotId.value) ?? null);
 const hasUnread = computed(() => unreadTotal.value > 0);
@@ -635,6 +733,33 @@ async function loadCityOptions(silent = true) {
   }
 }
 
+async function loadNearbyAnglersCount() {
+  const seq = ++anglersRequestSeq;
+  try {
+    if (isLoggedIn()) {
+      const { list } = await fetchNearbyUsers({
+        lat: center.value.latitude,
+        lng: center.value.longitude,
+        radius: NEARBY_RADIUS_M,
+        limit: 50,
+      });
+      if (seq === anglersRequestSeq) nearbyAnglersCount.value = list.length;
+      return;
+    }
+    const queryCity = cityForQuery();
+    if (!queryCity) {
+      if (seq === anglersRequestSeq) nearbyAnglersCount.value = 0;
+      return;
+    }
+    const { list } = await listSpotCities({ keyword: queryCity, limit: 20 });
+    if (seq !== anglersRequestSeq) return;
+    const matched = list.find((item) => normalizeCityName(item.name) === normalizeCityName(queryCity));
+    nearbyAnglersCount.value = matched?.anglers ?? 0;
+  } catch (e) {
+    if (seq === anglersRequestSeq) nearbyAnglersCount.value = 0;
+  }
+}
+
 async function locateUser(silent = false): Promise<boolean> {
   try {
     // #ifdef MP-WEIXIN
@@ -752,9 +877,43 @@ async function loadNotificationPreview() {
   }
 }
 
+function syncMapSize() {
+  try {
+    const info = uni.getSystemInfoSync();
+    mapSize.value = {
+      width: Number(info.windowWidth) || mapSize.value.width,
+      height: Number(info.windowHeight) || mapSize.value.height,
+    };
+  } catch (_) {}
+}
+
+const onMapRegionChange = (e: any) => {
+  const type = e?.type || e?.detail?.type;
+  if (type !== 'end') return;
+  const mapContext = uni.createMapContext('homeMap');
+  mapContext.getCenterLocation({
+    success: (res: { latitude: number; longitude: number }) => {
+      const latitude = Number(res.latitude);
+      const longitude = Number(res.longitude);
+      if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+        center.value = { latitude, longitude };
+      }
+    },
+  });
+};
+
 onMounted(async () => {
+  syncMapSize();
+  // #ifdef H5
+  uni.onWindowResize?.((res: any) => {
+    mapSize.value = {
+      width: Number(res?.size?.windowWidth) || mapSize.value.width,
+      height: Number(res?.size?.windowHeight) || mapSize.value.height,
+    };
+  });
+  // #endif
   const synced = await locateUser(true);
-  await Promise.all([loadSpots(true, locationAvailable.value && !synced), loadFishingIndex(), loadNotificationPreview(), loadCityOptions(true)]);
+  await Promise.all([loadSpots(true, locationAvailable.value && !synced), loadFishingIndex(), loadNotificationPreview(), loadCityOptions(true), loadNearbyAnglersCount()]);
 });
 
 onShow(() => {
@@ -777,10 +936,10 @@ const selectCity = async (item: CityOption) => {
   if (Number.isFinite(item.latitude) && Number.isFinite(item.longitude)) {
     center.value = { latitude: item.latitude, longitude: item.longitude };
   }
-  nearbyAnglersOnline.value = item.anglers;
+  nearbyAnglersCount.value = item.anglers;
   rememberCity(item);
   closeCitySheet();
-  await Promise.all([loadSpots(false), loadFishingIndex()]);
+  await Promise.all([loadSpots(false), loadFishingIndex(), loadNearbyAnglersCount()]);
 };
 const onSearchTap = () => {
   uni.navigateTo({ url: spotListUrl() });
@@ -823,7 +982,7 @@ const onNotificationTap = (item: HomeNotificationItem) => {
 };
 const onLocate = async () => {
   const synced = await locateUser(false);
-  await Promise.all([loadSpots(true, locationAvailable.value && !synced), loadFishingIndex()]);
+  await Promise.all([loadSpots(true, locationAvailable.value && !synced), loadFishingIndex(), loadNearbyAnglersCount()]);
   if (showCitySheet.value) void loadCityOptions(true);
 };
 const onReportSpot = () => uni.navigateTo({ url: '/subpackages/spot/create/index' });
@@ -862,6 +1021,11 @@ const onMarkerTap = (e: any) => {
   const id = e.detail?.markerId;
   const spot = spots.value.find((s) => s.markerId === id);
   if (spot) focusSpot(spot);
+};
+const onCalloutTap = (e: any) => {
+  const id = e.detail?.markerId;
+  const spot = spots.value.find((s) => s.markerId === id);
+  if (spot) uni.navigateTo({ url: `/subpackages/spot/detail/index?id=${spot.id}` });
 };
 const closeSpotPopover = () => {
   activeSpotId.value = '';

@@ -48,7 +48,7 @@
             class="user-card"
             @click="onOpen(u)"
           >
-            <view class="avatar" :class="`tone-${u.tone}`" />
+            <mxy-avatar :src="u.avatar" :size="112" />
             <view class="user-info">
               <text class="user-name">{{ u.name }}</text>
               <text class="user-meta">{{ u.meta }}</text>
@@ -105,6 +105,7 @@ interface AnglerTag {
 interface Angler {
   id: string;
   name: string;
+  avatar: string | null;
   meta: string;
   tone: AvatarTone;
   tags: AnglerTag[];
@@ -129,6 +130,7 @@ function adaptUser(u: NearbyUserItem): Angler {
   return {
     id: u.id,
     name: u.nickname || `钓友${u.id.slice(-4)}`,
+    avatar: u.avatar,
     tone: toneOf(u.id),
     meta: `${formatDistance(u.distance)} · ${u.city || '附近'} · ${formatFishingAge(u.fishingAgeBand)}`,
     tags,
